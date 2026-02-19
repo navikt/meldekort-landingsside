@@ -25,12 +25,14 @@ Dette repoet skal erstatte [meldekort-mikrofrontend](https://github.com/navikt/m
 ### Installasjon
 
 1. Klon repoet:
+
 ```bash
 git clone https://github.com/navikt/meldekort-landingsside.git
 cd meldekort-landingsside
 ```
 
 2. Installer avhengigheter:
+
 ```bash
 pnpm install
 ```
@@ -38,26 +40,31 @@ pnpm install
 ### Utvikling
 
 Start utviklingsserver:
+
 ```bash
 pnpm run dev
 ```
 
 Kjør type-checking:
+
 ```bash
 pnpm run check
 ```
 
 Kjør linting:
+
 ```bash
 pnpm run lint
 ```
 
 Fiks linting automatisk:
+
 ```bash
 pnpm run lint:fix
 ```
 
 Formatér kode:
+
 ```bash
 pnpm run format
 ```
@@ -65,11 +72,13 @@ pnpm run format
 ### Bygging
 
 Bygg for produksjon:
+
 ```bash
 pnpm run build
 ```
 
 Forhåndsvis produksjonsbygg:
+
 ```bash
 pnpm run preview
 ```
@@ -117,19 +126,4 @@ Applikasjonen deployes til NAIS demo-miljø:
 
 ## Golden Path Compliance
 
-Dette prosjektet følger NAVs [Golden Path for Frontend](https://aksel.nav.no/god-praksis/artikler/golden-path-frontend) med tilpasninger for Astro:
-
-- ✅ TypeScript med strict mode
-- ✅ pnpm som pakkebehandler
-- ✅ Aksel designsystem
-- ✅ Biome for linting og formattering
-- ✅ Docker containerisering
-- ✅ NAIS deployment
-- ✅ GitHub Actions CI/CD
-- ✅ Dependabot for automatiske oppdateringer
-- ✅ CodeQL sikkerhetsskanning (GitHub default setup)
-- ✅ Git hooks med Husky
-
-## Lisens
-
-MIT - se [LICENSE](LICENSE)
+Dette prosjektet følger NAVs [Golden Path for Frontend](https://aksel.nav.no/god-praksis/artikler/golden-path-frontend) med tilpasninger for Astro.
