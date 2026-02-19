@@ -128,7 +128,7 @@ Dette prosjektet følger NAVs [Golden Path for Frontend](https://aksel.nav.no/go
 - ✅ NAIS deployment
 - ✅ GitHub Actions CI/CD
 - ✅ Dependabot for automatiske oppdateringer
-- ✅ CodeQL sikkerhetsskanning
+- ✅ CodeQL sikkerhetsskanning (GitHub default setup)
 - ✅ Git hooks med Husky
 
 ## Lisens
