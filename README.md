@@ -103,7 +103,7 @@ Prosjektet bruker GitHub Actions for automatisk testing, bygging og deployment:
 
 - **Test og Lint**: Kjører på alle PRs og pushes
 - **Build**: Bygger Docker image ved push til main
-- **Deploy**: Deployer automatisk til dev og prod ved push til main
+- **Deploy**: Deployer automatisk til demo ved push til main
 
 ### Secrets som kreves
 
@@ -111,10 +111,9 @@ Prosjektet bruker GitHub Actions for automatisk testing, bygging og deployment:
 
 ## Deployment
 
-Applikasjonen deployes til NAIS:
+Applikasjonen deployes til NAIS demo-miljø:
 
-- **Dev**: https://meldekort-landingsside.intern.dev.nav.no
-- **Prod**: https://meldekort-landingsside.intern.nav.no
+- **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no
 
 ## Golden Path Compliance
 

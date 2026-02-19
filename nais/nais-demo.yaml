@@ -9,23 +9,23 @@ spec:
   image: {{image}}
   port: 3000
   liveness:
-    path: /
+    path: /internal/health
     initialDelay: 10
   readiness:
-    path: /
+    path: /internal/ready
     initialDelay: 10
   replicas:
-    min: 2
-    max: 4
+    min: 1
+    max: 2
     cpuThresholdPercentage: 50
   resources:
     limits:
       memory: 512Mi
     requests:
-      cpu: 100m
+      cpu: 50m
       memory: 256Mi
   ingresses:
-    - https://meldekort-landingsside.intern.dev.nav.no
+    - https://meldekort-landingsside-demo.intern.dev.nav.no
   accessPolicy:
     outbound:
       rules:

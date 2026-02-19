@@ -1,5 +1,5 @@
 # Build stage
-FROM node:25-alpine AS builder
+FROM node:24-alpine AS builder
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
@@ -20,20 +20,35 @@ COPY . .
 # Build the application
 RUN pnpm run build
 
-# Runtime stage
-FROM node:25-alpine AS runtime
+# Production dependencies stage
+FROM node:24-alpine AS prod-deps
+
+RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 WORKDIR /app
 
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package.json ./
+COPY package.json pnpm-lock.yaml* .npmrc ./
 
-# Install serve to host static files
-RUN npm install -g serve
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
+    pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
+    pnpm install --prod --frozen-lockfile
+
+# Runtime stage
+FROM gcr.io/distroless/nodejs24-debian12 AS runtime
+
+WORKDIR /app
+
+ENV TZ="Europe/Oslo"
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+# Copy production dependencies and built application
+COPY --from=prod-deps /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 
 # Expose port
 EXPOSE 3000
 
-# Start the application
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Start the Astro Node.js server
+CMD ["/nodejs/bin/node", "./dist/server/entry.mjs"]
