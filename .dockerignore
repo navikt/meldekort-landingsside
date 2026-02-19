@@ -1,0 +1,12 @@
+node_modules
+.git
+.gitignore
+dist
+.astro
+.env
+.env.local
+.vscode
+.idea
+*.log
+README.md
+.husky

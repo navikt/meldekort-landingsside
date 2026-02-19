@@ -1,0 +1,36 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: meldekort-landingsside
+  namespace: meldekort
+  labels:
+    team: meldekort
+spec:
+  image: {{image}}
+  port: 3000
+  liveness:
+    path: /
+    initialDelay: 10
+  readiness:
+    path: /
+    initialDelay: 10
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 50
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  ingresses:
+    - https://meldekort-landingsside.intern.dev.nav.no
+  accessPolicy:
+    outbound:
+      rules:
+        - application: nav-dekoratoren
+          namespace: personbruker
+  env:
+    - name: NODE_ENV
+      value: production
