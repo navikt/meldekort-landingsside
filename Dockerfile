@@ -9,9 +9,10 @@ WORKDIR /app
 # Copy package files
 COPY package.json pnpm-lock.yaml* .npmrc ./
 
-# Install dependencies
-ARG NODE_AUTH_TOKEN
-RUN pnpm install --frozen-lockfile
+# Install dependencies with GitHub Packages authentication
+RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
+    pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
+    pnpm install --frozen-lockfile
 
 # Copy source files
 COPY . .

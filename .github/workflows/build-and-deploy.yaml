@@ -70,7 +70,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}
-          build-args: |
+          secrets: |
             NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
 
   deploy-dev:
