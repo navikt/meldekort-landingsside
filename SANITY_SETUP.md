@@ -31,23 +31,57 @@ Landingssideinnholdet hentes fra en Sanity-dokumenttype som heter `meldekortLand
 
 Skjemaet inkluderer følgende felter (alle med internasjonalisering for `nb` og `en`):
 
+#### Generelt innhold
 - **tittel**: Hovedoverskrift for landingssiden
 - **emptyStateTekst**: Tekst som vises når ingen lenker skal vises (støtter rik tekst via PortableText)
-- **body**: Bunntekst som vises under lenkekortene (støtter rik tekst via PortableText)
-- **linkTittelForASe**: Tittel for lenkekort som viser innsendte meldekort
-- **linkBeskrivelseForASe**: Beskrivelse for lenkekort som viser innsendte meldekort
-- **linkTittelForASende**: Tittel for lenkekort som sender meldekort
-- **linkBeskrivelseForASende**: Beskrivelse for lenkekort som sender meldekort
-- **tilleggstekstVedInnsendteMeldekort**: Tilleggstekst som vises når bruker har både meldekort å sende og innsendte meldekort
-- **linkTittelForAFylleUt**: Tittel for lenkekort som fyller ut meldekort
-- **linkBeskrivelseForAFylleUt**: Beskrivelse for lenkekort som fyller ut meldekort
+- **bunntekst**: Bunntekst som vises under lenkekortene (støtter rik tekst via PortableText)
+
+#### Ytelsesnavn
+- **ytelser**: Objekt med oversettelser for ytelsesnavn
+  - **dagpenger**: Navn på ytelsen "dagpenger" (f.eks. nb: "dagpenger", en: "unemployment benefits")
+  - **aap**: Navn på ytelsen "AAP" (f.eks. nb: "AAP", en: "AAP")
+  - **tiltakspenger**: Navn på ytelsen "tiltakspenger" (f.eks. nb: "tiltakspenger", en: "participation allowance")
+
+#### Lenkekort - Se innsendte meldekort
+- **linkForASe**: Objekt for lenkekort som viser innsendte meldekort
+  - **tittel**: Tittel på lenkekortet
+  - **beskrivelse**: Beskrivelse under tittelen
+
+#### Lenkekort - Send inn meldekort
+- **linkForASende**: Objekt for lenkekort som sender meldekort
+  - **tittel**: Tittel på lenkekortet
+  - **beskrivelse**: Beskrivelse under tittelen
+  - **fristTag**: Tag som vises i footer med frist-dato (vises som info-tag)
+  - **tilleggstekstVedInnsendteMeldekort**: Tilleggstekst som vises når bruker har både meldekort å sende og innsendte meldekort
+
+#### Lenkekort - Fyll ut meldekort
+- **linkForAFylleUt**: Objekt for lenkekort som fyller ut meldekort
+  - **tittel**: Tittel på lenkekortet
+  - **beskrivelse**: Beskrivelse under tittelen
 
 ### Plassholdere
 
 Innholdsredaktører kan bruke følgende plassholdere i tekstfeltene:
 
-- `{{ytelse}}`: Vil bli erstattet med ytelsestypen (f.eks. "dagpenger")
-- `{{dato}}`: Vil bli erstattet med en dato
+- `{{ytelse}}`: Erstattes med ytelsesnavnet fra `ytelser`-objektet
+  - Eksempel: "Send {{ytelse}}-meldekort" → "Send dagpenger-meldekort"
+- `{{dato}}`: Erstattes med formatert dato (automatisk hentes fra meldekortdata)
+  - Norsk: "24. mars 2026"
+  - Engelsk: "24 March 2026"
+
+Plassholderne prosesseres automatisk av frontend basert på brukerens faktiske meldekortdata og valgt språk.
+
+### Visningslogikk
+
+Hvilke lenkekort som vises avhenger av brukerens meldekortdata. Hver ytelse viser **kun ett kort** basert på prioritet:
+
+1. **"Send inn"** (`linkForASende`) - hvis det finnes meldekort som kan sendes
+   - Viser frist-tag med nærmeste frist
+   - Hvis bruker også har innsendte meldekort, vises tilleggstekst
+2. **"Se innsendte"** (`linkForASe`) - hvis kun innsendte meldekort finnes (og ingen kan sendes)
+3. **"Fyll ut"** (`linkForAFylleUt`) - kun for AAP, hvis meldekort kan fylles ut (men ikke sendes ennå)
+
+Hvis brukeren kun har én ytelse, blir de automatisk videresendt til den ytelsens meldekortløsning.
 
 ## Arkitektur
 
@@ -84,9 +118,11 @@ const query = getLandingssideQuery('nb');
 // Hent data (allerede filtrert for språk)
 const content = await sanityClient.fetch<MeldekortLandingsside>(query);
 
-// Bruk direkte - data er flat og klar til bruk
+// Bruk direkte - data er klar til bruk
 const title = content?.tittel || 'Fallback tittel';
 const linkTitle = content?.linkForASe.tittel;
+const ytelseNavn = content?.ytelser.dagpenger; // "dagpenger"
+const fristTag = content?.linkForASende.fristTag;
 ```
 
 ## Utvikling

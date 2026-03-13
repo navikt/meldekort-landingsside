@@ -1,4 +1,4 @@
-import type { PortableTextBlock } from "@portabletext/types";
+import type { PortableTextBlock } from '@portabletext/types';
 
 interface MeldekortLink {
   tittel: string;

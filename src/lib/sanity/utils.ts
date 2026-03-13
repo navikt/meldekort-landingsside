@@ -4,7 +4,7 @@
  */
 export function sanityDataMissing<T extends Record<string, unknown>>(
   data: T | null | undefined,
-  requiredFields?: (keyof T)[]
+  requiredFields?: (keyof T)[],
 ): boolean {
   if (!data) return true;
 

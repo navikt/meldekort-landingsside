@@ -1,4 +1,4 @@
-import groq from "groq";
+import groq from 'groq';
 
 // Query som henter data for et spesifikt språk
 const getFieldsForLanguage = (language: string) => groq`
