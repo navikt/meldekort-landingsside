@@ -1,6 +1,6 @@
 import { onLanguageSelect } from '@navikt/nav-dekoratoren-moduler';
 
-onLanguageSelect((language) => {
+onLanguageSelect((language: { locale: string }) => {
   fetch('/api/language', {
     method: 'POST',
     headers: {
