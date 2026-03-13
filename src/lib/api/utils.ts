@@ -7,9 +7,7 @@ import type { AlleMeldekortData, MeldekortData } from '../types/meldekort';
  * @param data - Alle meldekortdata
  * @returns Redirect-URL hvis kun én ytelse, ellers undefined
  */
-export function getRedirectUrlIfSingleYtelse(
-  data: AlleMeldekortData,
-): string | undefined {
+export function getRedirectUrlIfSingleYtelse(data: AlleMeldekortData): string | undefined {
   const ytelser = [data.dagpenger, data.aap, data.tiltakspenger].filter(
     (ytelse): ytelse is MeldekortData => ytelse !== undefined,
   );

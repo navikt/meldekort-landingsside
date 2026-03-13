@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGUAGES } from '../language';
+import type { SUPPORTED_LANGUAGES } from '../language';
 import type {
   AlleMeldekortData,
   LenkeVisning,

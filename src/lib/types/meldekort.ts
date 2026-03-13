@@ -16,7 +16,7 @@ export interface AlleMeldekortData {
   tiltakspenger?: MeldekortData;
 }
 
-export type Ytelse = "dagpenger" | "aap" | "tiltakspenger";
+export type Ytelse = 'dagpenger' | 'aap' | 'tiltakspenger';
 
 export interface LenkeInfo {
   url: string;
