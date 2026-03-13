@@ -4,24 +4,14 @@ Dette prosjektet bruker Sanity CMS for å håndtere innhold til meldekort-landin
 
 ## Konfigurasjon
 
-### Miljøvariabler
-
-Opprett en `.env` fil basert på `.env.example`:
-
-```bash
-cp .env.example .env
-```
-
-Deretter konfigurer:
-
-- `SANITY_DATASET`: Sanity-datasettet som skal brukes (standard: `production`)
-- `SANITY_TOKEN`: Valgfritt token for private datasett (kan stå tom for offentlige datasett)
-
 ### Sanity Prosjektdetaljer
 
+Konfigurasjonen er hardkodet i `src/lib/sanity/client.ts`:
+
 - **Project ID**: `rt6o382n`
-- **Dataset**: Konfigurert via `SANITY_DATASET` miljøvariabel
+- **Dataset**: `production`
 - **API Version**: `2022-03-07`
+- **Perspective**: `published` (kun publiserte dokumenter)
 
 ## Innholdsstruktur
 
@@ -129,10 +119,9 @@ const fristTag = content?.linkForASende.fristTag;
 
 ### Teste Integrasjonen
 
-1. Forsikre deg om at `.env`-filen er konfigurert korrekt
-2. Start utviklingsserveren: `pnpm dev`
-3. Siden vil hente innhold fra Sanity og vise det
-4. Hvis Sanity-data ikke er tilgjengelig, faller den tilbake til hardkodede oversettelser
+1. Start utviklingsserveren: `pnpm dev`
+2. Siden vil hente innhold fra Sanity og vise det
+3. Hvis Sanity-data ikke er tilgjengelig, faller den tilbake til hardkodede oversettelser
 
 ### Typekontroll
 
