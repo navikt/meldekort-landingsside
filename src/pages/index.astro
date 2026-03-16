@@ -41,7 +41,7 @@ const content = await sanityClient.fetch<MeldekortLandingsside>(query);
 
 // Sjekk om viktige felter mangler
 const requiredFields: (keyof MeldekortLandingsside)[] = ['tittel', 'ytelser'];
-const contentMissing = sanityDataMissing(content as Record<string, unknown>, requiredFields);
+const contentMissing = sanityDataMissing(content as unknown as Record<string, unknown>, requiredFields);
 
 // Fallback til hardkodede oversettelser hvis Sanity-data ikke er tilgjengelig
 const t = translations[language as keyof typeof translations] || translations.nb;
