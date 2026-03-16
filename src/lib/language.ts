@@ -6,9 +6,6 @@ export const DEFAULT_LANGUAGE: DecoratorLocale = 'nb';
 
 export const SUPPORTED_LANGUAGES = ['nb', 'en'] as const;
 
-// Cookie max age i sekunder (1 år)
-const ONE_YEAR_IN_SECONDS = 365 * 24 * 60 * 60;
-
 export function getLanguageFromCookie(cookieString: string | null): DecoratorLocale {
   if (!cookieString) return DEFAULT_LANGUAGE;
 
@@ -23,10 +20,6 @@ export function getLanguageFromCookie(cookieString: string | null): DecoratorLoc
   return (SUPPORTED_LANGUAGES as readonly string[]).includes(lang)
     ? (lang as (typeof SUPPORTED_LANGUAGES)[number])
     : DEFAULT_LANGUAGE;
-}
-
-export function setLanguageCookie(language: DecoratorLocale): string {
-  return `${LANGUAGE_COOKIE}=${language}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax`;
 }
 
 // Fallback tittel hvis Sanity-data ikke er tilgjengelig

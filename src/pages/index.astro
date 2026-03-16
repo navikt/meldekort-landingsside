@@ -15,7 +15,14 @@ const language = getLanguageFromCookie(cookieHeader);
 
 // Hent meldekortdata fra samlet API-endepunkt
 const baseUrl = Astro.url.origin;
-const response = await fetch(`${baseUrl}/api/meldekort`);
+const authHeader = Astro.request.headers.get('authorization');
+const fetchHeaders: Record<string, string> = {};
+if (cookieHeader) fetchHeaders.cookie = cookieHeader;
+if (authHeader) fetchHeaders.authorization = authHeader;
+
+const response = await fetch(`${baseUrl}/api/meldekort`, {
+  headers: fetchHeaders,
+});
 const data = response.ok ? await response.json() : {};
 
 // Hvis API-et returnerer en redirect-URL, redirect dit
@@ -25,7 +32,8 @@ if (data.redirectUrl) {
 
 const alleMeldekort: AlleMeldekortData = data;
 const visning = skalViseLenker(alleMeldekort);
-const visNoenLenker = visning.se || visning.sende || visning.fyllUt;
+const visNoenLenker =
+  visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
 // Hent innhold fra Sanity
 const query = getLandingssideQuery(language);
@@ -84,8 +92,8 @@ const decorator = await getDecoratorHTML({
                 />
               </VStack>
             ) : (
-              content.emptyStateTekst &&
-              content.emptyStateTekst.length && (
+              content?.emptyStateTekst &&
+              content.emptyStateTekst.length > 0 && (
                 <PortableText value={content.emptyStateTekst} />
               )
             )

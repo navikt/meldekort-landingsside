@@ -25,7 +25,7 @@ export interface LenkeInfo {
 }
 
 export interface LenkeVisning {
-  se?: LenkeInfo;
-  sende?: LenkeInfo & { harOgsaInnsendte: boolean };
-  fyllUt?: LenkeInfo;
+  se: LenkeInfo[];
+  sende: (LenkeInfo & { harOgsaInnsendte: boolean })[];
+  fyllUt: LenkeInfo[];
 }

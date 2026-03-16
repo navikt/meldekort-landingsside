@@ -6,7 +6,7 @@ import type { MeldekortData } from '../types/meldekort';
 export const dagpengerMock: MeldekortData = {
   innsendteMeldekort: true,
   meldekortTilUtfylling: [], // Ingen meldekort å fylle ut/sende
-  url: 'https://www.nav.no/dagpenger/meldekort',
+  url: 'https://arbeid.intern.dev.nav.no/arbeid/dagpenger/meldekort',
 };
 
 /**
@@ -21,7 +21,7 @@ export const aapMock: MeldekortData = {
       fristForInnsending: '2026-04-07',
     },
   ],
-  url: 'https://www.nav.no/aap/meldekort',
+  url: 'https://aap-meldekort.ansatt.dev.nav.no/aap/meldekort',
 };
 
 /**
@@ -36,5 +36,5 @@ export const tiltakspengerMock: MeldekortData = {
       fristForInnsending: '2026-03-24',
     },
   ],
-  url: 'https://www.nav.no/tiltakspenger/meldekort',
+  url: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',
 };

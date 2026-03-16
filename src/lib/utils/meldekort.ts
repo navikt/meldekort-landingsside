@@ -82,7 +82,7 @@ export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
 /**
  * Oppdaterer visningsobjektet basert på en ytelses meldekortdata.
  *
- * Prioritet:
+ * Hver ytelse legger til ETT kort basert på prioritet:
  * 1. Send inn - hvis meldekort kan sendes
  * 2. Se innsendte - hvis kun innsendte meldekort finnes
  * 3. Fyll ut - kun hvis sjekkFyllUt=true (kun AAP)
@@ -108,50 +108,53 @@ function oppdaterVisning(
       a.fristForInnsending.localeCompare(b.fristForInnsending),
     );
 
-    if (!visning.sende) {
-      visning.sende = {
-        url: data.url,
-        ytelse,
-        dato: sortert[0]?.fristForInnsending,
-        harOgsaInnsendte: harInnsendte,
-      };
-    } else if (harInnsendte) {
-      visning.sende.harOgsaInnsendte = true;
-    }
-  } else if (harInnsendte && !visning.se) {
-    visning.se = {
+    visning.sende.push({
+      url: data.url,
+      ytelse,
+      dato: sortert[0]?.fristForInnsending,
+      harOgsaInnsendte: harInnsendte,
+    });
+  } else if (harInnsendte) {
+    visning.se.push({
       url: data.url,
       ytelse,
       dato: undefined,
-    };
-  } else if (sjekkFyllUt && data.meldekortTilUtfylling.some(kanFyllesUt) && !visning.fyllUt) {
+    });
+  } else if (sjekkFyllUt && data.meldekortTilUtfylling.some(kanFyllesUt)) {
     const meldekortSomKanFyllesUt = data.meldekortTilUtfylling.filter(kanFyllesUt);
     // Finn tidligste dato det kan sendes fra
     const sortert = meldekortSomKanFyllesUt.sort((a, b) =>
       a.kanSendesFra.localeCompare(b.kanSendesFra),
     );
-    visning.fyllUt = {
+    visning.fyllUt.push({
       url: data.url,
       ytelse,
       dato: sortert[0]?.kanSendesFra,
-    };
+    });
   }
 }
 
 /**
  * Bestemmer hvilke lenkekort som skal vises basert på data fra alle ytelser.
  *
- * Hver ytelse viser KUN ett kort basert på prioritet:
+ * Hver ytelse viser ETT kort basert på prioritet:
  * 1. "Send inn" - hvis det finnes meldekort som kan sendes
  *    - Hvis det også finnes innsendte meldekort, vises tilleggstekst
  * 2. "Se innsendte" - hvis det finnes innsendte meldekort (og ingen kan sendes)
  * 3. "Fyll ut" - kun for AAP, hvis det finnes meldekort som kan fylles ut (og ingen kan sendes eller er innsendt)
  *
+ * Flere ytelser kan vise kort i samme kategori, så det kan returneres flere "Send inn"-kort
+ * hvis både dagpenger og AAP har meldekort som kan sendes.
+ *
  * @param data - Meldekortdata for alle ytelser (dagpenger, AAP, tiltakspenger)
- * @returns Objektet som inneholder hvilke lenker som skal vises
+ * @returns Objektet som inneholder arrays av lenker som skal vises
  */
 export function skalViseLenker(data: AlleMeldekortData): LenkeVisning {
-  const visning: LenkeVisning = {};
+  const visning: LenkeVisning = {
+    se: [],
+    sende: [],
+    fyllUt: [],
+  };
 
   if (data.dagpenger) oppdaterVisning(data.dagpenger, 'dagpenger', visning);
   if (data.tiltakspenger) oppdaterVisning(data.tiltakspenger, 'tiltakspenger', visning);

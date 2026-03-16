@@ -13,20 +13,27 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       });
     }
 
+    const url = new URL(request.url);
+    const isSecure = url.protocol === 'https:';
+
     cookies.set(LANGUAGE_COOKIE, language, {
       path: '/',
       maxAge: 60 * 60 * 24 * 365, // 1 year
       httpOnly: false,
       sameSite: 'lax',
+      secure: isSecure,
     });
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: 'Failed to set language' }), {
-      status: 500,
+  } catch (error: unknown) {
+    const isJsonParseError = error instanceof SyntaxError;
+    const status = isJsonParseError ? 400 : 500;
+    const message = isJsonParseError ? 'Invalid JSON body' : 'Failed to set language';
+    return new Response(JSON.stringify({ error: message }), {
+      status,
       headers: { 'Content-Type': 'application/json' },
     });
   }
