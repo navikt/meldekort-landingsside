@@ -4,7 +4,7 @@ import { Page, Heading, VStack } from '@navikt/ds-react';
 import { PortableText } from '@portabletext/react';
 import { getDecoratorHTML } from '../lib/dekorator';
 import { getLanguageFromCookie, translations, SUPPORTED_LANGUAGES } from '../lib/language';
-import { sanityClient, getLandingssideQuery } from '../lib/sanity';
+import { sanityClient, getLandingssideQuery, sanityDataMissing } from '../lib/sanity';
 import type { MeldekortLandingsside } from '../lib/sanity';
 import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
@@ -39,6 +39,10 @@ const visNoenLenker =
 const query = getLandingssideQuery(language);
 const content = await sanityClient.fetch<MeldekortLandingsside>(query);
 
+// Sjekk om viktige felter mangler
+const requiredFields: (keyof MeldekortLandingsside)[] = ['tittel', 'ytelser'];
+const contentMissing = sanityDataMissing(content as Record<string, unknown>, requiredFields);
+
 // Fallback til hardkodede oversettelser hvis Sanity-data ikke er tilgjengelig
 const t = translations[language as keyof typeof translations] || translations.nb;
 
@@ -63,7 +67,7 @@ const decorator = await getDecoratorHTML({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{content?.tittel || t.tittel}</title>
+    <title>{contentMissing ? t.tittel : content.tittel}</title>
     <Fragment set:html={decorator.DECORATOR_HEAD_ASSETS} />
     <script>
       import "../scripts/languageHandler";
@@ -75,31 +79,36 @@ const decorator = await getDecoratorHTML({
       <Page.Block as="main" width="2xl" gutters>
         <VStack gap="space-40">
           <Heading size="xlarge" level="1"
-            >{content?.tittel || t.tittel}</Heading
+            >{contentMissing ? t.tittel : content.tittel}</Heading
           >
           {
             visNoenLenker ? (
-              <VStack gap="space-24" maxWidth="525px">
-                <MeldekortLinkCards
-                  client:load
-                  visning={visning}
-                  content={{
-                    linkForASe: content.linkForASe,
-                    linkForASende: content.linkForASende,
-                    linkForAFylleUt: content.linkForAFylleUt,
-                  }}
-                  ytelser={content.ytelser}
-                />
-              </VStack>
+              !contentMissing && (
+                <VStack gap="space-24" maxWidth="525px">
+                  <MeldekortLinkCards
+                    client:load
+                    visning={visning}
+                    content={{
+                      linkForASe: content.linkForASe,
+                      linkForASende: content.linkForASende,
+                      linkForAFylleUt: content.linkForAFylleUt,
+                    }}
+                    ytelser={content.ytelser}
+                  />
+                </VStack>
+              )
             ) : (
-              content?.emptyStateTekst &&
+              !contentMissing &&
+              content.emptyStateTekst &&
               content.emptyStateTekst.length > 0 && (
                 <PortableText value={content.emptyStateTekst} />
               )
             )
           }
           {
-            content?.bunntekst && content.bunntekst.length > 0 && (
+            !contentMissing &&
+            content.bunntekst &&
+            content.bunntekst.length > 0 && (
               <PortableText value={content.bunntekst} />
             )
           }
