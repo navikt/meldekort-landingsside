@@ -26,6 +26,14 @@ spec:
       memory: 256Mi
   ingresses:
     - https://meldekort-landingsside-demo.intern.dev.nav.no
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+      level: Level4
+      autoLogin: true
+  tokenx:
+    enabled: true
   accessPolicy:
     outbound:
       rules:
