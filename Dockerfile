@@ -31,7 +31,7 @@ COPY package.json pnpm-lock.yaml* .npmrc ./
 
 RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
-    pnpm install --prod --frozen-lockfile
+    pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Runtime stage
 FROM gcr.io/distroless/nodejs24-debian12 AS runtime
