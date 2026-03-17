@@ -89,3 +89,4 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: nais/nais-demo.yaml
           VAR: image=${{ env.IMAGE }}
+          TEAM: meldekort
