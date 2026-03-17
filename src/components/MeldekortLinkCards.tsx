@@ -63,7 +63,12 @@ function MeldekortLinkCard({
   );
 }
 
-export function MeldekortLinkCards({ visning, content, ytelser, language }: MeldekortLinkCardsProps) {
+export function MeldekortLinkCards({
+  visning,
+  content,
+  ytelser,
+  language,
+}: MeldekortLinkCardsProps) {
   return (
     <>
       {visning.se.map((info, index) =>
