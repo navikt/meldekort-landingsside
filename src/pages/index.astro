@@ -97,7 +97,7 @@ const decorator = await getDecoratorHTML({
                       linkForAFylleUt: content.linkForAFylleUt,
                     }}
                     ytelser={content.ytelser}
-                    language={language}
+                    language={language as (typeof SUPPORTED_LANGUAGES)[number]}
                   />
                 </VStack>
               )
