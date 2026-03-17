@@ -1,12 +1,10 @@
 # Build stage
 FROM node:24-alpine AS builder
 
-# Install pnpm
 RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
 
 WORKDIR /app
 
-# Copy package files
 COPY package.json pnpm-lock.yaml* .npmrc ./
 
 # Install dependencies with GitHub Packages authentication
@@ -14,10 +12,8 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
     pnpm install --frozen-lockfile
 
-# Copy source files
 COPY . .
 
-# Build the application
 RUN pnpm run build
 
 # Production dependencies stage
@@ -46,9 +42,8 @@ ENV PORT=3000
 # Copy production dependencies and built application
 COPY --from=prod-deps /app/node_modules ./node_modules
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json ./package.json
 
-# Expose port
 EXPOSE 3000
 
-# Start the Astro Node.js server
-CMD ["/nodejs/bin/node", "./dist/server/entry.mjs"]
+CMD ["dist/server/entry.mjs"]
