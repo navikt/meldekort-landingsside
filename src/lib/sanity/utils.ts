@@ -15,7 +15,7 @@ export function sanityDataMissing<T extends Record<string, unknown>>(
     return (
       value === null ||
       value === undefined ||
-      value === '' ||
+      value === "" ||
       (Array.isArray(value) && value.length === 0)
     );
   });

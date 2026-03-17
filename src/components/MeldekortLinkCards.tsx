@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { LinkCard, Tag } from '@navikt/ds-react';
 import type { LenkeInfo, LenkeVisning } from '../lib/types/meldekort';
 import { erstattPlassholdere } from '../lib/utils/meldekort';
@@ -24,6 +23,7 @@ interface MeldekortLinkCardsProps {
   visning: LenkeVisning;
   content: LinkContent;
   ytelser: Ytelser;
+  language: Language;
 }
 
 interface MeldekortLinkCardProps {
@@ -63,9 +63,7 @@ function MeldekortLinkCard({
   );
 }
 
-export function MeldekortLinkCards({ visning, content, ytelser }: MeldekortLinkCardsProps) {
-  const [language] = useState<Language>(() => (document.documentElement.lang || 'nb') as Language);
-
+export function MeldekortLinkCards({ visning, content, ytelser, language }: MeldekortLinkCardsProps) {
   return (
     <>
       {visning.se.map((info, index) =>
