@@ -81,7 +81,8 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: nais/nais-demo.yaml
+          RESOURCE: nais/nais.yaml
+          VARS: nais/vars-demo.yaml
           VAR: image=${{ needs.build.outputs.image }}
           TEAM: meldekort
 
@@ -99,6 +100,7 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: nais/nais-dev.yaml
+          RESOURCE: nais/nais.yaml
+          VARS: nais/vars-dev.yaml
           VAR: image=${{ needs.build.outputs.image }}
           TEAM: meldekort
