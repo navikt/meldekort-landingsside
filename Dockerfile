@@ -1,11 +1,11 @@
 # Build stage
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
-
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc ./
+
+RUN corepack enable
 
 # Install dependencies with GitHub Packages authentication
 RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
@@ -19,11 +19,11 @@ RUN pnpm run build
 # Production dependencies stage
 FROM node:24-alpine AS prod-deps
 
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
-
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc ./
+
+RUN corepack enable
 
 RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
