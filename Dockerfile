@@ -1,7 +1,7 @@
 # Build stage
 FROM node:24-alpine AS builder
 
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+RUN corepack enable
 
 WORKDIR /app
 
@@ -19,7 +19,7 @@ RUN pnpm run build
 # Production dependencies stage
 FROM node:24-alpine AS prod-deps
 
-RUN corepack enable && corepack prepare pnpm@9.15.4 --activate
+RUN corepack enable
 
 WORKDIR /app
 
