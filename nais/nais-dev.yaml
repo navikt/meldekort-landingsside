@@ -25,7 +25,15 @@ spec:
       cpu: 20m
       memory: 128Mi
   ingresses:
-    - https://meldekort-landingsside-demo.intern.dev.nav.no
+    - https://meldekort-landingsside.intern.dev.nav.no
+  idporten:
+    enabled: true
+    sidecar:
+      enabled: true
+      level: Level3
+      autoLogin: true
+  tokenx:
+    enabled: true
   accessPolicy:
     outbound:
       rules:
@@ -35,4 +43,4 @@ spec:
     - name: NODE_ENV
       value: production
     - name: ENFORCE_LOGIN
-      value: "false"
+      value: "true"

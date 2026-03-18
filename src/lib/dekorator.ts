@@ -28,7 +28,7 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
     context = 'privatperson',
     simple = false,
     enforceLogin = true,
-    level = 'Level4',
+    level = 'Level3',
     redirectToApp = true,
     language = 'nb',
     availableLanguages,
