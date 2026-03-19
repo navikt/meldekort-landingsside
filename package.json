@@ -18,15 +18,15 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@astrojs/node": "^9.1.1",
+    "@astrojs/node": "^9.5.4",
     "@navikt/ds-css": "^7.40.0",
     "@navikt/ds-react": "^7.40.0",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.2",
+    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
     "@portabletext/react": "^6.0.3",
     "@sanity/client": "^7.17.0",
-    "@sanity/types": "^5.14.1",
+    "@sanity/types": "^5.15.0",
     "astro": "^5.17.3",
-    "groq": "^5.14.1",
+    "groq": "^5.15.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

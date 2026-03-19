@@ -13,6 +13,8 @@ import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
+const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
+
 // Hent meldekortdata fra samlet API-endepunkt
 const baseUrl = Astro.url.origin;
 const authHeader = Astro.request.headers.get('authorization');
@@ -53,8 +55,8 @@ const decorator = await getDecoratorHTML({
   env: import.meta.env.PROD ? 'prod' : 'dev',
   context: 'privatperson',
   simple: false,
-  enforceLogin: true,
-  level: 'Level4',
+  enforceLogin,
+  level: 'Level3',
   redirectToApp: true,
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({

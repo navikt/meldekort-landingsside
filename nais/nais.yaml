@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: meldekort-landingsside
+  name: {{app}}
   namespace: meldekort
   labels:
     team: meldekort
@@ -15,25 +15,29 @@ spec:
     path: /internal/ready
     initialDelay: 10
   replicas:
-    min: 1
-    max: 2
+    min: {{replicas.min}}
+    max: {{replicas.max}}
     cpuThresholdPercentage: 50
   resources:
     limits:
-      memory: 512Mi
+      memory: {{resources.limits.memory}}
     requests:
-      cpu: 50m
-      memory: 256Mi
+      cpu: {{resources.requests.cpu}}
+      memory: {{resources.requests.memory}}
   ingresses:
-    - https://meldekort-landingsside-demo.intern.dev.nav.no
+  {{#each ingresses}}
+    - {{this}}
+  {{/each}}
+  {{#if idporten.enabled}}
   idporten:
     enabled: true
     sidecar:
       enabled: true
-      level: Level4
+      level: {{idporten.level}}
       autoLogin: true
   tokenx:
     enabled: true
+  {{/if}}
   accessPolicy:
     outbound:
       rules:
@@ -42,3 +46,5 @@ spec:
   env:
     - name: NODE_ENV
       value: production
+    - name: ENFORCE_LOGIN
+      value: "{{enforce_login}}"
