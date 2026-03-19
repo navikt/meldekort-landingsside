@@ -30,7 +30,7 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Runtime stage
-FROM gcr.io/distroless/nodejs24-debian12 AS runtime
+FROM gcr.io/distroless/nodejs24-debian12:nonroot AS runtime
 
 WORKDIR /app
 

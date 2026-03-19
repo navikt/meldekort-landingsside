@@ -1,7 +1,7 @@
 app: meldekort-landingsside-dev
 enforce_login: true
 ingresses:
-  - https://meldekort-landingsside.intern.dev.nav.no/meldekort
+  - https://meldekort-landingsside.intern.dev.nav.no
 replicas:
   min: 1
   max: 2
