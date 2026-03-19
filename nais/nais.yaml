@@ -25,9 +25,9 @@ spec:
       cpu: {{resources.requests.cpu}}
       memory: {{resources.requests.memory}}
   ingresses:
-  {{#each ingresses}}
+    {{#each ingresses}}
     - {{this}}
-  {{/each}}
+    {{/each}}
   {{#if idporten.enabled}}
   idporten:
     enabled: true
