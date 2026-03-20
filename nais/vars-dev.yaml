@@ -14,3 +14,4 @@ resources:
 idporten:
   enabled: true
   level: Level3
+  autoLogin: true

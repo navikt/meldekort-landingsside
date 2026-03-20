@@ -28,16 +28,14 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-  {{#if idporten.enabled}}
   idporten:
-    enabled: true
+    enabled: {{idporten.enabled}}
     sidecar:
-      enabled: true
+      enabled: {{idporten.enabled}}
       level: {{idporten.level}}
-      autoLogin: true
+      autoLogin: {{idporten.autoLogin}}
   tokenx:
-    enabled: true
-  {{/if}}
+    enabled: {{idporten.enabled}}
   accessPolicy:
     outbound:
       rules:

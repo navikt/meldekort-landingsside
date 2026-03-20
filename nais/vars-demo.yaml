@@ -13,3 +13,5 @@ resources:
     memory: 128Mi
 idporten:
   enabled: false
+  level: Level3
+  autoLogin: true
