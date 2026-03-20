@@ -14,6 +14,9 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
 
 COPY . .
 
+# Set BASE_PATH for Astro build
+ENV BASE_PATH=/meldekort
+
 RUN pnpm run build
 
 # Production dependencies stage
@@ -46,4 +49,4 @@ COPY --from=builder /app/package.json ./package.json
 
 EXPOSE 3000
 
-CMD ["/nodejs/bin/node", "dist/server/entry.mjs"]
+CMD ["dist/server/entry.mjs"]
