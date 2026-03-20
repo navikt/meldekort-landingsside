@@ -17,12 +17,13 @@ const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 
 // Hent meldekortdata fra samlet API-endepunkt
 const baseUrl = Astro.url.origin;
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const authHeader = Astro.request.headers.get('authorization');
 const fetchHeaders: Record<string, string> = {};
 if (cookieHeader) fetchHeaders.cookie = cookieHeader;
 if (authHeader) fetchHeaders.authorization = authHeader;
 
-const response = await fetch(`${baseUrl}/api/meldekort`, {
+const response = await fetch(`${baseUrl}${basePath}/api/meldekort`, {
   headers: fetchHeaders,
 });
 const data = response.ok ? await response.json() : {};
@@ -66,7 +67,7 @@ const decorator = await getDecoratorHTML({
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({
     locale,
-    url: '/',
+    url: import.meta.env.BASE_URL,
     handleInApp: true,
   })),
 });

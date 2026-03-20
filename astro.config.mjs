@@ -4,6 +4,7 @@ import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
+  base: process.env.BASE_PATH || '/',
   integrations: [react()],
   output: 'server',
   adapter: node({

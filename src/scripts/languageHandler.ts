@@ -1,7 +1,9 @@
 import { onLanguageSelect } from '@navikt/nav-dekoratoren-moduler';
 
 onLanguageSelect((language: { locale: string }) => {
-  fetch('/api/language', {
+  // Use relative path to work with base path
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+  fetch(`${basePath}/api/language`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

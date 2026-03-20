@@ -9,10 +9,10 @@ spec:
   image: {{image}}
   port: 3000
   liveness:
-    path: /internal/health
+    path: {{basePath}}/internal/health
     initialDelay: 10
   readiness:
-    path: /internal/ready
+    path: {{basePath}}/internal/ready
     initialDelay: 10
   replicas:
     min: {{replicas.min}}
@@ -44,5 +44,11 @@ spec:
   env:
     - name: NODE_ENV
       value: production
+    - name: HOST
+      value: "0.0.0.0"
+    - name: PORT
+      value: "3000"
+    - name: BASE_PATH
+      value: "{{basePath}}"
     - name: ENFORCE_LOGIN
       value: "{{enforce_login}}"
