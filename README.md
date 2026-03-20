@@ -45,7 +45,7 @@ Kopier `.env.example` til `.env`:
 cp .env.example .env
 ```
 
-**Viktig**: Applikasjonen kjører på base path `/meldekort` i alle miljøer (dev, demo, prod) for konsistens. Dette er konfigurert i `.env` filen.
+**Viktig**: Lokalt kjører applikasjonen på base path `/meldekort`, konfigurert via `.env`-filen. I NAIS-miljøene (dev og demo) settes base path via miljøvariabler definert i NAIS-konfigurasjonen.
 
 ### Utvikling
 
