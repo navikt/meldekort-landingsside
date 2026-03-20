@@ -37,6 +37,16 @@ cd meldekort-landingsside
 pnpm install
 ```
 
+3. Sett opp miljøvariabler:
+
+Kopier `.env.example` til `.env`:
+
+```bash
+cp .env.example .env
+```
+
+**Viktig**: Lokalt kjører applikasjonen på base path `/meldekort`, konfigurert via `.env`-filen. I NAIS-miljøene (dev og demo) settes base path via miljøvariabler definert i NAIS-konfigurasjonen.
+
 ### Utvikling
 
 Start utviklingsserver:
@@ -44,6 +54,9 @@ Start utviklingsserver:
 ```bash
 pnpm run dev
 ```
+
+Applikasjonen vil være tilgjengelig på:
+- **Lokal**: http://localhost:4321/meldekort
 
 Kjør type-checking:
 
@@ -92,8 +105,9 @@ pnpm run preview
 │   └── dependabot.yml    # Automatiske avhengighetsoppdateringer
 ├── .husky/               # Git hooks
 ├── nais/                 # NAIS deployment konfigurasjon
-│   ├── nais.yaml         # Dev konfigurasjon
-│   └── nais-prod.yaml    # Prod konfigurasjon
+│   ├── nais.yaml         # NAIS manifest template
+│   ├── vars-demo.yaml    # Demo miljø variabler
+│   └── vars-dev.yaml     # Dev miljø variabler
 ├── public/               # Statiske filer
 ├── src/                  # Kildekode
 │   ├── components/       # React komponenter
@@ -120,9 +134,10 @@ Prosjektet bruker GitHub Actions for automatisk testing, bygging og deployment:
 
 ## Deployment
 
-Applikasjonen deployes til NAIS demo-miljø:
+Applikasjonen deployes til NAIS med base path `/meldekort`:
 
-- **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no
+- **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no/meldekort
+- **Dev**: https://meldekort-landingsside.intern.dev.nav.no/meldekort
 
 ## Golden Path Compliance
 

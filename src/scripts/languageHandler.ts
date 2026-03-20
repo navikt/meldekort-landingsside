@@ -1,7 +1,9 @@
 import { onLanguageSelect } from '@navikt/nav-dekoratoren-moduler';
 
 onLanguageSelect((language: { locale: string }) => {
-  fetch('/api/language', {
+  // Prefix API call with BASE_URL to support hosting under a base path
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+  fetch(`${basePath}/api/language`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
