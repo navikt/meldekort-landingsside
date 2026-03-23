@@ -5,16 +5,14 @@ metadata:
   namespace: meldekort
   labels:
     team: meldekort
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   image: {{image}}
   port: 3000
   liveness:
-    path: /internal/health
+    path: {{basePath}}/internal/health
     initialDelay: 10
   readiness:
-    path: /internal/ready
+    path: {{basePath}}/internal/ready
     initialDelay: 10
   replicas:
     min: {{replicas.min}}

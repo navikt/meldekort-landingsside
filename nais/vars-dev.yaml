@@ -1,4 +1,5 @@
 app: meldekort-landingsside-dev
+basePath: /meldekort
 enforce_login: "true"
 ingresses:
   - https://meldekort-landingsside.intern.dev.nav.no/meldekort
