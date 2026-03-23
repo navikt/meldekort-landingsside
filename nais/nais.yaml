@@ -51,7 +51,5 @@ spec:
       value: "0.0.0.0"
     - name: PORT
       value: "3000"
-    - name: BASE_PATH
-      value: "{{basePath}}"
     - name: ENFORCE_LOGIN
       value: "{{enforce_login}}"

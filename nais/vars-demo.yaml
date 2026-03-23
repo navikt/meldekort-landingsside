@@ -1,8 +1,7 @@
 app: meldekort-landingsside
-basePath: /meldekort
 enforce_login: "false"
 ingresses:
-  - https://meldekort-landingsside-demo.intern.dev.nav.no/meldekort
+  - https://meldekort-landingsside-demo.intern.dev.nav.no
 replicas:
   min: 1
   max: 2

@@ -14,9 +14,6 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
 
 COPY . .
 
-# Set BASE_PATH for Astro build
-ENV BASE_PATH=/meldekort
-
 RUN pnpm run build
 
 # Production dependencies stage
