@@ -1,4 +1,4 @@
-app: meldekort-landingsside
+app: meldekort-landingsside-demo
 enforce_login: "false"
 ingresses:
   - https://meldekort-landingsside-demo.intern.dev.nav.no

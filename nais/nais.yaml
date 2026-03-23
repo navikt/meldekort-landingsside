@@ -44,6 +44,8 @@ spec:
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
+        - host: rt6o382n.api.sanity.io
+        - host: rt6o382n.apicdn.sanity.io
   env:
     - name: NODE_ENV
       value: production
