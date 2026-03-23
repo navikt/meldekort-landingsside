@@ -9,31 +9,28 @@ import type { MeldekortLandingsside } from '../lib/sanity';
 import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
+import { dagpengerMock, aapMock, tiltakspengerMock } from '../lib/api/mockData';
+import { getRedirectUrlIfSingleYtelse } from '../lib/api/utils';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
 const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 
-// Hent meldekortdata fra samlet API-endepunkt
-const baseUrl = Astro.url.origin;
-const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
-const authHeader = Astro.request.headers.get('authorization');
-const fetchHeaders: Record<string, string> = {};
-if (cookieHeader) fetchHeaders.cookie = cookieHeader;
-if (authHeader) fetchHeaders.authorization = authHeader;
+// Hent meldekortdata (bruker mock-data for nå)
+// TODO: Bytt ut med reelle API-kall når backend er klart
+const alleMeldekort: AlleMeldekortData = {
+  dagpenger: dagpengerMock,
+  aap: aapMock,
+  tiltakspenger: tiltakspengerMock,
+};
 
-const response = await fetch(`${baseUrl}${basePath}/api/meldekort`, {
-  headers: fetchHeaders,
-});
-const data = response.ok ? await response.json() : {};
+const redirectUrl = getRedirectUrlIfSingleYtelse(alleMeldekort);
 
-// Hvis API-et returnerer en redirect-URL, redirect dit
-if (data.redirectUrl) {
-  return Astro.redirect(data.redirectUrl);
+// Hvis brukeren kun har én ytelse, redirect dit
+if (redirectUrl) {
+  return Astro.redirect(redirectUrl);
 }
-
-const alleMeldekort: AlleMeldekortData = data;
 const visning = skalViseLenker(alleMeldekort);
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
