@@ -5,6 +5,8 @@ metadata:
   namespace: meldekort
   labels:
     team: meldekort
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   image: {{image}}
   port: 3000
@@ -28,8 +30,6 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
-  ingressesAnnotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
   idporten:
     enabled: {{idporten.enabled}}
     sidecar:
