@@ -41,6 +41,9 @@ spec:
       rules:
         - application: nav-dekoratoren
           namespace: personbruker
+      external:
+        - host: dekoratoren.ekstern.dev.nav.no
+        - host: www.nav.no
   env:
     - name: NODE_ENV
       value: production
