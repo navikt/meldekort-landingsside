@@ -64,7 +64,7 @@ const decorator = await getDecoratorHTML({
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({
     locale,
-    url: '/',
+    url: import.meta.env.BASE_URL,
     handleInApp: true,
   })),
 });

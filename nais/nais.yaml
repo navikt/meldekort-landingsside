@@ -28,6 +28,8 @@ spec:
   {{#each ingresses as |url|}}
      - {{url}}
   {{/each}}
+  ingressesAnnotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
   idporten:
     enabled: {{idporten.enabled}}
     sidecar:
