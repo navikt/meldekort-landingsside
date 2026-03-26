@@ -14,8 +14,8 @@ import { exchangeToken } from '../auth/tokenx';
 export async function hentMeldekortDataFraArena(
   oboToken: string,
 ): Promise<MeldekortData | undefined> {
-  const apiUrl = import.meta.env.MELDEKORT_API_URL;
-  const audience = import.meta.env.MELDEKORT_API_AUDIENCE;
+  const apiUrl = process.env.MELDEKORT_API_URL;
+  const audience = process.env.MELDEKORT_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     console.warn('Missing MELDEKORT_API_URL or MELDEKORT_API_AUDIENCE');
@@ -39,10 +39,14 @@ export async function hentMeldekortDataFraArena(
 
     // 307 betyr at bruker har dagpenger i Arena
     if (response.status === 307) {
+      // Hent redirect URL fra Location header, eller bruk fallback
+      const redirectUrl =
+        response.headers.get('location') ?? 'https://arbeid.intern.dev.nav.no/felles-meldekort';
+
       return {
         innsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 'https://arbeid.intern.dev.nav.no/felles-meldekort',
+        url: redirectUrl,
       };
     }
 

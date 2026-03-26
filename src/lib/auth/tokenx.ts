@@ -11,7 +11,7 @@ import { requestTokenxOboToken } from '@navikt/oasis';
  */
 export async function exchangeToken(oboToken: string, targetAudience: string): Promise<string> {
   // I lokal utvikling, returner fake token
-  if (import.meta.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.warn('Using fake token in development mode');
     return 'fake-token-for-development';
   }
