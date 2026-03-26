@@ -5,8 +5,7 @@ import { exchangeToken } from '../auth/tokenx';
  * Sjekker om bruker har meldekort i Arena
  *
  * Bruker /harDP endepunktet som returnerer:
- * - 307 TEMPORARY_REDIRECT hvis bruker har dagpenger
- * - 200 OK hvis bruker ikke har dagpenger
+ * - 200 OK hvis bruker har dagpenger i Arena
  *
  * @param oboToken - Token fra innlogget bruker
  * @returns MeldekortData eller undefined hvis bruker ikke har meldekort i Arena
@@ -34,23 +33,18 @@ export async function hentMeldekortDataFraArena(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
-      redirect: 'manual', // Ikke følg redirect automatisk
     });
 
-    // 307 betyr at bruker har dagpenger i Arena
-    if (response.status === 307) {
-      // Hent redirect URL fra Location header, eller bruk fallback
-      const redirectUrl =
-        response.headers.get('location') ?? 'https://arbeid.intern.dev.nav.no/felles-meldekort';
-
+    // 200 betyr at bruker har dagpenger i Arena
+    if (response.status === 200) {
       return {
         innsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: redirectUrl,
+        url: 'https://arbeid.intern.dev.nav.no/felles-meldekort',
       };
     }
 
-    // 200 eller andre statuser betyr at bruker ikke har dagpenger
+    // Andre statuser betyr at bruker ikke har dagpenger i Arena
     return undefined;
   } catch (error) {
     console.error('Error checking Arena meldekort:', error);
