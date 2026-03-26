@@ -16,7 +16,7 @@ export const aapMock: MeldekortData = {
   innsendteMeldekort: false,
   meldekortTilUtfylling: [
     {
-      kanSendesFra: '2026-03-24', // Kan sendes i fremtiden
+      kanSendesFra: '2026-03-31', // Kan sendes i fremtiden
       kanFyllesUtFra: '2026-03-10', // Kan fylles ut nå
       fristForInnsending: '2026-04-07',
     },

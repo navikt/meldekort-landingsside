@@ -23,7 +23,8 @@ const getFieldsForLanguage = (language: string) => groq`
   },
   "linkForAFylleUt": {
     "tittel": linkForAFylleUt.tittel[_key == "${language}"][0].value,
-    "beskrivelse": linkForAFylleUt.beskrivelse[_key == "${language}"][0].value
+    "beskrivelse": linkForAFylleUt.beskrivelse[_key == "${language}"][0].value,
+    "kanSendesFraTag": linkForAFylleUt.kanSendesFraTag[_key == "${language}"][0].value
   }
 `;
 

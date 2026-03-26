@@ -22,5 +22,7 @@ export interface MeldekortLandingsside {
     fristTag: string;
     tilleggstekstVedInnsendteMeldekort: string;
   };
-  linkForAFylleUt: MeldekortLink;
+  linkForAFylleUt: MeldekortLink & {
+    kanSendesFraTag: string;
+  };
 }
