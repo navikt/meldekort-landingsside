@@ -10,6 +10,7 @@ interface LinkData {
   tittel: string;
   beskrivelse: string;
   fristTag?: string;
+  kanSendesFraTag?: string;
   tilleggstekstVedInnsendteMeldekort?: string;
 }
 
@@ -53,9 +54,9 @@ function MeldekortLinkCard({
         {tilleggstekst && <> {erstatt(tilleggstekst)}</>}
       </LinkCard.Description>
       <LinkCard.Footer>
-        {data.fristTag && (
+        {(data.fristTag || data.kanSendesFraTag) && (
           <Tag variant="info" size="small">
-            {erstatt(data.fristTag)}
+            {erstatt(data.fristTag || data.kanSendesFraTag || '')}
           </Tag>
         )}
       </LinkCard.Footer>
