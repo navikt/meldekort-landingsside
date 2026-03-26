@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import type { AlleMeldekortData } from '../../lib/types/meldekort';
-import { dagpengerMock, aapMock, tiltakspengerMock, arenaMock } from '../../lib/api/mockData';
+import { arenaMock } from '../../lib/api/mockData';
+// import { dagpengerMock, aapMock, tiltakspengerMock } from '../../lib/api/mockData';
 import { getRedirectUrlIfSingleYtelse } from '../../lib/api/utils';
 
 /**

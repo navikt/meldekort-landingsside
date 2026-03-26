@@ -9,7 +9,8 @@ import type { MeldekortLandingsside } from '../lib/sanity';
 import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
-import { dagpengerMock, aapMock, tiltakspengerMock, arenaMock } from '../lib/api/mockData';
+import { arenaMock } from '../lib/api/mockData';
+// import { dagpengerMock, aapMock, tiltakspengerMock } from '../lib/api/mockData';
 import { getRedirectUrlIfSingleYtelse } from '../lib/api/utils';
 
 const cookieHeader = Astro.request.headers.get('cookie');
