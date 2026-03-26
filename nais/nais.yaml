@@ -41,6 +41,8 @@ spec:
       rules:
         - application: nav-dekoratoren
           namespace: personbruker
+        - application: meldekort-api
+          namespace: meldekort
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
@@ -55,3 +57,7 @@ spec:
       value: "3000"
     - name: ENFORCE_LOGIN
       value: "{{enforce_login}}"
+    - name: MELDEKORT_API_URL
+      value: "{{meldekortApiUrl}}"
+    - name: MELDEKORT_API_AUDIENCE
+      value: "{{meldekortApiAudience}}"

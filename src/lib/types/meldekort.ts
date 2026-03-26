@@ -14,6 +14,7 @@ export interface AlleMeldekortData {
   dagpenger?: MeldekortData;
   aap?: MeldekortData;
   tiltakspenger?: MeldekortData;
+  arena?: MeldekortData;
 }
 
 export type Ytelse = 'dagpenger' | 'aap' | 'tiltakspenger';

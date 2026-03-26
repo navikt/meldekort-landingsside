@@ -38,3 +38,19 @@ export const tiltakspengerMock: MeldekortData = {
   ],
   url: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',
 };
+
+/**
+ * Mock data for Arena - brukes kun for redirect til felles-meldekort
+ * Skal kun returnere data hvis bruker IKKE har meldekort i de andre systemene
+ */
+export const arenaMock: MeldekortData = {
+  innsendteMeldekort: true,
+  meldekortTilUtfylling: [
+    {
+      kanSendesFra: '2026-03-10',
+      kanFyllesUtFra: null,
+      fristForInnsending: '2026-03-24',
+    },
+  ],
+  url: 'https://arbeid.intern.dev.nav.no/arbeid/felles-meldekort',
+};
