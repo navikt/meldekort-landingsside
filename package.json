@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.32.1",
+  "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=24.0.0"
   },
@@ -22,12 +22,12 @@
     "@astrojs/node": "^10.0.4",
     "@navikt/ds-css": "^7.40.0",
     "@navikt/ds-react": "^7.40.0",
-    "@navikt/nav-dekoratoren-moduler": "^3.6.3",
+    "@navikt/nav-dekoratoren-moduler": "^3.7.0",
     "@portabletext/react": "^6.0.3",
-    "@sanity/client": "^7.17.0",
-    "@sanity/types": "^5.15.0",
+    "@sanity/client": "^7.20.0",
+    "@sanity/types": "^5.18.0",
     "astro": "^6.1.1",
-    "groq": "^5.15.0",
+    "groq": "^5.18.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },
