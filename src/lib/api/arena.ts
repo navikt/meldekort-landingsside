@@ -1,53 +1,46 @@
-import type { MeldekortData } from '../types/meldekort';
 import { exchangeToken } from '../auth/tokenx';
 
-/**
- * Sjekker om bruker har meldekort i Arena
- *
- * Bruker /harDP endepunktet som returnerer:
- * - 200 OK hvis bruker har dagpenger i Arena
- *
- * @param oboToken - Token fra innlogget bruker
- * @returns MeldekortData eller undefined hvis bruker ikke har meldekort i Arena
- */
-export async function hentMeldekortDataFraArena(
-  oboToken: string,
-): Promise<MeldekortData | undefined> {
+interface ArenaStatusResponse {
+  etterregistrerteMeldekort: number;
+  meldekort: number;
+  nesteInnsendingAvMeldekort: unknown;
+  nesteMeldekort: unknown;
+}
+
+export async function harMeldekortIArena(oboToken: string): Promise<boolean> {
   const apiUrl = process.env.MELDEKORT_API_URL;
   const audience = process.env.MELDEKORT_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
-    console.warn('Missing MELDEKORT_API_URL or MELDEKORT_API_AUDIENCE');
-    return undefined;
+    console.error('Missing MELDEKORT_API_URL or MELDEKORT_API_AUDIENCE');
+    return false;
   }
 
   try {
-    // Bytt token
     const accessToken = await exchangeToken(oboToken, audience);
 
-    // Sjekk om bruker har dagpenger i Arena
-    const response = await fetch(`${apiUrl}/harDP`, {
-      method: 'GET',
+    const response = await fetch(`${apiUrl}/person/meldekortstatus`, {
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
         Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    // 200 betyr at bruker har dagpenger i Arena
-    if (response.status === 200) {
-      return {
-        innsendteMeldekort: true,
-        meldekortTilUtfylling: [],
-        url: 'https://arbeid.intern.dev.nav.no/felles-meldekort',
-      };
+    if (!response.ok) {
+      console.error(`Arena API returned ${response.status}`);
+      return false;
     }
 
-    // Andre statuser betyr at bruker ikke har dagpenger i Arena
-    return undefined;
+    const data: ArenaStatusResponse = await response.json();
+
+    return (
+      data.nesteMeldekort != null ||
+      data.nesteInnsendingAvMeldekort != null ||
+      data.etterregistrerteMeldekort > 0 ||
+      data.meldekort > 0
+    );
   } catch (error) {
-    console.error('Error checking Arena meldekort:', error);
-    return undefined;
+    console.error('Error checking Arena meldekort status:', error);
+    return false;
   }
 }
