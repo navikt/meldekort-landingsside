@@ -1,4 +1,4 @@
-import { exchangeToken } from '../auth/tokenx';
+import { requestTokenxOboToken } from '@navikt/oasis';
 
 interface ArenaStatusResponse {
   etterregistrerteMeldekort: number;
@@ -17,12 +17,23 @@ export async function harMeldekortIArena(oboToken: string): Promise<boolean> {
   }
 
   try {
-    const accessToken = await exchangeToken(oboToken, audience);
+    const token = import.meta.env.DEV ? 'fake-token' : oboToken;
+
+    if (import.meta.env.DEV) {
+      console.warn('Dev mode: using fake token for Arena API');
+    }
+
+    const tokenResult = await requestTokenxOboToken(token, audience);
+
+    if (!tokenResult.ok) {
+      console.error('Token exchange failed:', tokenResult.error.message);
+      return false;
+    }
 
     const response = await fetch(`${apiUrl}/person/meldekortstatus`, {
       headers: {
         Accept: 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${tokenResult.token}`,
       },
     });
 
