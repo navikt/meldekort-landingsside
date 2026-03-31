@@ -1,4 +1,4 @@
-import type { MeldekortData } from '../types/meldekort';
+import type { ArenaMeldekortData, MeldekortData } from '../types/meldekort';
 
 export const dpMock: MeldekortData = {
   harInnsendteMeldekort: true,
@@ -34,7 +34,7 @@ export const ttlMock: MeldekortData = {
  * Mock data for Arena - brukes kun for redirect til felles-meldekort
  * Skal kun returnere data hvis bruker IKKE har meldekort i de andre systemene
  */
-export const arenaMock: MeldekortData = {
+export const arenaMock: ArenaMeldekortData = {
   harInnsendteMeldekort: true,
   meldekortTilUtfylling: [
     {
@@ -44,4 +44,5 @@ export const arenaMock: MeldekortData = {
     },
   ],
   redirectUrl: 'https://arbeid.intern.dev.nav.no/arbeid/felles-meldekort',
+  meldegruppe: 'DAGP',
 };

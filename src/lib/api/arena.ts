@@ -1,9 +1,9 @@
 import { requestTokenxOboToken } from '@navikt/oasis';
-import type { MeldekortData } from '../types/meldekort';
+import type { ArenaMeldekortData } from '../types/meldekort';
 
 export async function hentMeldekortDataFraArena(
   oboToken: string,
-): Promise<MeldekortData | undefined> {
+): Promise<ArenaMeldekortData | undefined> {
   const apiUrl = process.env.MELDEKORT_API_URL;
   const audience = process.env.MELDEKORT_API_AUDIENCE;
 
@@ -36,7 +36,7 @@ export async function hentMeldekortDataFraArena(
       return undefined;
     }
 
-    const data: MeldekortData = await response.json();
+    const data: ArenaMeldekortData = await response.json();
 
     if (!data.harInnsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
       return undefined;

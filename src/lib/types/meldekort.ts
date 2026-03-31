@@ -10,11 +10,15 @@ export interface MeldekortData {
   redirectUrl: string;
 }
 
+export interface ArenaMeldekortData extends MeldekortData {
+  meldegruppe: string;
+}
+
 export interface AlleMeldekortData {
   dp?: MeldekortData;
   aap?: MeldekortData;
   ttl?: MeldekortData;
-  arena?: MeldekortData;
+  arena?: ArenaMeldekortData;
 }
 
 export type Ytelse = 'dagpenger' | 'aap' | 'tiltakspenger';
