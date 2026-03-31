@@ -9,8 +9,8 @@ import type { MeldekortLandingsside } from '../lib/sanity';
 import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
-import { dagpengerMock, aapMock, tiltakspengerMock } from '../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../lib/api/utils';
+import { dpMock, aapMock, ttlMock } from '../lib/api/mockData';
+import { getRedirectUrlIfSingleYtelse } from '../lib/api/redirect';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
@@ -20,9 +20,9 @@ const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 // Hent meldekortdata (bruker mock-data for nå)
 // TODO: Bytt ut med reelle API-kall når backend er klart
 const alleMeldekort: AlleMeldekortData = {
-  dagpenger: dagpengerMock,
+  dp: dpMock,
   aap: aapMock,
-  tiltakspenger: tiltakspengerMock,
+  ttl: ttlMock,
   // arena: undefined, // Sett arena her når du vil teste Arena-redirect
 };
 

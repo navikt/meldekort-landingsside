@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import type { AlleMeldekortData } from '../../lib/types/meldekort';
-import { dagpengerMock, aapMock, tiltakspengerMock } from '../../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../../lib/api/utils';
+import { dpMock, aapMock, ttlMock } from '../../lib/api/mockData';
+import { getRedirectUrlIfSingleYtelse } from '../../lib/api/redirect';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
@@ -15,9 +15,9 @@ import { getRedirectUrlIfSingleYtelse } from '../../lib/api/utils';
 export const GET: APIRoute = async () => {
   // TODO: Bytt ut mock-data med reelle API-kall til backend når de er klare
   const alleMeldekort: AlleMeldekortData = {
-    dagpenger: dagpengerMock,
+    dp: dpMock,
     aap: aapMock,
-    tiltakspenger: tiltakspengerMock,
+    ttl: ttlMock,
     // arena: undefined, // Sett arena her når du vil teste Arena-redirect
   };
 

@@ -43,6 +43,10 @@ spec:
           namespace: personbruker
         - application: meldekort-api
           namespace: meldekort
+        - application: tiltakspenger-meldekort-api
+          namespace: tpts
+        - application: dp-meldekortregister
+          namespace: teamdagpenger
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
@@ -61,3 +65,11 @@ spec:
       value: "{{meldekortApiUrl}}"
     - name: MELDEKORT_API_AUDIENCE
       value: "{{meldekortApiAudience}}"
+    - name: TILTAKSPENGER_API_URL
+      value: "{{tiltakspengerApiUrl}}"
+    - name: TILTAKSPENGER_API_AUDIENCE
+      value: "{{tiltakspengerApiAudience}}"
+    - name: DP_API_URL
+      value: "{{dpApiUrl}}"
+    - name: DP_API_AUDIENCE
+      value: "{{dpApiAudience}}"

@@ -5,15 +5,15 @@ export interface MeldekortTilUtfylling {
 }
 
 export interface MeldekortData {
-  innsendteMeldekort: boolean;
+  harInnsendteMeldekort: boolean;
   meldekortTilUtfylling: MeldekortTilUtfylling[];
-  url: string;
+  redirectUrl: string;
 }
 
 export interface AlleMeldekortData {
-  dagpenger?: MeldekortData;
+  dp?: MeldekortData;
   aap?: MeldekortData;
-  tiltakspenger?: MeldekortData;
+  ttl?: MeldekortData;
   arena?: MeldekortData;
 }
 

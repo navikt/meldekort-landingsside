@@ -1,14 +1,12 @@
 import { requestTokenxOboToken } from '@navikt/oasis';
 import type { MeldekortData } from '../types/meldekort';
 
-export async function hentMeldekortDataFraArena(
-  oboToken: string,
-): Promise<MeldekortData | undefined> {
-  const apiUrl = process.env.MELDEKORT_API_URL;
-  const audience = process.env.MELDEKORT_API_AUDIENCE;
+export async function hentMeldekortDataFraDP(oboToken: string): Promise<MeldekortData | undefined> {
+  const apiUrl = process.env.DP_API_URL;
+  const audience = process.env.DP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
-    console.error('Missing MELDEKORT_API_URL or MELDEKORT_API_AUDIENCE');
+    console.error('Missing DP_API_URL or DP_API_AUDIENCE');
     return undefined;
   }
 
@@ -16,7 +14,7 @@ export async function hentMeldekortDataFraArena(
     const token = import.meta.env.DEV ? 'fake-token' : oboToken;
 
     if (import.meta.env.DEV) {
-      console.warn('Dev mode: using fake token for Arena API');
+      console.warn('Dev mode: using fake token for DP API');
     }
 
     const tokenResult = await requestTokenxOboToken(token, audience);
@@ -26,7 +24,7 @@ export async function hentMeldekortDataFraArena(
       return undefined;
     }
 
-    const response = await fetch(`${apiUrl}/person/meldekortstatus`, {
+    const response = await fetch(`${apiUrl}/meldekortstatus`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${tokenResult.token}`,
@@ -34,7 +32,7 @@ export async function hentMeldekortDataFraArena(
     });
 
     if (!response.ok) {
-      console.error(`Arena API returned ${response.status}`);
+      console.error(`DP API returned ${response.status}`);
       return undefined;
     }
 
@@ -46,7 +44,7 @@ export async function hentMeldekortDataFraArena(
 
     return data;
   } catch (error) {
-    console.error('Error checking Arena meldekort status:', error);
+    console.error('Error checking DP meldekort status:', error);
     return undefined;
   }
 }

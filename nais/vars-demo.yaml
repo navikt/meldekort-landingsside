@@ -18,3 +18,7 @@ idporten:
   autoLogin: true
 meldekortApiUrl: https://meldekort-api.intern.dev.nav.no
 meldekortApiAudience: dev-gcp:meldekort:meldekort-api
+tiltakspengerApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
+tiltakspengerApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api
+dpApiUrl: https://dp-meldekortregister.intern.dev.nav.no
+dpApiAudience: dev-gcp:teamdagpenger:dp-meldekortregister

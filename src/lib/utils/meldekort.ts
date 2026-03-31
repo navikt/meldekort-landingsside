@@ -100,7 +100,7 @@ function oppdaterVisning(
 ): void {
   const meldekortSomKanSendes = data.meldekortTilUtfylling.filter(kanSendes);
   const kanSendeNoe = meldekortSomKanSendes.length > 0;
-  const harInnsendte = data.innsendteMeldekort;
+  const harInnsendte = data.harInnsendteMeldekort;
 
   if (kanSendeNoe) {
     // Finn nærmeste frist
@@ -109,14 +109,14 @@ function oppdaterVisning(
     );
 
     visning.sende.push({
-      url: data.url,
+      url: data.redirectUrl,
       ytelse,
       dato: sortert[0]?.fristForInnsending,
       harOgsaInnsendte: harInnsendte,
     });
   } else if (harInnsendte) {
     visning.se.push({
-      url: data.url,
+      url: data.redirectUrl,
       ytelse,
       dato: undefined,
     });
@@ -127,7 +127,7 @@ function oppdaterVisning(
       a.kanSendesFra.localeCompare(b.kanSendesFra),
     );
     visning.fyllUt.push({
-      url: data.url,
+      url: data.redirectUrl,
       ytelse,
       dato: sortert[0]?.kanSendesFra,
     });
@@ -144,9 +144,9 @@ function oppdaterVisning(
  * 3. "Fyll ut" - kun for AAP, hvis det finnes meldekort som kan fylles ut (og ingen kan sendes eller er innsendt)
  *
  * Flere ytelser kan vise kort i samme kategori, så det kan returneres flere "Send inn"-kort
- * hvis både dagpenger og AAP har meldekort som kan sendes.
+ * hvis både DP og AAP har meldekort som kan sendes.
  *
- * @param data - Meldekortdata for alle ytelser (dagpenger, AAP, tiltakspenger)
+ * @param data - Meldekortdata for alle ytelser (DP, AAP, TTL)
  * @returns Objektet som inneholder arrays av lenker som skal vises
  */
 export function skalViseLenker(data: AlleMeldekortData): LenkeVisning {
@@ -156,8 +156,8 @@ export function skalViseLenker(data: AlleMeldekortData): LenkeVisning {
     fyllUt: [],
   };
 
-  if (data.dagpenger) oppdaterVisning(data.dagpenger, 'dagpenger', visning);
-  if (data.tiltakspenger) oppdaterVisning(data.tiltakspenger, 'tiltakspenger', visning);
+  if (data.dp) oppdaterVisning(data.dp, 'dagpenger', visning);
+  if (data.ttl) oppdaterVisning(data.ttl, 'tiltakspenger', visning);
   if (data.aap) oppdaterVisning(data.aap, 'aap', visning, true);
 
   return visning;
