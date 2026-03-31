@@ -1,7 +1,7 @@
 export interface MeldekortTilUtfylling {
-  kanSendesFra: string;
-  kanFyllesUtFra: string | null;
-  fristForInnsending: string;
+  kanSendesFra: string; // yyyy-mm-ddThh:MM:ss
+  kanFyllesUtFra: string | null; // yyyy-mm-ddThh:MM:ss
+  fristForInnsending: string; // yyyy-mm-ddThh:MM:ss
 }
 
 export interface MeldekortData {

@@ -16,7 +16,7 @@ idporten:
   enabled: false
   level: Level3
   autoLogin: true
-meldekortApiUrl: https://meldekort-api.intern.dev.nav.no
+meldekortApiUrl: https://meldekort-api-q2.intern.dev.nav.no/meldekort/meldekort-api
 meldekortApiAudience: dev-gcp:meldekort:meldekort-api
 tiltakspengerApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
 tiltakspengerApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api

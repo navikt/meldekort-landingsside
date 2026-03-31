@@ -10,9 +10,9 @@ export const aapMock: MeldekortData = {
   harInnsendteMeldekort: false,
   meldekortTilUtfylling: [
     {
-      kanSendesFra: '2026-03-31',
-      kanFyllesUtFra: '2026-03-10',
-      fristForInnsending: '2026-04-07',
+      kanSendesFra: '2026-03-31T00:00:00',
+      kanFyllesUtFra: '2026-03-10T00:00:00',
+      fristForInnsending: '2026-04-07T00:00:00',
     },
   ],
   redirectUrl: 'https://aap-meldekort.ansatt.dev.nav.no/aap/meldekort',
@@ -22,9 +22,9 @@ export const ttlMock: MeldekortData = {
   harInnsendteMeldekort: true,
   meldekortTilUtfylling: [
     {
-      kanSendesFra: '2026-03-10',
+      kanSendesFra: '2026-03-10T00:00:00',
       kanFyllesUtFra: null,
-      fristForInnsending: '2026-03-24',
+      fristForInnsending: '2026-03-24T00:00:00',
     },
   ],
   redirectUrl: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',
@@ -38,9 +38,9 @@ export const arenaMock: MeldekortData = {
   harInnsendteMeldekort: true,
   meldekortTilUtfylling: [
     {
-      kanSendesFra: '2026-03-10',
+      kanSendesFra: '2026-03-10T00:00:00',
       kanFyllesUtFra: null,
-      fristForInnsending: '2026-03-24',
+      fristForInnsending: '2026-03-24T00:00:00',
     },
   ],
   redirectUrl: 'https://arbeid.intern.dev.nav.no/arbeid/felles-meldekort',

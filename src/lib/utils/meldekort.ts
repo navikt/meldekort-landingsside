@@ -16,15 +16,14 @@ const localeMap: Record<Language, string> = {
 };
 
 /**
- * Formater dato fra yyyy-mm-dd til lesbart format.
+ * Formater dato fra yyyy-mm-ddThh:MM:ss til lesbart format.
  *
- * @param dato - Dato i format yyyy-mm-dd
+ * @param dato - Dato i format yyyy-mm-ddThh:MM:ss
  * @param language - Språkkode (nb eller en)
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
-  const [year, month, day] = dato.split('-');
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  const date = new Date(dato);
 
   return date.toLocaleDateString(localeMap[language], {
     day: 'numeric',
@@ -38,12 +37,12 @@ function formaterDato(dato: string, language: Language): string {
  *
  * @param tekst - Tekst med plassholdere ({{ytelse}} og {{dato}})
  * @param ytelseNavn - Navnet på ytelsen som skal erstatte {{ytelse}}
- * @param dato - Dato i format yyyy-mm-dd som skal erstatte {{dato}}, eller undefined
+ * @param dato - Dato i format yyyy-mm-ddThh:MM:ss som skal erstatte {{dato}}, eller undefined
  * @param language - Språkkode for datoformatering
  * @returns Tekst med erstattede plassholdere
  *
  * @example
- * erstattPlassholdere("Send {{ytelse}}-meldekort innen {{dato}}", "dagpenger", "2026-03-24", "nb")
+ * erstattPlassholdere("Send {{ytelse}}-meldekort innen {{dato}}", "dagpenger", "2026-03-24T00:00:00", "nb")
  * // => "Send dagpenger-meldekort innen 24. mars 2026"
  */
 export function erstattPlassholdere(
@@ -57,13 +56,13 @@ export function erstattPlassholdere(
     .replace(/\{\{dato\}\}/g, dato ? formaterDato(dato, language) : '');
 }
 
-const idag = () => new Date().toISOString().slice(0, 10);
+const idag = () => new Date().toISOString();
 
 /**
  * Sjekker om et meldekort kan sendes inn nå.
  *
  * @param meldekort - Meldekort som skal sjekkes
- * @returns true hvis dagens dato er lik eller etter kanSendesFra
+ * @returns true hvis nåværende tidspunkt er lik eller etter kanSendesFra
  */
 export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
   return meldekort.kanSendesFra <= idag();
@@ -73,7 +72,7 @@ export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
  * Sjekker om et meldekort kan fylles ut nå.
  *
  * @param meldekort - Meldekort som skal sjekkes
- * @returns true hvis kanFyllesUtFra er null, eller dagens dato er lik eller etter kanFyllesUtFra
+ * @returns true hvis kanFyllesUtFra er null, eller nåværende tidspunkt er lik eller etter kanFyllesUtFra
  */
 export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
   return meldekort.kanFyllesUtFra === null || meldekort.kanFyllesUtFra <= idag();
