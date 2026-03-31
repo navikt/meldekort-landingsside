@@ -11,13 +11,11 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<Meldekor
   }
 
   try {
-    const token = import.meta.env.DEV ? 'fake-token' : oboToken;
-
     if (import.meta.env.DEV) {
-      console.warn('Dev mode: using fake token for DP API');
+      console.warn('Dev mode: using provided oboToken for DP API token exchange');
     }
 
-    const tokenResult = await requestTokenxOboToken(token, audience);
+    const tokenResult = await requestTokenxOboToken(oboToken, audience);
 
     if (!tokenResult.ok) {
       console.error('Token exchange failed:', tokenResult.error.message);
