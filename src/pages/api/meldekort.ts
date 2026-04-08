@@ -1,7 +1,6 @@
 import type { APIRoute } from 'astro';
-import type { AlleMeldekortData } from '../../lib/types/meldekort';
-import { dpMock, aapMock, ttlMock } from '../../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../../lib/api/redirect';
+import { getMeldekortResultat } from '../../lib/api';
+import { getValidatedTokenForAPI } from '../../lib/auth';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
@@ -10,18 +9,15 @@ import { getRedirectUrlIfSingleYtelse } from '../../lib/api/redirect';
  * Hvis brukeren kun har Arena-meldekort, returneres redirect til felles-meldekort.
  * Ellers returneres data for alle ytelser.
  *
- * I produksjon vil dette kalle reelle backend-APIer for hver ytelse.
+ * I prod: kaller reelle backend-APIer
+ * I dev/demo: bruker mockdata
  */
-export const GET: APIRoute = async () => {
-  // TODO: Bytt ut mock-data med reelle API-kall til backend når de er klare
-  const alleMeldekort: AlleMeldekortData = {
-    dp: dpMock,
-    aap: aapMock,
-    ttl: ttlMock,
-    // arena: undefined, // Sett arena her når du vil teste Arena-redirect
-  };
+export const GET: APIRoute = async (context) => {
+  // Hent og valider token fra Wonderwall session
+  // I demo-miljø brukes fallback token
+  const token = await getValidatedTokenForAPI(context.request);
 
-  const redirectUrl = getRedirectUrlIfSingleYtelse(alleMeldekort);
+  const { redirectUrl, data: alleMeldekort } = await getMeldekortResultat(token);
 
   if (redirectUrl) {
     return new Response(JSON.stringify({ redirectUrl }), {

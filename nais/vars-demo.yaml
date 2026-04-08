@@ -22,3 +22,5 @@ tiltakspengerApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
 tiltakspengerApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api
 dpApiUrl: https://dp-meldekortregister.intern.dev.nav.no
 dpApiAudience: dev-gcp:teamdagpenger:dp-meldekortregister
+aapApiUrl: https://meldekort-backend.intern.dev.nav.no
+aapApiAudience: dev-gcp:aap:meldekort-backend

@@ -6,32 +6,29 @@ import { getDecoratorHTML } from '../lib/dekorator';
 import { getLanguageFromCookie, translations, SUPPORTED_LANGUAGES } from '../lib/language';
 import { sanityClient, getLandingssideQuery, sanityDataMissing } from '../lib/sanity';
 import type { MeldekortLandingsside } from '../lib/sanity';
-import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
-import { dpMock, aapMock, ttlMock } from '../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../lib/api/redirect';
+import { getMeldekortResultat } from '../lib/api';
+import { getValidatedToken } from '../lib/auth';
+import { logger } from '../lib/logger';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
 const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 
-// Hent meldekortdata (bruker mock-data for nå)
-// TODO: Bytt ut med reelle API-kall når backend er klart
-const alleMeldekort: AlleMeldekortData = {
-  dp: dpMock,
-  aap: aapMock,
-  ttl: ttlMock,
-  // arena: undefined, // Sett arena her når du vil teste Arena-redirect
-};
+// Hent og valider token fra Wonderwall session
+// I demo-miljø brukes fallback token
+const token = await getValidatedToken(Astro.request);
 
-const redirectUrl = getRedirectUrlIfSingleYtelse(alleMeldekort);
+// Hent meldekortdata og sjekk redirect
+const { redirectUrl, data: alleMeldekort } = await getMeldekortResultat(token);
 
 // Hvis brukeren kun har én ytelse, redirect dit
 if (redirectUrl) {
   return Astro.redirect(redirectUrl);
 }
+
 const visning = skalViseLenker(alleMeldekort);
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
@@ -42,7 +39,7 @@ let content: MeldekortLandingsside | null = null;
 try {
   content = await sanityClient.fetch<MeldekortLandingsside>(query);
 } catch (error) {
-  console.error('Failed to fetch content from Sanity:', error);
+  logger.error('Failed to fetch content from Sanity:', error);
 }
 
 // Sjekk om viktige felter mangler
@@ -91,38 +88,39 @@ const decorator = await getDecoratorHTML({
             >{contentMissing || !content ? t.tittel : content.tittel}</Heading
           >
           {
-            visNoenLenker ? (
-              !contentMissing && content && (
-                <VStack gap="space-24" maxWidth="525px">
-                  <MeldekortLinkCards
-                    client:load
-                    visning={visning}
-                    content={{
-                      linkForASe: content.linkForASe,
-                      linkForASende: content.linkForASende,
-                      linkForAFylleUt: content.linkForAFylleUt,
-                    }}
-                    ytelser={content.ytelser}
-                    language={language as (typeof SUPPORTED_LANGUAGES)[number]}
-                  />
-                </VStack>
-              )
-            ) : (
-              !contentMissing &&
-              content &&
-              content.emptyStateTekst &&
-              content.emptyStateTekst.length > 0 && (
-                <PortableText value={content.emptyStateTekst} />
-              )
-            )
+            visNoenLenker
+              ? !contentMissing &&
+                content && (
+                  <VStack gap="space-24" maxWidth="525px">
+                    <MeldekortLinkCards
+                      client:load
+                      visning={visning}
+                      content={{
+                        linkForASe: content.linkForASe,
+                        linkForASende: content.linkForASende,
+                        linkForAFylleUt: content.linkForAFylleUt,
+                      }}
+                      ytelser={content.ytelser}
+                      language={
+                        language as (typeof SUPPORTED_LANGUAGES)[number]
+                      }
+                    />
+                  </VStack>
+                )
+              : !contentMissing &&
+                content &&
+                content.emptyStateTekst &&
+                content.emptyStateTekst.length > 0 && (
+                  <PortableText value={content.emptyStateTekst} />
+                )
           }
           {
             !contentMissing &&
-            content &&
-            content.bunntekst &&
-            content.bunntekst.length > 0 && (
-              <PortableText value={content.bunntekst} />
-            )
+              content &&
+              content.bunntekst &&
+              content.bunntekst.length > 0 && (
+                <PortableText value={content.bunntekst} />
+              )
           }
         </VStack>
       </Page.Block>
