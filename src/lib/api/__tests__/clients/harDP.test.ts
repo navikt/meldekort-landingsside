@@ -1,5 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { hentHarDP } from '../../clients/harDP';
+import type { requestTokenxOboToken } from '@navikt/oasis';
+
+type TokenResult = Awaited<ReturnType<typeof requestTokenxOboToken>>;
 
 // Mock @navikt/oasis
 vi.mock('@navikt/oasis', () => ({
@@ -64,7 +67,7 @@ describe('harDP', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: false,
         error: { message: 'Token exchange failed' },
-      } as unknown);
+      } as TokenResult);
 
       const result = await hentHarDP('token');
 
@@ -82,7 +85,7 @@ describe('harDP', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       vi.mocked(global.fetch).mockResolvedValue({
         ok: false,
@@ -105,7 +108,7 @@ describe('harDP', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
@@ -135,7 +138,7 @@ describe('harDP', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       vi.mocked(global.fetch).mockRejectedValue(new Error('Network error'));
 

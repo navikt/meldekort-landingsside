@@ -7,6 +7,9 @@ import {
   validerArenaMeldekortData,
 } from '../helpers';
 import type { MeldekortData, ArenaMeldekortData } from '../../types/meldekort';
+import type { requestTokenxOboToken } from '@navikt/oasis';
+
+type TokenResult = Awaited<ReturnType<typeof requestTokenxOboToken>>;
 
 // Mock @navikt/oasis
 vi.mock('@navikt/oasis', () => ({
@@ -151,7 +154,7 @@ describe('helpers', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: false,
         error: { message: 'Token exchange failed' },
-      } as unknown);
+      } as TokenResult);
 
       const result = await fetchMeldekortFromApi<MeldekortData>('token', mockConfig);
 
@@ -166,7 +169,7 @@ describe('helpers', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       vi.mocked(global.fetch).mockResolvedValue({
         ok: false,
@@ -186,7 +189,7 @@ describe('helpers', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       vi.mocked(global.fetch).mockResolvedValue({
         ok: true,
@@ -206,7 +209,7 @@ describe('helpers', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       const emptyData = {
         harInnsendteMeldekort: false,
@@ -232,7 +235,7 @@ describe('helpers', () => {
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'obo-token',
-      } as unknown);
+      } as TokenResult);
 
       const validData = {
         harInnsendteMeldekort: true,
