@@ -1,3 +1,6 @@
+import { format, parseISO } from 'date-fns';
+import { enGB, nb } from 'date-fns/locale';
+import type { Locale } from 'date-fns';
 import type { SUPPORTED_LANGUAGES } from '../language';
 import type {
   AlleMeldekortData,
@@ -10,26 +13,25 @@ import type {
 type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 // Mapping fra språkkode til locale for datoformatering
-const localeMap: Record<Language, string> = {
-  nb: 'nb-NO',
-  en: 'en-GB',
+const localeMap: Record<Language, Locale> = {
+  nb,
+  en: enGB,
 };
 
 /**
- * Formater dato fra yyyy-mm-ddThh:MM:ss til lesbart format.
+ * Formater dato fra ISO 8601 format til lesbart format.
+ * Datoen tolkes eksplisitt som UTC for å unngå tidssone-relaterte feil.
  *
- * @param dato - Dato i format yyyy-mm-ddThh:MM:ss
+ * @param dato - Dato i ISO 8601 format: YYYY-MM-DDTHH:mm:ss (uten tidssone, tolkes som UTC)
  * @param language - Språkkode (nb eller en)
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
-  const date = new Date(dato);
+  // Legg til 'Z' for å eksplisitt markere datoen som UTC
+  const datoMedTidssone = dato.endsWith('Z') ? dato : `${dato}Z`;
+  const date = parseISO(datoMedTidssone);
 
-  return date.toLocaleDateString(localeMap[language], {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  return format(date, 'd. MMMM yyyy', { locale: localeMap[language] });
 }
 
 /**
@@ -37,7 +39,7 @@ function formaterDato(dato: string, language: Language): string {
  *
  * @param tekst - Tekst med plassholdere ({{ytelse}} og {{dato}})
  * @param ytelseNavn - Navnet på ytelsen som skal erstatte {{ytelse}}
- * @param dato - Dato i format yyyy-mm-ddThh:MM:ss som skal erstatte {{dato}}, eller undefined
+ * @param dato - Dato i ISO 8601 format (YYYY-MM-DDTHH:mm:ss) som skal erstatte {{dato}}, eller undefined
  * @param language - Språkkode for datoformatering
  * @returns Tekst med erstattede plassholdere
  *

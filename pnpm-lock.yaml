@@ -16,6 +16,9 @@ importers:
       '@astrojs/node':
         specifier: ^10.0.4
         version: 10.0.4(astro@6.1.1(@types/node@25.5.0)(rollup@4.59.0)(typescript@5.9.3)(yaml@2.8.2))
+      '@date-fns/tz':
+        specifier: ^1.4.1
+        version: 1.4.1
       '@navikt/ds-css':
         specifier: ^7.40.0
         version: 7.40.0
@@ -40,6 +43,9 @@ importers:
       astro:
         specifier: ^6.1.1
         version: 6.1.1(@types/node@25.5.0)(rollup@4.59.0)(typescript@5.9.3)(yaml@2.8.2)
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       groq:
         specifier: ^5.18.0
         version: 5.18.0
@@ -303,6 +309,9 @@ packages:
 
   '@date-fns/tz@1.2.0':
     resolution: {integrity: sha512-LBrd7MiJZ9McsOgxqWX7AaxrDjcFVjWH/tIKJd7pnR7McaslGYOP1QmmiBXdJH/H/yLCT+rcQ7FaPBUxRGUtrg==}
+
+  '@date-fns/tz@1.4.1':
+    resolution: {integrity: sha512-P5LUNhtbj6YfI3iJjw5EL9eUAG6OitD0W3fWQcpQjDRc/QIsL0tRNuO1PcDvPccWL1fSTXXdE1ds+l95DV/OFA==}
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -2881,6 +2890,8 @@ snapshots:
       kuler: 2.0.0
 
   '@date-fns/tz@1.2.0': {}
+
+  '@date-fns/tz@1.4.1': {}
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

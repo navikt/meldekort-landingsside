@@ -13,25 +13,40 @@ import { getValidatedTokenForAPI } from '../../lib/auth';
  * I dev/demo: bruker mockdata
  */
 export const GET: APIRoute = async (context) => {
-  // Hent og valider token fra Wonderwall session
-  // I demo-miljø brukes fallback token
-  const token = await getValidatedTokenForAPI(context.request);
+  try {
+    // Hent og valider token fra Wonderwall session
+    // I demo-miljø brukes fallback token
+    const token = await getValidatedTokenForAPI(context.request);
 
-  const { redirectUrl, data: alleMeldekort } = await getMeldekortResultat(token);
+    const { redirectUrl, data: alleMeldekort } = await getMeldekortResultat(token);
 
-  if (redirectUrl) {
-    return new Response(JSON.stringify({ redirectUrl }), {
+    if (redirectUrl) {
+      return new Response(JSON.stringify({ redirectUrl }), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+
+    return new Response(JSON.stringify(alleMeldekort), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
       },
     });
-  }
+  } catch (error) {
+    // getValidatedTokenForAPI kaster en Response ved auth-feil
+    if (error instanceof Response) {
+      return error;
+    }
 
-  return new Response(JSON.stringify(alleMeldekort), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    // Uventet feil
+    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+  }
 };

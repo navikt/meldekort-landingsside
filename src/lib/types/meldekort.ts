@@ -1,7 +1,7 @@
 export interface MeldekortTilUtfylling {
-  kanSendesFra: string; // yyyy-mm-ddThh:MM:ss
-  kanFyllesUtFra: string | null; // yyyy-mm-ddThh:MM:ss
-  fristForInnsending: string; // yyyy-mm-ddThh:MM:ss
+  kanSendesFra: string; // ISO 8601: YYYY-MM-DDTHH:mm:ss (tolkes som UTC)
+  kanFyllesUtFra: string | null; // ISO 8601: YYYY-MM-DDTHH:mm:ss (tolkes som UTC)
+  fristForInnsending: string; // ISO 8601: YYYY-MM-DDTHH:mm:ss (tolkes som UTC)
 }
 
 export interface MeldekortData {

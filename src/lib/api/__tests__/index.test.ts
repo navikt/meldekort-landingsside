@@ -83,15 +83,24 @@ describe('index', () => {
       expect(result.data).toEqual({ dp: dpData, ttl: ttlData });
     });
 
-    it('should check harDP when no new ytelser', async () => {
+    it('should check harDP when Arena has data and redirect to DP when harDP is true', async () => {
       const { hentMeldekortDataFraDP } = await import('../clients/dagpenger');
       const { hentMeldekortDataFraTTL } = await import('../clients/tiltakspenger');
       const { hentMeldekortDataFraAAP } = await import('../clients/arbeidsavklaringspenger');
       const { hentHarDP } = await import('../clients/harDP');
+      const { hentMeldekortDataFraArena } = await import('../clients/arena');
+
+      const arenaData: ArenaMeldekortData = {
+        harInnsendteMeldekort: true,
+        meldekortTilUtfylling: [],
+        redirectUrl: 'https://arena.nav.no',
+        meldegruppe: 'DAGP',
+      };
 
       vi.mocked(hentMeldekortDataFraDP).mockResolvedValue(undefined);
       vi.mocked(hentMeldekortDataFraTTL).mockResolvedValue(undefined);
       vi.mocked(hentMeldekortDataFraAAP).mockResolvedValue(undefined);
+      vi.mocked(hentMeldekortDataFraArena).mockResolvedValue(arenaData);
       vi.mocked(hentHarDP).mockResolvedValue(true);
 
       const result = await getMeldekortResultat('test-token');
@@ -100,6 +109,7 @@ describe('index', () => {
         'https://arbeid.intern.dev.nav.no/arbeid/dagpenger/meldekort',
       );
       expect(result.data).toEqual({});
+      expect(hentMeldekortDataFraArena).toHaveBeenCalledWith('test-token');
       expect(hentHarDP).toHaveBeenCalledWith('test-token');
     });
 
