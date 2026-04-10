@@ -11,6 +11,7 @@ import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
 import { dagpengerMock, aapMock, tiltakspengerMock } from '../lib/api/mockData';
 import { getRedirectUrlIfSingleYtelse } from '../lib/api/utils';
+import { logger } from '../lib/utils/logger';
 
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
@@ -41,7 +42,7 @@ let content: MeldekortLandingsside | null = null;
 try {
   content = await sanityClient.fetch<MeldekortLandingsside>(query);
 } catch (error) {
-  console.error('Failed to fetch content from Sanity:', error);
+  logger.error('Failed to fetch content from Sanity', { error });
 }
 
 // Sjekk om viktige felter mangler
