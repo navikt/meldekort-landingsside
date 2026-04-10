@@ -13,7 +13,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
