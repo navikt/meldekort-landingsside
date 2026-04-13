@@ -2,48 +2,7 @@ import { requestTokenxOboToken } from '@navikt/oasis';
 import type { MeldekortData } from '../../types/meldekort';
 import { tiltakspengerMock } from '../mockData';
 import { logger } from '../../utils/logger';
-
-function shouldUseMockData(): boolean {
-  return process.env.ENFORCE_LOGIN === 'false';
-}
-
-function validerMeldekortData(data: unknown): data is MeldekortData {
-  if (!data || typeof data !== 'object') {
-    return false;
-  }
-
-  const obj = data as Record<string, unknown>;
-
-  return (
-    typeof obj.innsendteMeldekort === 'boolean' &&
-    Array.isArray(obj.meldekortTilUtfylling) &&
-    typeof obj.url === 'string'
-  );
-}
-
-async function fetchWithTimeout(
-  url: string,
-  options: RequestInit = {},
-  timeout = 10000,
-): Promise<Response> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-    return response;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Request timeout after ${timeout}ms`);
-    }
-    throw error;
-  }
-}
+import { shouldUseMockData, validerMeldekortData, fetchWithTimeout } from '../helpers';
 
 /** Henter meldekortdata for tiltakspenger. */
 export async function hentMeldekortDataFraTP(oboToken: string): Promise<MeldekortData | undefined> {

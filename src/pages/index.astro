@@ -9,8 +9,6 @@ import type { MeldekortLandingsside } from '../lib/sanity';
 import type { AlleMeldekortData } from '../lib/types/meldekort';
 import { skalViseLenker } from '../lib/utils/meldekort';
 import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
-import { dagpengerMock, aapMock, tiltakspengerMock } from '../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../lib/api/utils';
 import { logger } from '../lib/utils/logger';
 
 const cookieHeader = Astro.request.headers.get('cookie');
@@ -18,20 +16,29 @@ const language = getLanguageFromCookie(cookieHeader);
 
 const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 
-// Hent meldekortdata (bruker mock-data for nå)
-// TODO: Bytt ut med reelle API-kall når backend er klart
-const alleMeldekort: AlleMeldekortData = {
-  dagpenger: dagpengerMock,
-  aap: aapMock,
-  tiltakspenger: tiltakspengerMock,
-};
+// Hent meldekortdata fra API (server-side)
+const apiResponse = await fetch(`${Astro.url.origin}/api/meldekort`, {
+  headers: {
+    cookie: cookieHeader || '',
+  },
+});
 
-const redirectUrl = getRedirectUrlIfSingleYtelse(alleMeldekort);
-
-// Hvis brukeren kun har én ytelse, redirect dit
-if (redirectUrl) {
-  return Astro.redirect(redirectUrl);
+// Hvis API redirecter (307) til en enkelt ytelse, følg redirect
+if (apiResponse.redirected) {
+  return Astro.redirect(apiResponse.url);
 }
+
+// Kræsj hardt hvis API-kallet feiler
+if (!apiResponse.ok) {
+  logger.error('Failed to fetch meldekort data from API', {
+    status: apiResponse.status,
+    statusText: apiResponse.statusText,
+  });
+  throw new Error(`Failed to fetch meldekort data: ${apiResponse.status} ${apiResponse.statusText}`);
+}
+
+const alleMeldekort: AlleMeldekortData = await apiResponse.json();
+
 const visning = skalViseLenker(alleMeldekort);
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
