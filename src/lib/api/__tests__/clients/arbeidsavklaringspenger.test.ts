@@ -68,7 +68,7 @@ describe('arbeidsavklaringspenger', () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: false,
-        error: { message: 'Token exchange failed' },
+        error: new Error('Token exchange failed'),
       });
 
       const result = await hentMeldekortDataFraAAP('test-obo-token');
