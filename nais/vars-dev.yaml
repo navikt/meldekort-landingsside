@@ -16,3 +16,5 @@ idporten:
   enabled: true
   level: Level3
   autoLogin: true
+aapApiUrl: https://meldekort-backend.intern.dev.nav.no
+aapApiAudience: dev-gcp:aap:meldekort-backend
