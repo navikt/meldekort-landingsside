@@ -46,9 +46,7 @@ async function fetchWithTimeout(
 }
 
 /** Henter meldekortdata for tiltakspenger. */
-export async function hentMeldekortDataFraTP(
-  oboToken: string,
-): Promise<MeldekortData | undefined> {
+export async function hentMeldekortDataFraTP(oboToken: string): Promise<MeldekortData | undefined> {
   if (shouldUseMockData()) {
     return tiltakspengerMock;
   }
