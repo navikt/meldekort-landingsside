@@ -1,24 +1,24 @@
-import { isAfter, isEqual, startOfDay } from 'date-fns';
-import { TZDate } from '@date-fns/tz';
-import type { SUPPORTED_LANGUAGES } from '../language';
+import { isAfter, isEqual, startOfDay } from "date-fns";
+import { TZDate } from "@date-fns/tz";
+import type { SUPPORTED_LANGUAGES } from "../language";
 import type {
   AlleMeldekortData,
   LenkeVisning,
   MeldekortData,
   MeldekortTilUtfylling,
   Ytelse,
-} from '../types/meldekort';
+} from "../types/meldekort";
 
 type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 // Mapping fra språkkode til Intl locale
 const localeMap: Record<Language, string> = {
-  nb: 'nb-NO',
-  en: 'en-GB',
+  nb: "nb-NO",
+  en: "en-GB",
 };
 
 // Vi bruker Europe/Oslo timezone siden alle meldekort-datoer er norsk tid
-const TIMEZONE = 'Europe/Oslo';
+const TIMEZONE = "Europe/Oslo";
 
 /**
  * Parser en dato string i Oslo timezone.
@@ -26,7 +26,14 @@ const TIMEZONE = 'Europe/Oslo';
  */
 function parseDatoIOsloTimezone(dato: string): Date {
   const hasExplicitTimeZone = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(dato);
-  return hasExplicitTimeZone ? new Date(dato) : new TZDate(dato, TIMEZONE);
+  if (hasExplicitTimeZone) {
+    return new Date(dato);
+  }
+
+  // For datoer uten timezone, ekstraher dato-delen (YYYY-MM-DD) og parse i Oslo timezone
+  // Dette sikrer konsistent parsing uavhengig av runtime sin lokale timezone
+  const [dateOnly] = dato.split("T");
+  return new TZDate(dateOnly || dato, TIMEZONE);
 }
 
 /**
@@ -43,9 +50,9 @@ function formaterDato(dato: string, language: Language): string {
 
   // Formater med Intl.DateTimeFormat i Oslo timezone
   const formatter = new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
+    day: "numeric",
+    month: "long",
+    year: "numeric",
     timeZone: TIMEZONE,
   });
 
@@ -73,7 +80,7 @@ export function erstattPlassholdere(
 ): string {
   return tekst
     .replace(/\{\{ytelse\}\}/g, ytelseNavn)
-    .replace(/\{\{dato\}\}/g, dato ? formaterDato(dato, language) : '');
+    .replace(/\{\{dato\}\}/g, dato ? formaterDato(dato, language) : "");
 }
 
 /**
@@ -89,7 +96,9 @@ const idag = () => startOfDay(new TZDate(new Date(), TIMEZONE));
  */
 export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
   const today = idag();
-  const kanSendesFraDato = startOfDay(parseDatoIOsloTimezone(meldekort.kanSendesFra));
+  const kanSendesFraDato = startOfDay(
+    parseDatoIOsloTimezone(meldekort.kanSendesFra),
+  );
   return isEqual(kanSendesFraDato, today) || isAfter(today, kanSendesFraDato);
 }
 
@@ -103,7 +112,9 @@ export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
   if (meldekort.kanFyllesUtFra === null) return true;
 
   const today = idag();
-  const kanFyllesUtFraDato = startOfDay(parseDatoIOsloTimezone(meldekort.kanFyllesUtFra));
+  const kanFyllesUtFraDato = startOfDay(
+    parseDatoIOsloTimezone(meldekort.kanFyllesUtFra),
+  );
   return isEqual(kanFyllesUtFraDato, today) || isAfter(today, kanFyllesUtFraDato);
 }
 
@@ -149,7 +160,8 @@ function oppdaterVisning(
       dato: undefined,
     });
   } else if (sjekkFyllUt && data.meldekortTilUtfylling.some(kanFyllesUt)) {
-    const meldekortSomKanFyllesUt = data.meldekortTilUtfylling.filter(kanFyllesUt);
+    const meldekortSomKanFyllesUt =
+      data.meldekortTilUtfylling.filter(kanFyllesUt);
     // Finn tidligste dato det kan sendes fra
     const sortert = meldekortSomKanFyllesUt.sort((a, b) =>
       a.kanSendesFra.localeCompare(b.kanSendesFra),
@@ -184,9 +196,10 @@ export function skalViseLenker(data: AlleMeldekortData): LenkeVisning {
     fyllUt: [],
   };
 
-  if (data.dagpenger) oppdaterVisning(data.dagpenger, 'dagpenger', visning);
-  if (data.tiltakspenger) oppdaterVisning(data.tiltakspenger, 'tiltakspenger', visning);
-  if (data.aap) oppdaterVisning(data.aap, 'aap', visning, true);
+  if (data.dagpenger) oppdaterVisning(data.dagpenger, "dagpenger", visning);
+  if (data.tiltakspenger)
+    oppdaterVisning(data.tiltakspenger, "tiltakspenger", visning);
+  if (data.aap) oppdaterVisning(data.aap, "aap", visning, true);
 
   return visning;
 }
