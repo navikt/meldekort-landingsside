@@ -55,7 +55,9 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<Meldekor
   const audience = process.env.TP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
-    logger.error('Missing TP API configuration');
+    logger.error(
+      `Missing TP API configuration: hasTpApiUrl=${Boolean(apiUrl)}, hasTpApiAudience=${Boolean(audience)}`,
+    );
     return undefined;
   }
 

@@ -159,7 +159,7 @@ describe('tiltakspenger', () => {
       expect(result?.meldekortTilUtfylling).toHaveLength(1);
     });
 
-    it('håndterer fetch timeout', async () => {
+    it('håndterer AbortError fra fetch', async () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,

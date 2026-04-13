@@ -57,7 +57,9 @@ export async function hentMeldekortDataFraAAP(
   const audience = process.env.AAP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
-    logger.error('Missing AAP API configuration');
+    logger.error(
+      `Missing AAP API configuration: hasAapApiUrl=${Boolean(apiUrl)}, hasAapApiAudience=${Boolean(audience)}`,
+    );
     return undefined;
   }
 
