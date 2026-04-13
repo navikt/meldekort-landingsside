@@ -1,10 +1,10 @@
 import { requestTokenxOboToken } from '@navikt/oasis';
 import type { MeldekortData } from '../../types/meldekort';
 import { aapMock } from '../mockData';
+import { logger } from '../../utils/logger';
 
 function shouldUseMockData(): boolean {
-  const enforceLogin = import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
-  return enforceLogin === 'false';
+  return process.env.ENFORCE_LOGIN === 'false';
 }
 
 function validerMeldekortData(data: unknown): data is MeldekortData {
@@ -57,7 +57,7 @@ export async function hentMeldekortDataFraAAP(
   const audience = process.env.AAP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
-    console.error('Missing AAP API configuration');
+    logger.error('Missing AAP API configuration');
     return undefined;
   }
 
@@ -65,7 +65,7 @@ export async function hentMeldekortDataFraAAP(
     const tokenResult = await requestTokenxOboToken(oboToken, audience);
 
     if (!tokenResult.ok) {
-      console.error(`AAP token exchange failed: ${tokenResult.error.message}`);
+      logger.error(`AAP token exchange failed: ${tokenResult.error.message}`);
       return undefined;
     }
 
@@ -77,14 +77,14 @@ export async function hentMeldekortDataFraAAP(
     });
 
     if (!response.ok) {
-      console.error(`AAP API returned ${response.status}`);
+      logger.error(`AAP API returned ${response.status}`);
       return undefined;
     }
 
     const data: unknown = await response.json();
 
     if (!validerMeldekortData(data)) {
-      console.error('AAP API returned invalid data structure');
+      logger.error('AAP API returned invalid data structure');
       return undefined;
     }
 
@@ -95,7 +95,7 @@ export async function hentMeldekortDataFraAAP(
 
     return data;
   } catch (error) {
-    console.error(
+    logger.error(
       `Error fetching AAP data: ${error instanceof Error ? error.message : 'Unknown error'}`,
     );
     return undefined;

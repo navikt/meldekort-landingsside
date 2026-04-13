@@ -7,20 +7,25 @@ vi.mock('@navikt/oasis', () => ({
   requestTokenxOboToken: vi.fn(),
 }));
 
-// Mock fetch globalt
-global.fetch = vi.fn();
+// Mock logger
+vi.mock('../../../utils/logger', () => ({
+  logger: {
+    error: vi.fn(),
+  },
+}));
 
 describe('arbeidsavklaringspenger', () => {
-  const originalProcessEnv = process.env;
-
   beforeEach(() => {
     vi.clearAllMocks();
-    process.env = {
-      ...originalProcessEnv,
-      AAP_API_URL: 'https://aap-test.nav.no',
-      AAP_API_AUDIENCE: 'test:aap:api',
-      ENFORCE_LOGIN: 'true',
-    };
+    vi.stubGlobal('fetch', vi.fn());
+    vi.stubEnv('AAP_API_URL', 'https://aap-test.nav.no');
+    vi.stubEnv('AAP_API_AUDIENCE', 'test:aap:api');
+    vi.stubEnv('ENFORCE_LOGIN', 'true');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   describe('hentMeldekortDataFraAAP', () => {
@@ -43,7 +48,7 @@ describe('arbeidsavklaringspenger', () => {
         token: 'test-token',
       });
 
-      vi.mocked(global.fetch).mockResolvedValue({
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => mockData,
@@ -53,7 +58,7 @@ describe('arbeidsavklaringspenger', () => {
 
       expect(result).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:aap:api');
-      expect(global.fetch).toHaveBeenCalledWith(
+      expect(fetch).toHaveBeenCalledWith(
         'https://aap-test.nav.no/api/meldekort-status',
         expect.objectContaining({
           headers: {
@@ -74,7 +79,7 @@ describe('arbeidsavklaringspenger', () => {
       const result = await hentMeldekortDataFraAAP('test-obo-token');
 
       expect(result).toBeUndefined();
-      expect(global.fetch).not.toHaveBeenCalled();
+      expect(fetch).not.toHaveBeenCalled();
     });
 
     it('returnerer undefined når API returnerer feilstatus', async () => {
@@ -84,7 +89,7 @@ describe('arbeidsavklaringspenger', () => {
         token: 'test-token',
       });
 
-      vi.mocked(global.fetch).mockResolvedValue({
+      vi.mocked(fetch).mockResolvedValue({
         ok: false,
         status: 500,
       } as Response);
@@ -101,7 +106,7 @@ describe('arbeidsavklaringspenger', () => {
         token: 'test-token',
       });
 
-      vi.mocked(global.fetch).mockResolvedValue({
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => ({ invalid: 'data' }),
@@ -125,7 +130,7 @@ describe('arbeidsavklaringspenger', () => {
         token: 'test-token',
       });
 
-      vi.mocked(global.fetch).mockResolvedValue({
+      vi.mocked(fetch).mockResolvedValue({
         ok: true,
         status: 200,
         json: async () => mockEmptyData,
@@ -137,7 +142,7 @@ describe('arbeidsavklaringspenger', () => {
     });
 
     it('returnerer undefined når API config mangler', async () => {
-      process.env.AAP_API_URL = undefined;
+      vi.stubEnv('AAP_API_URL', '');
 
       const result = await hentMeldekortDataFraAAP('test-obo-token');
 
@@ -145,7 +150,7 @@ describe('arbeidsavklaringspenger', () => {
     });
 
     it('returnerer mock data når ENFORCE_LOGIN er false', async () => {
-      process.env.ENFORCE_LOGIN = 'false';
+      vi.stubEnv('ENFORCE_LOGIN', 'false');
 
       const result = await hentMeldekortDataFraAAP('test-obo-token');
 
@@ -163,7 +168,7 @@ describe('arbeidsavklaringspenger', () => {
 
       const abortError = new Error('Abort');
       abortError.name = 'AbortError';
-      vi.mocked(global.fetch).mockRejectedValue(abortError);
+      vi.mocked(fetch).mockRejectedValue(abortError);
 
       const result = await hentMeldekortDataFraAAP('test-obo-token');
 
