@@ -1,34 +1,69 @@
 import type { APIRoute } from 'astro';
+import { getToken } from '@navikt/oasis';
 import type { AlleMeldekortData } from '../../lib/types/meldekort';
-import { dagpengerMock, aapMock, tiltakspengerMock } from '../../lib/api/mockData';
-import { getRedirectUrlIfSingleYtelse } from '../../lib/api/utils';
+import { dagpengerMock } from '../../lib/api/mockData';
+import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
+import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
+import { harAktiveMeldekort, shouldUseMockData } from '../../lib/api/helpers';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
  *
- * Hvis brukeren kun har én ytelse, returneres en redirect-URL.
- * Ellers returneres data for alle ytelser.
+ * Logikk:
+ * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
+ * - Hvis 0 ytelser har aktive meldekort → returner data (tom landingsside vises)
+ * - Hvis >1 ytelser har aktive meldekort → returner data (landingsside med flere ytelser vises)
  *
- * I produksjon vil dette kalle reelle backend-APIer for hver ytelse.
+ * En ytelse regnes som aktiv hvis den har:
+ * - innsendteMeldekort: true ELLER
+ * - meldekortTilUtfylling: [{...}] (minst ett element)
  */
-export const GET: APIRoute = async () => {
-  // TODO: Bytt ut mock-data med reelle API-kall til backend når de er klare
-  const alleMeldekort: AlleMeldekortData = {
-    dagpenger: dagpengerMock,
-    aap: aapMock,
-    tiltakspenger: tiltakspengerMock,
-  };
+export const GET: APIRoute = async ({ request }) => {
+  // I mock-modus, skip token-kravet
+  const useMock = shouldUseMockData();
 
-  const redirectUrl = getRedirectUrlIfSingleYtelse(alleMeldekort);
+  // Hent token fra request (dummy token i mock-modus)
+  const token = useMock ? 'mock-token' : getToken(request.headers);
 
-  if (redirectUrl) {
-    return new Response(JSON.stringify({ redirectUrl }), {
-      status: 200,
+  if (!token) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
       headers: {
         'Content-Type': 'application/json',
       },
     });
   }
+
+  // Hent data fra alle ytelser parallelt
+  const [aapData, tpData] = await Promise.all([
+    hentMeldekortDataFraAAP(token),
+    hentMeldekortDataFraTP(token),
+  ]);
+
+  const dpData = dagpengerMock; // TODO: Bytt ut med faktisk kall til DP API
+
+  // Tell antall ytelser med aktive meldekort
+  const activeYtelser = [
+    { name: 'dagpenger', data: dpData, active: harAktiveMeldekort(dpData) },
+    { name: 'aap', data: aapData, active: harAktiveMeldekort(aapData) },
+    { name: 'tiltakspenger', data: tpData, active: harAktiveMeldekort(tpData) },
+  ].filter((ytelse) => ytelse.active);
+
+  // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
+  if (activeYtelser.length === 1) {
+    const ytelse = activeYtelser[0];
+    if (ytelse?.data) {
+      return Response.redirect(ytelse.data.url, 307); // 307 = Temporary Redirect
+    }
+  }
+
+  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
+  // Frontend viser enten tom landingsside (0) eller landingsside med flere ytelser (>1)
+  const alleMeldekort: AlleMeldekortData = {
+    ...(dpData && { dagpenger: dpData }),
+    ...(aapData && { aap: aapData }),
+    ...(tpData && { tiltakspenger: tpData }),
+  };
 
   return new Response(JSON.stringify(alleMeldekort), {
     status: 200,
