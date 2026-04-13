@@ -52,6 +52,40 @@ describe('erstattPlassholdere', () => {
     );
     expect(resultat).toBe('aap aap 15. januar 2026 15. januar 2026');
   });
+
+  it('parser datoer uten timezone i Oslo timezone', () => {
+    // Uten timezone info skal datoen parseres i Oslo timezone
+    // Dette sikrer at "2026-03-24T00:00:00" blir midnatt i Oslo, ikke lokal tid
+    const resultat = erstattPlassholdere(
+      'Dato: {{dato}}',
+      'dagpenger',
+      '2026-03-24T00:00:00',
+      'nb',
+    );
+    expect(resultat).toBe('Dato: 24. mars 2026');
+  });
+
+  it('håndterer datoer med eksplisitt UTC timezone (Z)', () => {
+    // Med Z suffix skal datoen parseres som UTC
+    const resultat = erstattPlassholdere(
+      'Dato: {{dato}}',
+      'dagpenger',
+      '2026-03-24T00:00:00Z',
+      'nb',
+    );
+    // UTC midnight blir 01:00 i Oslo (UTC+1), men vi viser fortsatt 24. mars
+    expect(resultat).toBe('Dato: 24. mars 2026');
+  });
+
+  it('håndterer datoer med eksplisitt timezone offset', () => {
+    const resultat = erstattPlassholdere(
+      'Dato: {{dato}}',
+      'dagpenger',
+      '2026-03-24T00:00:00+01:00',
+      'nb',
+    );
+    expect(resultat).toBe('Dato: 24. mars 2026');
+  });
 });
 
 describe('kanSendes', () => {

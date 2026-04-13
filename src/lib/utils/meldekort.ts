@@ -29,7 +29,10 @@ const TIMEZONE = 'Europe/Oslo';
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
+  // Sjekk om dato har eksplisitt timezone (Z eller +/-offset)
   const hasExplicitTimeZone = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(dato);
+
+  // Parse i Oslo timezone hvis ingen eksplisitt timezone er spesifisert
   const date = hasExplicitTimeZone ? new Date(dato) : new TZDate(dato, TIMEZONE);
   const locale = localeMap[language];
 
