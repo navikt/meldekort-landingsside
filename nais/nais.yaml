@@ -43,6 +43,8 @@ spec:
           namespace: personbruker
         - application: meldekort-backend
           namespace: aap
+        - application: tiltakspenger-meldekort-api
+          namespace: tpts
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
@@ -61,3 +63,7 @@ spec:
       value: "{{aapApiUrl}}"
     - name: AAP_API_AUDIENCE
       value: "{{aapApiAudience}}"
+    - name: TP_API_URL
+      value: "{{tpApiUrl}}"
+    - name: TP_API_AUDIENCE
+      value: "{{tpApiAudience}}"

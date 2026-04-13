@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { hentMeldekortDataFraAAP } from '../../clients/arbeidsavklaringspenger';
+import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
+import { hentMeldekortDataFraTP } from '../../clients/tiltakspenger';
 import type { MeldekortData } from '../../../types/meldekort';
 
 // Mock @navikt/oasis
@@ -14,12 +14,12 @@ vi.mock('../../../utils/logger', () => ({
   },
 }));
 
-describe('arbeidsavklaringspenger', () => {
+describe('tiltakspenger', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubGlobal('fetch', vi.fn());
-    vi.stubEnv('AAP_API_URL', 'https://aap-test.nav.no');
-    vi.stubEnv('AAP_API_AUDIENCE', 'test:aap:api');
+    vi.stubEnv('TP_API_URL', 'https://tp-test.nav.no');
+    vi.stubEnv('TP_API_AUDIENCE', 'test:tp:api');
     vi.stubEnv('ENFORCE_LOGIN', 'true');
   });
 
@@ -28,18 +28,18 @@ describe('arbeidsavklaringspenger', () => {
     vi.unstubAllEnvs();
   });
 
-  describe('hentMeldekortDataFraAAP', () => {
+  describe('hentMeldekortDataFraTP', () => {
     it('returnerer meldekortdata når API-kallet lykkes', async () => {
       const mockData: MeldekortData = {
         innsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
-            kanSendesFra: '2026-03-31',
-            kanFyllesUtFra: '2026-03-10',
-            fristForInnsending: '2026-04-07',
+            kanSendesFra: '2026-03-10',
+            kanFyllesUtFra: null,
+            fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://aap.nav.no',
+        url: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -54,12 +54,12 @@ describe('arbeidsavklaringspenger', () => {
         json: async () => mockData,
       } as Response);
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toEqual(mockData);
-      expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:aap:api');
+      expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:tp:api');
       expect(fetch).toHaveBeenCalledWith(
-        'https://aap-test.nav.no/api/meldekort-status',
+        'https://tp-test.nav.no/api/meldekort-status',
         expect.objectContaining({
           headers: {
             Accept: 'application/json',
@@ -76,7 +76,7 @@ describe('arbeidsavklaringspenger', () => {
         error: new Error('Token exchange failed'),
       });
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
       expect(fetch).not.toHaveBeenCalled();
@@ -94,7 +94,7 @@ describe('arbeidsavklaringspenger', () => {
         status: 500,
       } as Response);
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
     });
@@ -112,7 +112,7 @@ describe('arbeidsavklaringspenger', () => {
         json: async () => ({ invalid: 'data' }),
       } as Response);
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
     });
@@ -121,7 +121,7 @@ describe('arbeidsavklaringspenger', () => {
       const mockEmptyData: MeldekortData = {
         innsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://aap.nav.no',
+        url: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -136,15 +136,15 @@ describe('arbeidsavklaringspenger', () => {
         json: async () => mockEmptyData,
       } as Response);
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
     });
 
     it('returnerer undefined når API config mangler', async () => {
-      vi.stubEnv('AAP_API_URL', '');
+      vi.stubEnv('TP_API_URL', '');
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
     });
@@ -152,10 +152,10 @@ describe('arbeidsavklaringspenger', () => {
     it('returnerer mock data når ENFORCE_LOGIN er false', async () => {
       vi.stubEnv('ENFORCE_LOGIN', 'false');
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeDefined();
-      expect(result?.innsendteMeldekort).toBe(false);
+      expect(result?.innsendteMeldekort).toBe(true);
       expect(result?.meldekortTilUtfylling).toHaveLength(1);
     });
 
@@ -170,7 +170,7 @@ describe('arbeidsavklaringspenger', () => {
       abortError.name = 'AbortError';
       vi.mocked(fetch).mockRejectedValue(abortError);
 
-      const result = await hentMeldekortDataFraAAP('test-obo-token');
+      const result = await hentMeldekortDataFraTP('test-obo-token');
 
       expect(result).toBeUndefined();
     });

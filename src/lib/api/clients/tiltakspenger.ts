@@ -1,6 +1,6 @@
 import { requestTokenxOboToken } from '@navikt/oasis';
 import type { MeldekortData } from '../../types/meldekort';
-import { aapMock } from '../mockData';
+import { tiltakspengerMock } from '../mockData';
 import { logger } from '../../utils/logger';
 
 function shouldUseMockData(): boolean {
@@ -45,20 +45,18 @@ async function fetchWithTimeout(
   }
 }
 
-/** Henter meldekortdata for arbeidsavklaringspenger. */
-export async function hentMeldekortDataFraAAP(
-  oboToken: string,
-): Promise<MeldekortData | undefined> {
+/** Henter meldekortdata for tiltakspenger. */
+export async function hentMeldekortDataFraTP(oboToken: string): Promise<MeldekortData | undefined> {
   if (shouldUseMockData()) {
-    return aapMock;
+    return tiltakspengerMock;
   }
 
-  const apiUrl = process.env.AAP_API_URL;
-  const audience = process.env.AAP_API_AUDIENCE;
+  const apiUrl = process.env.TP_API_URL;
+  const audience = process.env.TP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     logger.error(
-      `Missing AAP API configuration: hasAapApiUrl=${Boolean(apiUrl)}, hasAapApiAudience=${Boolean(audience)}`,
+      `Missing TP API configuration: hasTpApiUrl=${Boolean(apiUrl)}, hasTpApiAudience=${Boolean(audience)}`,
     );
     return undefined;
   }
@@ -67,7 +65,7 @@ export async function hentMeldekortDataFraAAP(
     const tokenResult = await requestTokenxOboToken(oboToken, audience);
 
     if (!tokenResult.ok) {
-      logger.error(`AAP token exchange failed: ${tokenResult.error.message}`);
+      logger.error(`TP token exchange failed: ${tokenResult.error.message}`);
       return undefined;
     }
 
@@ -79,14 +77,14 @@ export async function hentMeldekortDataFraAAP(
     });
 
     if (!response.ok) {
-      logger.error(`AAP API returned ${response.status}`);
+      logger.error(`TP API returned ${response.status}`);
       return undefined;
     }
 
     const data: unknown = await response.json();
 
     if (!validerMeldekortData(data)) {
-      logger.error('AAP API returned invalid data structure');
+      logger.error('TP API returned invalid data structure');
       return undefined;
     }
 
@@ -98,7 +96,7 @@ export async function hentMeldekortDataFraAAP(
     return data;
   } catch (error) {
     logger.error(
-      `Error fetching AAP data: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      `Error fetching TP data: ${error instanceof Error ? error.message : 'Unknown error'}`,
     );
     return undefined;
   }
