@@ -34,7 +34,9 @@ if (!apiResponse.ok) {
     status: apiResponse.status,
     statusText: apiResponse.statusText,
   });
-  throw new Error(`Failed to fetch meldekort data: ${apiResponse.status} ${apiResponse.statusText}`);
+  throw new Error(
+    `Failed to fetch meldekort data: ${apiResponse.status} ${apiResponse.statusText}`,
+  );
 }
 
 const alleMeldekort: AlleMeldekortData = await apiResponse.json();
