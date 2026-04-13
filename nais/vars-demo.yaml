@@ -16,5 +16,7 @@ idporten:
   enabled: false
   level: Level3
   autoLogin: true
+aapApiUrl: http://meldekort-backend.aap
+aapApiAudience: dev-gcp:aap:meldekort-backend
 tpApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
 tpApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api

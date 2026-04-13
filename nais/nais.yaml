@@ -41,6 +41,8 @@ spec:
       rules:
         - application: nav-dekoratoren
           namespace: personbruker
+        - application: meldekort-backend
+          namespace: aap
         - application: tiltakspenger-meldekort-api
           namespace: tpts
       external:
@@ -57,6 +59,10 @@ spec:
       value: "3000"
     - name: ENFORCE_LOGIN
       value: "{{enforce_login}}"
+    - name: AAP_API_URL
+      value: "{{aapApiUrl}}"
+    - name: AAP_API_AUDIENCE
+      value: "{{aapApiAudience}}"
     - name: TP_API_URL
       value: "{{tpApiUrl}}"
     - name: TP_API_AUDIENCE
