@@ -29,8 +29,8 @@ const TIMEZONE = 'Europe/Oslo';
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
-  // Parse dato string til Date objekt
-  const date = new Date(dato);
+  const hasExplicitTimeZone = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(dato);
+  const date = hasExplicitTimeZone ? new Date(dato) : new TZDate(dato, TIMEZONE);
   const locale = localeMap[language];
 
   // Formater med Intl.DateTimeFormat i Oslo timezone
