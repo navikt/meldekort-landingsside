@@ -41,6 +41,8 @@ spec:
       rules:
         - application: nav-dekoratoren
           namespace: personbruker
+        - application: tiltakspenger-meldekort-api
+          namespace: tpts
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
@@ -55,3 +57,7 @@ spec:
       value: "3000"
     - name: ENFORCE_LOGIN
       value: "{{enforce_login}}"
+    - name: TP_API_URL
+      value: "{{tpApiUrl}}"
+    - name: TP_API_AUDIENCE
+      value: "{{tpApiAudience}}"

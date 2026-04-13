@@ -1,0 +1,178 @@
+import { beforeEach, describe, expect, it, vi, afterEach } from 'vitest';
+import { hentMeldekortDataFraTP } from '../../clients/tiltakspenger';
+import type { MeldekortData } from '../../../types/meldekort';
+
+// Mock @navikt/oasis
+vi.mock('@navikt/oasis', () => ({
+  requestTokenxOboToken: vi.fn(),
+}));
+
+// Mock logger
+vi.mock('../../../utils/logger', () => ({
+  logger: {
+    error: vi.fn(),
+  },
+}));
+
+describe('tiltakspenger', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.stubGlobal('fetch', vi.fn());
+    vi.stubEnv('TP_API_URL', 'https://tp-test.nav.no');
+    vi.stubEnv('TP_API_AUDIENCE', 'test:tp:api');
+    vi.stubEnv('ENFORCE_LOGIN', 'true');
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  describe('hentMeldekortDataFraTP', () => {
+    it('returnerer meldekortdata når API-kallet lykkes', async () => {
+      const mockData: MeldekortData = {
+        innsendteMeldekort: true,
+        meldekortTilUtfylling: [
+          {
+            kanSendesFra: '2026-03-10',
+            kanFyllesUtFra: null,
+            fristForInnsending: '2026-03-24',
+          },
+        ],
+        url: 'https://www.nav.no/tiltakspenger/meldekort',
+      };
+
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => mockData,
+      } as Response);
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toEqual(mockData);
+      expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:tp:api');
+      expect(fetch).toHaveBeenCalledWith(
+        'https://tp-test.nav.no/api/meldekort-status',
+        expect.objectContaining({
+          headers: {
+            Accept: 'application/json',
+            Authorization: 'Bearer test-token',
+          },
+        }),
+      );
+    });
+
+    it('returnerer undefined når TokenX exchange feiler', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: false,
+        error: new Error('Token exchange failed'),
+      });
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+      expect(fetch).not.toHaveBeenCalled();
+    });
+
+    it('returnerer undefined når API returnerer feilstatus', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 500,
+      } as Response);
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returnerer undefined når API returnerer ugyldig data', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({ invalid: 'data' }),
+      } as Response);
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returnerer undefined når bruker har ingen aktive meldekort', async () => {
+      const mockEmptyData: MeldekortData = {
+        innsendteMeldekort: false,
+        meldekortTilUtfylling: [],
+        url: 'https://www.nav.no/tiltakspenger/meldekort',
+      };
+
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => mockEmptyData,
+      } as Response);
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returnerer undefined når API config mangler', async () => {
+      vi.stubEnv('TP_API_URL', '');
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returnerer mock data når ENFORCE_LOGIN er false', async () => {
+      vi.stubEnv('ENFORCE_LOGIN', 'false');
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeDefined();
+      expect(result?.innsendteMeldekort).toBe(true);
+      expect(result?.meldekortTilUtfylling).toHaveLength(1);
+    });
+
+    it('håndterer fetch timeout', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      const abortError = new Error('Abort');
+      abortError.name = 'AbortError';
+      vi.mocked(fetch).mockRejectedValue(abortError);
+
+      const result = await hentMeldekortDataFraTP('test-obo-token');
+
+      expect(result).toBeUndefined();
+    });
+  });
+});
