@@ -17,15 +17,20 @@ const language = getLanguageFromCookie(cookieHeader);
 const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
 
 // Hent meldekortdata fra API (server-side)
+// redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
 const apiResponse = await fetch(`${Astro.url.origin}/api/meldekort`, {
   headers: {
     cookie: cookieHeader || '',
   },
+  redirect: 'manual',
 });
 
-// Hvis API redirecter (307) til en enkelt ytelse, følg redirect
-if (apiResponse.redirected) {
-  return Astro.redirect(apiResponse.url);
+// Hvis API returnerer 307 redirect, følg den
+if (apiResponse.status === 307 || apiResponse.status === 308) {
+  const redirectUrl = apiResponse.headers.get('Location');
+  if (redirectUrl) {
+    return Astro.redirect(redirectUrl);
+  }
 }
 
 // Kræsj hardt hvis API-kallet feiler

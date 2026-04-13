@@ -4,7 +4,7 @@ import type { AlleMeldekortData } from '../../lib/types/meldekort';
 import { dagpengerMock } from '../../lib/api/mockData';
 import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
-import { harAktiveMeldekort } from '../../lib/api/helpers';
+import { harAktiveMeldekort, shouldUseMockData } from '../../lib/api/helpers';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
@@ -19,8 +19,11 @@ import { harAktiveMeldekort } from '../../lib/api/helpers';
  * - meldekortTilUtfylling: [{...}] (minst ett element)
  */
 export const GET: APIRoute = async ({ request }) => {
-  // Hent token fra request
-  const token = getToken(request.headers);
+  // I mock-modus, skip token-kravet
+  const useMock = shouldUseMockData();
+
+  // Hent token fra request (dummy token i mock-modus)
+  const token = useMock ? 'mock-token' : getToken(request.headers);
 
   if (!token) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), {
