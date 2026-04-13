@@ -3,6 +3,26 @@ import winston from 'winston';
 const isDevelopment = process.env.NODE_ENV === 'development';
 
 /**
+ * Safe JSON stringify that handles circular references
+ */
+function safeStringify(obj: unknown, indent?: number): string {
+  try {
+    return JSON.stringify(obj, null, indent);
+  } catch (error) {
+    // Handle circular references or other serialization errors
+    return JSON.stringify(
+      {
+        __error: 'Failed to serialize object',
+        __reason: error instanceof Error ? error.message : 'Unknown error',
+        __type: typeof obj,
+      },
+      null,
+      indent,
+    );
+  }
+}
+
+/**
  * Custom format for serializing Error objects in metadata
  * Error properties (message, stack) are non-enumerable and won't be serialized by JSON.stringify
  */
@@ -48,7 +68,7 @@ export const logger = winston.createLogger({
       ? winston.format.combine(
           winston.format.colorize(),
           winston.format.printf(({ timestamp, level, message, ...metadata }) => {
-            const meta = Object.keys(metadata).length ? JSON.stringify(metadata, null, 2) : '';
+            const meta = Object.keys(metadata).length ? safeStringify(metadata, 2) : '';
             return `${timestamp} [${level}]: ${message} ${meta}`;
           }),
         )
