@@ -1,3 +1,6 @@
+import { format, isAfter, isEqual, startOfDay } from 'date-fns';
+import { TZDate } from '@date-fns/tz';
+import { nb, enGB, type Locale } from 'date-fns/locale';
 import type { SUPPORTED_LANGUAGES } from '../language';
 import type {
   AlleMeldekortData,
@@ -9,28 +12,29 @@ import type {
 
 type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
-// Mapping fra språkkode til locale for datoformatering
-const localeMap: Record<Language, string> = {
-  nb: 'nb-NO',
-  en: 'en-GB',
+// Mapping fra språkkode til date-fns locale
+const localeMap: Record<Language, Locale> = {
+  nb: nb,
+  en: enGB,
 };
 
+// Vi bruker Europe/Oslo timezone siden alle meldekort-datoer er norsk tid
+const TIMEZONE = 'Europe/Oslo';
+
 /**
- * Formater dato fra yyyy-mm-dd til lesbart format.
+ * Formater ISO 8601 timestamp til lesbart format.
  *
- * @param dato - Dato i format yyyy-mm-dd
+ * @param dato - Dato i format YYYY-MM-DDTHH:mm:ss (UTC)
  * @param language - Språkkode (nb eller en)
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
-  const [year, month, day] = dato.split('-');
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  // Parse ISO string som UTC og konverter til Oslo timezone
+  const tzDate = new TZDate(dato, TIMEZONE);
+  const locale = localeMap[language];
 
-  return date.toLocaleDateString(localeMap[language], {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  // Formater datoen med norsk/engelsk locale
+  return format(tzDate, 'd. MMMM yyyy', { locale });
 }
 
 /**
@@ -38,12 +42,12 @@ function formaterDato(dato: string, language: Language): string {
  *
  * @param tekst - Tekst med plassholdere ({{ytelse}} og {{dato}})
  * @param ytelseNavn - Navnet på ytelsen som skal erstatte {{ytelse}}
- * @param dato - Dato i format yyyy-mm-dd som skal erstatte {{dato}}, eller undefined
+ * @param dato - Dato i format YYYY-MM-DDTHH:mm:ss (ISO 8601) som skal erstatte {{dato}}, eller undefined
  * @param language - Språkkode for datoformatering
  * @returns Tekst med erstattede plassholdere
  *
  * @example
- * erstattPlassholdere("Send {{ytelse}}-meldekort innen {{dato}}", "dagpenger", "2026-03-24", "nb")
+ * erstattPlassholdere("Send {{ytelse}}-meldekort innen {{dato}}", "dagpenger", "2026-03-24T00:00:00", "nb")
  * // => "Send dagpenger-meldekort innen 24. mars 2026"
  */
 export function erstattPlassholdere(
@@ -57,7 +61,10 @@ export function erstattPlassholdere(
     .replace(/\{\{dato\}\}/g, dato ? formaterDato(dato, language) : '');
 }
 
-const idag = () => new Date().toISOString().slice(0, 10);
+/**
+ * Henter dagens dato i Oslo timezone (start of day)
+ */
+const idag = () => startOfDay(new TZDate(new Date(), TIMEZONE));
 
 /**
  * Sjekker om et meldekort kan sendes inn nå.
@@ -66,7 +73,10 @@ const idag = () => new Date().toISOString().slice(0, 10);
  * @returns true hvis dagens dato er lik eller etter kanSendesFra
  */
 export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
-  return meldekort.kanSendesFra <= idag();
+  const today = idag();
+  // Parse ISO string i Oslo timezone og få start of day
+  const kanSendesFraDato = startOfDay(new TZDate(meldekort.kanSendesFra, TIMEZONE));
+  return isEqual(kanSendesFraDato, today) || isAfter(today, kanSendesFraDato);
 }
 
 /**
@@ -76,7 +86,12 @@ export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
  * @returns true hvis kanFyllesUtFra er null, eller dagens dato er lik eller etter kanFyllesUtFra
  */
 export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
-  return meldekort.kanFyllesUtFra === null || meldekort.kanFyllesUtFra <= idag();
+  if (meldekort.kanFyllesUtFra === null) return true;
+
+  const today = idag();
+  // Parse ISO string i Oslo timezone og få start of day
+  const kanFyllesUtFraDato = startOfDay(new TZDate(meldekort.kanFyllesUtFra, TIMEZONE));
+  return isEqual(kanFyllesUtFraDato, today) || isAfter(today, kanFyllesUtFraDato);
 }
 
 /**
