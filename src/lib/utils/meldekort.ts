@@ -21,6 +21,15 @@ const localeMap: Record<Language, string> = {
 const TIMEZONE = 'Europe/Oslo';
 
 /**
+ * Parser en dato string i Oslo timezone.
+ * Hvis datoen ikke har eksplisitt timezone, antas den å være i Oslo timezone.
+ */
+function parseDatoIOsloTimezone(dato: string): Date {
+  const hasExplicitTimeZone = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(dato);
+  return hasExplicitTimeZone ? new Date(dato) : new TZDate(dato, TIMEZONE);
+}
+
+/**
  * Formater dato til lesbart format.
  * Bruker Intl.DateTimeFormat for å unngå å sende date-fns til klienten.
  *
@@ -29,11 +38,7 @@ const TIMEZONE = 'Europe/Oslo';
  * @returns Formatert dato, f.eks. "13. mars 2026" eller "13 March 2026"
  */
 function formaterDato(dato: string, language: Language): string {
-  // Sjekk om dato har eksplisitt timezone (Z eller +/-offset)
-  const hasExplicitTimeZone = /(?:[zZ]|[+-]\d{2}:\d{2})$/.test(dato);
-
-  // Parse i Oslo timezone hvis ingen eksplisitt timezone er spesifisert
-  const date = hasExplicitTimeZone ? new Date(dato) : new TZDate(dato, TIMEZONE);
+  const date = parseDatoIOsloTimezone(dato);
   const locale = localeMap[language];
 
   // Formater med Intl.DateTimeFormat i Oslo timezone
@@ -84,8 +89,7 @@ const idag = () => startOfDay(new TZDate(new Date(), TIMEZONE));
  */
 export function kanSendes(meldekort: MeldekortTilUtfylling): boolean {
   const today = idag();
-  // Parse ISO string i Oslo timezone og få start of day
-  const kanSendesFraDato = startOfDay(new TZDate(meldekort.kanSendesFra, TIMEZONE));
+  const kanSendesFraDato = startOfDay(parseDatoIOsloTimezone(meldekort.kanSendesFra));
   return isEqual(kanSendesFraDato, today) || isAfter(today, kanSendesFraDato);
 }
 
@@ -99,8 +103,7 @@ export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
   if (meldekort.kanFyllesUtFra === null) return true;
 
   const today = idag();
-  // Parse ISO string i Oslo timezone og få start of day
-  const kanFyllesUtFraDato = startOfDay(new TZDate(meldekort.kanFyllesUtFra, TIMEZONE));
+  const kanFyllesUtFraDato = startOfDay(parseDatoIOsloTimezone(meldekort.kanFyllesUtFra));
   return isEqual(kanFyllesUtFraDato, today) || isAfter(today, kanFyllesUtFraDato);
 }
 
