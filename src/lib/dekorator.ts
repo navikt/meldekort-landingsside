@@ -1,4 +1,5 @@
 import type { DecoratorLocale } from '@navikt/nav-dekoratoren-moduler';
+import { logger } from './utils/logger';
 
 interface DecoratorElements {
   DECORATOR_HEAD_ASSETS: string;
@@ -66,7 +67,7 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
       DECORATOR_SCRIPTS: data.scripts || '',
     };
   } catch (error) {
-    console.error('Error fetching decorator:', error);
+    logger.error('Error fetching decorator', { error, url });
     return {
       DECORATOR_HEAD_ASSETS: '',
       DECORATOR_HEADER: '',
