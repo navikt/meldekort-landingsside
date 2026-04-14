@@ -35,7 +35,11 @@ interface MeldekortLinkCardProps {
   kortType: 'se' | 'sende' | 'fyllUt';
   tilleggstekst?: string;
   language: Language;
-  onNavigate: (ytelse: 'dagpenger' | 'aap' | 'tiltakspenger', kortType: 'se' | 'sende' | 'fyllUt', url: string) => void;
+  onNavigate: (
+    ytelse: 'dagpenger' | 'aap' | 'tiltakspenger',
+    kortType: 'se' | 'sende' | 'fyllUt',
+    url: string,
+  ) => void;
 }
 
 function MeldekortLinkCard({

@@ -59,8 +59,7 @@ if (!apiResponse.ok) {
 
 const apiFeil = !alleMeldekort;
 const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
-const harKort =
-  visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
+const harKort = visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
 // Hent innhold fra Sanity
 const query = getLandingssideQuery(language);
