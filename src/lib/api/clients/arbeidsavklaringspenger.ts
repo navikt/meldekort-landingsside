@@ -2,32 +2,39 @@ import { requestTokenxOboToken } from '@navikt/oasis';
 import type { MeldekortData } from '../../types/meldekort';
 import { aapMock } from '../mockData';
 import { logger } from '../../utils/logger';
-import { shouldUseMockData, validerMeldekortData, fetchWithTimeout } from '../helpers';
+import {
+  shouldUseMockData,
+  validerMeldekortData,
+  fetchWithTimeout,
+  type ApiResult,
+} from '../helpers';
 
 /** Henter meldekortdata for arbeidsavklaringspenger. */
 export async function hentMeldekortDataFraAAP(
   oboToken: string,
-): Promise<MeldekortData | undefined> {
+): Promise<ApiResult<MeldekortData>> {
   if (shouldUseMockData()) {
-    return aapMock;
+    return { success: true, data: aapMock };
   }
 
   const apiUrl = import.meta.env.AAP_API_URL;
   const audience = import.meta.env.AAP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
+    const error = 'Missing AAP API configuration';
     logger.error(
-      `Missing AAP API configuration: hasAapApiUrl=${Boolean(apiUrl)}, hasAapApiAudience=${Boolean(audience)}`,
+      `${error}: hasAapApiUrl=${Boolean(apiUrl)}, hasAapApiAudience=${Boolean(audience)}`,
     );
-    return undefined;
+    return { success: false, error };
   }
 
   try {
     const tokenResult = await requestTokenxOboToken(oboToken, audience);
 
     if (!tokenResult.ok) {
-      logger.error(`AAP token exchange failed: ${tokenResult.error.message}`);
-      return undefined;
+      const error = `AAP token exchange failed: ${tokenResult.error.message}`;
+      logger.error(error);
+      return { success: false, error };
     }
 
     const response = await fetchWithTimeout(`${apiUrl}/api/meldekort-status`, {
@@ -38,27 +45,29 @@ export async function hentMeldekortDataFraAAP(
     });
 
     if (!response.ok) {
-      logger.error(`AAP API returned ${response.status}`);
-      return undefined;
+      const error = `AAP API returned ${response.status}`;
+      logger.error(error);
+      return { success: false, error };
     }
 
     const data: unknown = await response.json();
 
     if (!validerMeldekortData(data)) {
-      logger.error('AAP API returned invalid data structure');
-      return undefined;
+      const error = 'AAP API returned invalid data structure';
+      logger.error(error);
+      return { success: false, error };
     }
 
-    // Returner undefined hvis ingen aktive meldekort
+    // Success - returner data selv om ingen aktive meldekort
+    // (tomt data er ikke en feil, bare at brukeren ikke har aktive meldekort)
     if (!data.innsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
-      return undefined;
+      return { success: true };
     }
 
-    return data;
+    return { success: true, data };
   } catch (error) {
-    logger.error(
-      `Error fetching AAP data: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    );
-    return undefined;
+    const errorMsg = `Error fetching AAP data: ${error instanceof Error ? error.message : 'Unknown error'}`;
+    logger.error(errorMsg);
+    return { success: false, error: errorMsg };
   }
 }

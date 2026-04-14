@@ -35,7 +35,6 @@ if (apiResponse.status === 307 || apiResponse.status === 308) {
 
 // Håndter API-feil
 let alleMeldekort: AlleMeldekortData | null = null;
-let apiFeil = false;
 
 if (!apiResponse.ok) {
   logger.error('Failed to fetch meldekort data from API - showing error page to user', {
@@ -43,7 +42,7 @@ if (!apiResponse.ok) {
     statusText: apiResponse.statusText,
     url: `${Astro.url.origin}/api/meldekort`,
   });
-  apiFeil = true;
+  Astro.response.status = apiResponse.status >= 500 ? apiResponse.status : 500;
 } else {
   try {
     alleMeldekort = await apiResponse.json();
@@ -52,12 +51,12 @@ if (!apiResponse.ok) {
       error: error instanceof Error ? error.message : 'Unknown error',
       status: apiResponse.status,
     });
-    apiFeil = true;
+    Astro.response.status = 500;
   }
 }
 
-const visning =
-  apiFeil || !alleMeldekort ? { se: [], sende: [], fyllUt: [] } : skalViseLenker(alleMeldekort);
+const apiFeil = !alleMeldekort;
+const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
@@ -82,7 +81,7 @@ const t = translations[language as keyof typeof translations] || translations.nb
 
 // Helper-variabler for å forenkle rendering-logikken
 const hasValidContent = !contentMissing && !!content;
-const tittel = content?.tittel ?? t.tittel;
+const tittel = hasValidContent && content ? content.tittel : t.tittel;
 const hasEmptyState = hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
 const hasBunntekst = hasValidContent && (content?.bunntekst?.length ?? 0) > 0;
 

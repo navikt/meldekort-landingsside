@@ -56,7 +56,8 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toEqual(mockData);
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:tp:api');
       expect(fetch).toHaveBeenCalledWith(
         'https://tp-test.nav.no/api/meldekort-status',
@@ -78,7 +79,7 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(false);
       expect(fetch).not.toHaveBeenCalled();
     });
 
@@ -96,7 +97,7 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(false);
     });
 
     it('returnerer undefined når API returnerer ugyldig data', async () => {
@@ -114,10 +115,10 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(false);
     });
 
-    it('returnerer undefined når bruker har ingen aktive meldekort', async () => {
+    it('returnerer success uten data når bruker har ingen aktive meldekort', async () => {
       const mockEmptyData: MeldekortData = {
         innsendteMeldekort: false,
         meldekortTilUtfylling: [],
@@ -138,7 +139,8 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(true);
+      expect(result.data).toBeUndefined();
     });
 
     it('returnerer undefined når API config mangler', async () => {
@@ -146,7 +148,7 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(false);
     });
 
     it('returnerer mock data når ENFORCE_LOGIN er false', async () => {
@@ -154,9 +156,10 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeDefined();
-      expect(result?.innsendteMeldekort).toBe(true);
-      expect(result?.meldekortTilUtfylling).toHaveLength(1);
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+      expect(result.data?.innsendteMeldekort).toBe(true);
+      expect(result.data?.meldekortTilUtfylling).toHaveLength(1);
     });
 
     it('håndterer AbortError fra fetch', async () => {
@@ -172,7 +175,7 @@ describe('tiltakspenger', () => {
 
       const result = await hentMeldekortDataFraTP('test-obo-token');
 
-      expect(result).toBeUndefined();
+      expect(result.success).toBe(false);
     });
   });
 });

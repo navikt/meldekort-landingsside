@@ -1,6 +1,15 @@
 import type { MeldekortData } from '../types/meldekort';
 
 /**
+ * Resultat fra API-kall som kan enten lykkes eller feile.
+ */
+export interface ApiResult<T> {
+  success: boolean;
+  data?: T | undefined;
+  error?: string;
+}
+
+/**
  * Sjekker om mock data skal brukes basert på ENFORCE_LOGIN env var.
  */
 export function shouldUseMockData(): boolean {
