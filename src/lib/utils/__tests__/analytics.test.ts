@@ -118,7 +118,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       // @ts-expect-error - Testing undefined logger
       vi.mocked(getAnalyticsInstance).mockReturnValue(undefined);
@@ -133,7 +135,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -150,7 +154,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -178,7 +184,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -195,7 +203,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -214,7 +224,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -233,7 +245,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -252,11 +266,17 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
-      trackYtelseNavigasjon('tiltakspenger', 'fyllUt', 'https://www.nav.no/tiltakspenger/meldekort');
+      trackYtelseNavigasjon(
+        'tiltakspenger',
+        'fyllUt',
+        'https://www.nav.no/tiltakspenger/meldekort',
+      );
 
       expect(mockLogger).toHaveBeenCalledWith('navigere', {
         skjemanavn: 'meldekort-landingsside',
@@ -273,7 +293,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -297,7 +319,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -321,7 +345,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -347,7 +373,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
@@ -365,7 +393,9 @@ describe('analytics', () => {
         '@navikt/nav-dekoratoren-moduler'
       );
       vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false }, userActionTaken: true, meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
+        consent: { analytics: true, surveys: false },
+        userActionTaken: true,
+        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
