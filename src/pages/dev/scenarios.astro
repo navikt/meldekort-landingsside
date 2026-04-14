@@ -1,0 +1,77 @@
+---
+import '@navikt/ds-css';
+import { Page, Heading, VStack, BodyLong, BodyShort, Detail, Link, Box } from '@navikt/ds-react';
+import { scenarioMetadata, getScenarioUrl, getScenarioDisplayName } from '../../lib/api/scenarios';
+
+const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
+
+if (enforceLogin) {
+  return Astro.redirect('/meldekort');
+}
+---
+
+<!doctype html>
+<html lang="nb">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mock Scenarier - Meldekort</title>
+  </head>
+  <body>
+    <Page contentBlockPadding="end">
+      <Page.Block as="main" width="xl" gutters>
+        <VStack gap="8">
+          <VStack gap="4">
+            <Heading size="xlarge" level="1">Mock Scenarier</Heading>
+            <BodyLong>
+              Klikk på et scenario nedenfor for å teste forskjellige tilstander av meldekort
+              landingssiden.
+            </BodyLong>
+            <Detail>
+              Denne siden er kun tilgjengelig når <code>ENFORCE_LOGIN=false</code> (mock mode).
+            </Detail>
+          </VStack>
+
+          {
+            scenarioMetadata.map((category) => (
+              <VStack gap="4" key={category.category}>
+                <Heading size="medium" level="2" spacing>
+                  {category.category}
+                </Heading>
+                <VStack gap="2">
+                  {category.items.map((scenario) => (
+                    <Box padding="4" borderWidth="1" borderRadius="medium" asChild key={scenario.name}>
+                      <Link href={getScenarioUrl(scenario.name)} variant="neutral">
+                        <VStack gap="1">
+                          <BodyShort weight="semibold">
+                            {getScenarioDisplayName(scenario.name)}
+                          </BodyShort>
+                          <Detail>{scenario.description}</Detail>
+                        </VStack>
+                      </Link>
+                    </Box>
+                  ))}
+                </VStack>
+              </VStack>
+            ))
+          }
+
+          <Box paddingBlock="8 0" borderWidth="1 0 0 0">
+            <VStack gap="4">
+              <Heading size="small" level="3" spacing>Utviklerinfo</Heading>
+              <Detail>
+                Du kan også bruke query parametere direkte i URL:
+                <br />
+                <code>http://localhost:4321/meldekort?scenario=kun-dagpenger</code>
+              </Detail>
+              <Detail>
+                Se <code>SCENARIOS.md</code> og <code>src/lib/api/scenarios.ts</code> for mer
+                informasjon.
+              </Detail>
+            </VStack>
+          </Box>
+        </VStack>
+      </Page.Block>
+    </Page>
+  </body>
+</html>

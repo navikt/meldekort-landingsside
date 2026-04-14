@@ -1,6 +1,6 @@
 ---
 import '@navikt/ds-css';
-import { Page, Heading, VStack } from '@navikt/ds-react';
+import { Page, Heading, VStack, Alert, Link } from '@navikt/ds-react';
 import { PortableText } from '@portabletext/react';
 import { getDecoratorHTML } from '../lib/dekorator';
 import { getLanguageFromCookie, translations, SUPPORTED_LANGUAGES } from '../lib/language';
@@ -18,7 +18,9 @@ const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN
 
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
-const apiResponse = await fetch(`${Astro.url.origin}/api/meldekort`, {
+// Videresend query parametere (f.eks. ?scenario=...) til API-et
+const apiUrl = `${Astro.url.origin}/api/meldekort${Astro.url.search}`;
+const apiResponse = await fetch(apiUrl, {
   headers: {
     cookie: cookieHeader || '',
   },
@@ -40,7 +42,7 @@ if (!apiResponse.ok) {
   logger.error('Failed to fetch meldekort data from API - showing error page to user', {
     status: apiResponse.status,
     statusText: apiResponse.statusText,
-    url: `${Astro.url.origin}/api/meldekort`,
+    url: apiUrl,
   });
   Astro.response.status = apiResponse.status >= 500 ? apiResponse.status : 500;
 } else {
@@ -117,6 +119,18 @@ const decorator = await getDecoratorHTML({
     <Page contentBlockPadding="end">
       <Page.Block as="main" width="2xl" gutters>
         <VStack gap="space-40">
+          {
+            !enforceLogin && (
+              <Alert variant="info">
+                <Heading size="xsmall" level="2" spacing>
+                  Mock mode
+                </Heading>
+                Du kjører i mock mode. <Link href="/meldekort/dev/scenarios">
+                  Se alle tilgjengelige scenarier
+                </Link> eller bruk <code>?scenario=&lt;navn&gt;</code> i URL.
+              </Alert>
+            )
+          }
           <Heading size="xlarge" level="1">{tittel}</Heading>
           {
             apiFeil ? (

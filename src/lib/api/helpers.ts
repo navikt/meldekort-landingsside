@@ -1,4 +1,4 @@
-import type { MeldekortData } from '../types/meldekort';
+import type { MeldekortData, AlleMeldekortData } from '../types/meldekort';
 
 /**
  * Resultat fra API-kall som kan enten lykkes eller feile.
@@ -7,6 +7,12 @@ export interface ApiResult<T> {
   success: boolean;
   data?: T | undefined;
   error?: string;
+}
+
+interface YtelseData {
+  dagpenger?: MeldekortData | undefined;
+  aap?: MeldekortData | undefined;
+  tiltakspenger?: MeldekortData | undefined;
 }
 
 /**
@@ -70,4 +76,42 @@ export async function fetchWithTimeout(
     }
     throw error;
   }
+}
+
+/**
+ * Håndterer redirect/response logikk basert på antall aktive ytelser.
+ * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
+ * - Ellers → returner JSON med meldekortdata for alle ytelser
+ */
+export function handleMeldekortResponse(ytelseData: YtelseData): Response {
+  const { dagpenger, aap, tiltakspenger } = ytelseData;
+
+  // Tell antall ytelser med aktive meldekort
+  const activeYtelser = [
+    { name: 'dagpenger', data: dagpenger, active: harAktiveMeldekort(dagpenger) },
+    { name: 'aap', data: aap, active: harAktiveMeldekort(aap) },
+    { name: 'tiltakspenger', data: tiltakspenger, active: harAktiveMeldekort(tiltakspenger) },
+  ].filter((ytelse) => ytelse.active);
+
+  // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
+  if (activeYtelser.length === 1) {
+    const ytelse = activeYtelser[0];
+    if (ytelse?.data) {
+      return Response.redirect(ytelse.data.url, 307);
+    }
+  }
+
+  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
+  const alleMeldekort: AlleMeldekortData = {
+    ...(dagpenger && { dagpenger }),
+    ...(aap && { aap }),
+    ...(tiltakspenger && { tiltakspenger }),
+  };
+
+  return new Response(JSON.stringify(alleMeldekort), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 }
