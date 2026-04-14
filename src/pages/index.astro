@@ -56,7 +56,8 @@ if (!apiResponse.ok) {
   }
 }
 
-const visning = apiFeil || !alleMeldekort ? { se: [], sende: [], fyllUt: [] } : skalViseLenker(alleMeldekort);
+const visning =
+  apiFeil || !alleMeldekort ? { se: [], sende: [], fyllUt: [] } : skalViseLenker(alleMeldekort);
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 

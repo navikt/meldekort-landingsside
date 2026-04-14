@@ -97,14 +97,10 @@ export function MeldekortLinkCards({
   return (
     <>
       {renderLinkCards(visning.se, content.linkForASe, 'se')}
-      {renderLinkCards(
-        visning.sende,
-        content.linkForASende,
-        'sende',
-        (info) =>
-          info.harOgsaInnsendte
-            ? content.linkForASende?.tilleggstekstVedInnsendteMeldekort
-            : undefined,
+      {renderLinkCards(visning.sende, content.linkForASende, 'sende', (info) =>
+        info.harOgsaInnsendte
+          ? content.linkForASende?.tilleggstekstVedInnsendteMeldekort
+          : undefined,
       )}
       {renderLinkCards(visning.fyllUt, content.linkForAFylleUt, 'fyllUt')}
     </>
