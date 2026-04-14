@@ -14,7 +14,7 @@ import { logger } from '../lib/utils/logger';
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
-const enforceLogin = import.meta.env.ENFORCE_LOGIN !== 'false';
+const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
 
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt

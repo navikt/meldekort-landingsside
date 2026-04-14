@@ -43,7 +43,7 @@ function MeldekortLinkCard({
   language,
 }: MeldekortLinkCardProps) {
   const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
-  const tagTekst = data.fristTag ?? data.kanSendesFraTag;
+  const tagTekst = data.fristTag || data.kanSendesFraTag;
 
   return (
     <LinkCard size="medium">

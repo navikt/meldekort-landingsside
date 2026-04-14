@@ -15,8 +15,8 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<ApiResul
     return { success: true, data: tiltakspengerMock };
   }
 
-  const apiUrl = import.meta.env.TP_API_URL;
-  const audience = import.meta.env.TP_API_AUDIENCE;
+  const apiUrl = import.meta.env.TP_API_URL ?? process.env.TP_API_URL;
+  const audience = import.meta.env.TP_API_AUDIENCE ?? process.env.TP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     const error = 'Missing TP API configuration';

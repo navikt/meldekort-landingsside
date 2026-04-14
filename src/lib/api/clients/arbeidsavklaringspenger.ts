@@ -15,8 +15,8 @@ export async function hentMeldekortDataFraAAP(oboToken: string): Promise<ApiResu
     return { success: true, data: aapMock };
   }
 
-  const apiUrl = import.meta.env.AAP_API_URL;
-  const audience = import.meta.env.AAP_API_AUDIENCE;
+  const apiUrl = import.meta.env.AAP_API_URL ?? process.env.AAP_API_URL;
+  const audience = import.meta.env.AAP_API_AUDIENCE ?? process.env.AAP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     const error = 'Missing AAP API configuration';

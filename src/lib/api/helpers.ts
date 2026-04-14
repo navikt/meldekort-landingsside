@@ -11,9 +11,11 @@ export interface ApiResult<T> {
 
 /**
  * Sjekker om mock data skal brukes basert på ENFORCE_LOGIN env var.
+ * Bruker import.meta.env i dev (Vite leser .env) og process.env i prod (NAIS).
  */
 export function shouldUseMockData(): boolean {
-  return import.meta.env.ENFORCE_LOGIN === 'false';
+  const enforceLogin = import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
+  return enforceLogin === 'false';
 }
 
 /**
