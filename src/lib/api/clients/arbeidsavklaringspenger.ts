@@ -10,9 +10,7 @@ import {
 } from '../helpers';
 
 /** Henter meldekortdata for arbeidsavklaringspenger. */
-export async function hentMeldekortDataFraAAP(
-  oboToken: string,
-): Promise<ApiResult<MeldekortData>> {
+export async function hentMeldekortDataFraAAP(oboToken: string): Promise<ApiResult<MeldekortData>> {
   if (shouldUseMockData()) {
     return { success: true, data: aapMock };
   }

@@ -20,9 +20,7 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<ApiResul
 
   if (!apiUrl || !audience) {
     const error = 'Missing TP API configuration';
-    logger.error(
-      `${error}: hasTpApiUrl=${Boolean(apiUrl)}, hasTpApiAudience=${Boolean(audience)}`,
-    );
+    logger.error(`${error}: hasTpApiUrl=${Boolean(apiUrl)}, hasTpApiAudience=${Boolean(audience)}`);
     return { success: false, error };
   }
 
