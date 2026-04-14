@@ -1,4 +1,5 @@
 import type { MeldekortData, AlleMeldekortData } from '../types/meldekort';
+import { logger } from '../utils/logger';
 
 /**
  * Resultat fra API-kall som kan enten lykkes eller feile.
@@ -97,7 +98,16 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   if (activeYtelser.length === 1) {
     const ytelse = activeYtelser[0];
     if (ytelse?.data) {
-      return Response.redirect(ytelse.data.url, 307);
+      const redirectUrl = ytelse.data.url;
+      // Response.redirect krever absolutt URL
+      if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+        logger.error('Invalid redirect URL in handleMeldekortResponse', {
+          redirectUrl,
+          ytelse: ytelse.name,
+        });
+        throw new Error(`Redirect URL must be absolute, got: ${redirectUrl}`);
+      }
+      return Response.redirect(redirectUrl, 307);
     }
   }
 

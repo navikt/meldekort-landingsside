@@ -3,6 +3,7 @@ import type { LenkeInfo, LenkeVisning } from '../lib/types/meldekort';
 import { erstattPlassholdere } from '../lib/utils/meldekort';
 import type { SUPPORTED_LANGUAGES } from '../lib/language';
 import type { Ytelser } from '../lib/sanity';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
@@ -31,24 +32,34 @@ interface MeldekortLinkCardProps {
   info: LenkeInfo;
   data: LinkData;
   ytelseNavn: string;
+  kortType: 'se' | 'sende' | 'fyllUt';
   tilleggstekst?: string;
   language: Language;
+  onNavigate: (ytelse: 'dagpenger' | 'aap' | 'tiltakspenger', kortType: 'se' | 'sende' | 'fyllUt', url: string) => void;
 }
 
 function MeldekortLinkCard({
   info,
   data,
   ytelseNavn,
+  kortType,
   tilleggstekst,
   language,
+  onNavigate,
 }: MeldekortLinkCardProps) {
   const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
   const tagTekst = data.fristTag || data.kanSendesFraTag;
 
+  const handleClick = () => {
+    onNavigate(info.ytelse, kortType, info.url);
+  };
+
   return (
     <LinkCard size="medium">
       <LinkCard.Title>
-        <LinkCard.Anchor href={info.url}>{erstatt(data.tittel)}</LinkCard.Anchor>
+        <LinkCard.Anchor href={info.url} onClick={handleClick}>
+          {erstatt(data.tittel)}
+        </LinkCard.Anchor>
       </LinkCard.Title>
       <LinkCard.Description>
         {erstatt(data.beskrivelse)}
@@ -71,10 +82,12 @@ export function MeldekortLinkCards({
   ytelser,
   language,
 }: MeldekortLinkCardsProps) {
+  const { trackYtelseNavigasjon } = useAnalytics();
+
   const renderLinkCards = <T extends LenkeInfo>(
     lenker: T[],
     data: LinkData | undefined,
-    keyPrefix: string,
+    kortType: 'se' | 'sende' | 'fyllUt',
     getTilleggstekst?: (info: T) => string | undefined,
   ) => {
     if (!data) return null;
@@ -83,11 +96,13 @@ export function MeldekortLinkCards({
       const tilleggstekst = getTilleggstekst?.(info);
       return (
         <MeldekortLinkCard
-          key={`${keyPrefix}-${info.ytelse}-${index}`}
+          key={`${kortType}-${info.ytelse}-${index}`}
           info={info}
           data={data}
           ytelseNavn={ytelser[info.ytelse]}
+          kortType={kortType}
           language={language}
+          onNavigate={trackYtelseNavigasjon}
           {...(tilleggstekst && { tilleggstekst })}
         />
       );
