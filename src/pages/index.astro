@@ -19,7 +19,9 @@ const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
 // Videresend query parametere (f.eks. ?scenario=...) til API-et
-const apiUrl = `${Astro.url.origin}/api/meldekort${Astro.url.search}`;
+const basePath = import.meta.env.BASE_URL || '/';
+const apiPath = basePath.endsWith('/') ? `${basePath}api/meldekort` : `${basePath}/api/meldekort`;
+const apiUrl = `${Astro.url.origin}${apiPath}${Astro.url.search}`;
 const apiResponse = await fetch(apiUrl, {
   headers: {
     cookie: cookieHeader || '',

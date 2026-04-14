@@ -55,7 +55,7 @@ function MyComponent() {
   const { trackYtelseNavigasjon, trackEvent } = useAnalytics();
 
   const handleClick = () => {
-    trackYtelseNavigasjon('dagpenger', 'https://www.nav.no/dagpenger/meldekort');
+    trackYtelseNavigasjon('dagpenger', 'sende', 'https://www.nav.no/dagpenger/meldekort');
   };
 
   return <button onClick={handleClick}>Gå til dagpenger</button>;
@@ -67,16 +67,13 @@ function MyComponent() {
 Importer direkte fra analytics utilities:
 
 ```typescript
-import { trackEvent, trackScenarioValg } from '../lib/utils/analytics';
+import { trackEvent } from '../lib/utils/analytics';
 
 // Track custom event
 trackEvent('button klikket', {
   buttonId: 'submit-button',
   page: 'homepage',
 });
-
-// Track scenario valg (kun i mock mode)
-trackScenarioValg('kun-dagpenger');
 ```
 
 ## Tilgjengelige tracking-funksjoner
