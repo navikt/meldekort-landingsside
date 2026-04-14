@@ -263,7 +263,9 @@ const BASE_URL = '/meldekort';
 const DEFAULT_SCENARIO_DISPLAY_NAME = 'Standard (ingen scenario parameter)';
 
 export function getScenarioUrl(scenarioName: ScenarioName | (string & {})): string {
-  return scenarioName === 'default' ? BASE_URL : `${BASE_URL}?scenario=${scenarioName}`;
+  return scenarioName === 'default'
+    ? BASE_URL
+    : `${BASE_URL}?scenario=${encodeURIComponent(scenarioName)}`;
 }
 
 export function getScenarioDisplayName(scenarioName: ScenarioName | (string & {})): string {

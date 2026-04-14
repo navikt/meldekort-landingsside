@@ -19,7 +19,9 @@ const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
 // Videresend query parametere (f.eks. ?scenario=...) til API-et
-const apiUrl = `${Astro.url.origin}/api/meldekort${Astro.url.search}`;
+const basePath = import.meta.env.BASE_URL || '/';
+const apiPath = basePath.endsWith('/') ? `${basePath}api/meldekort` : `${basePath}/api/meldekort`;
+const apiUrl = `${Astro.url.origin}${apiPath}${Astro.url.search}`;
 const apiResponse = await fetch(apiUrl, {
   headers: {
     cookie: cookieHeader || '',
@@ -59,8 +61,7 @@ if (!apiResponse.ok) {
 
 const apiFeil = !alleMeldekort;
 const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
-const visNoenLenker =
-  visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
+const harKort = visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
 // Hent innhold fra Sanity
 const query = getLandingssideQuery(language);
@@ -113,6 +114,14 @@ const decorator = await getDecoratorHTML({
     <script>
       import "../scripts/languageHandler";
     </script>
+    <script is:inline define:vars={{ visning, harKort, apiFeil }}>
+      // Gjør visning tilgjengelig for kort-tracking
+      // VIKTIG: Dette må kjøre FØR analytics script for å unngå race condition
+      window.__MELDEKORT_VISNING__ = { visning, harKort, apiFeil };
+    </script>
+    <script>
+      import "../scripts/analytics";
+    </script>
   </head>
   <body>
     <Fragment set:html={decorator.DECORATOR_HEADER} />
@@ -140,7 +149,7 @@ const decorator = await getDecoratorHTML({
                 </Heading>
                 <p>{t.feilmelding.beskrivelse}</p>
               </div>
-            ) : visNoenLenker ? (
+            ) : harKort ? (
               hasValidContent && content && (
                 <VStack gap="space-24" maxWidth="525px">
                   <MeldekortLinkCards
