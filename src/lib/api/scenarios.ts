@@ -217,7 +217,7 @@ export type ScenarioName = keyof typeof scenarios;
  * Returnerer default scenario hvis navnet ikke finnes.
  */
 export function getScenario(name?: string) {
-  if (!name || !(name in scenarios)) {
+  if (!name || !Object.hasOwn(scenarios, name)) {
     return scenarios.default;
   }
   return scenarios[name as ScenarioName];
@@ -262,10 +262,10 @@ export const scenarioMetadata = [
 const BASE_URL = '/meldekort';
 const DEFAULT_SCENARIO_DISPLAY_NAME = 'Standard (ingen scenario parameter)';
 
-export function getScenarioUrl(scenarioName: string): string {
+export function getScenarioUrl(scenarioName: ScenarioName | (string & {})): string {
   return scenarioName === 'default' ? BASE_URL : `${BASE_URL}?scenario=${scenarioName}`;
 }
 
-export function getScenarioDisplayName(scenarioName: string): string {
+export function getScenarioDisplayName(scenarioName: ScenarioName | (string & {})): string {
   return scenarioName === 'default' ? DEFAULT_SCENARIO_DISPLAY_NAME : scenarioName;
 }

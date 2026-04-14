@@ -1,10 +1,9 @@
 import type { APIRoute } from 'astro';
 import { getToken } from '@navikt/oasis';
-import type { AlleMeldekortData } from '../../lib/types/meldekort';
 import { dagpengerMock } from '../../lib/api/mockData';
 import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
-import { harAktiveMeldekort, shouldUseMockData } from '../../lib/api/helpers';
+import { shouldUseMockData, handleMeldekortResponse } from '../../lib/api/helpers';
 import { getScenario } from '../../lib/api/scenarios';
 
 /**
@@ -36,37 +35,10 @@ export const GET: APIRoute = async ({ request, url }) => {
   // Hvis mock mode OG scenario er satt, bruk scenario data direkte
   if (useMock && scenario) {
     const scenarioData = getScenario(scenario);
-    const dpData = scenarioData.dagpenger;
-    const aapData = scenarioData.aap;
-    const tpData = scenarioData.tiltakspenger;
-
-    // Tell antall ytelser med aktive meldekort
-    const activeYtelser = [
-      { name: 'dagpenger', data: dpData, active: harAktiveMeldekort(dpData) },
-      { name: 'aap', data: aapData, active: harAktiveMeldekort(aapData) },
-      { name: 'tiltakspenger', data: tpData, active: harAktiveMeldekort(tpData) },
-    ].filter((ytelse) => ytelse.active);
-
-    // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
-    if (activeYtelser.length === 1) {
-      const ytelse = activeYtelser[0];
-      if (ytelse?.data) {
-        return Response.redirect(ytelse.data.url, 307);
-      }
-    }
-
-    // Returner scenario data
-    const alleMeldekort: AlleMeldekortData = {
-      ...(dpData && { dagpenger: dpData }),
-      ...(aapData && { aap: aapData }),
-      ...(tpData && { tiltakspenger: tpData }),
-    };
-
-    return new Response(JSON.stringify(alleMeldekort), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    return handleMeldekortResponse({
+      dagpenger: scenarioData.dagpenger,
+      aap: scenarioData.aap,
+      tiltakspenger: scenarioData.tiltakspenger,
     });
   }
 
@@ -112,37 +84,10 @@ export const GET: APIRoute = async ({ request, url }) => {
     );
   }
 
-  // Hent data fra resultatene
-  const aapData = aapResult.data;
-  const tpData = tpResult.data;
-
-  // Tell antall ytelser med aktive meldekort
-  const activeYtelser = [
-    { name: 'dagpenger', data: dpData, active: harAktiveMeldekort(dpData) },
-    { name: 'aap', data: aapData, active: harAktiveMeldekort(aapData) },
-    { name: 'tiltakspenger', data: tpData, active: harAktiveMeldekort(tpData) },
-  ].filter((ytelse) => ytelse.active);
-
-  // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
-  if (activeYtelser.length === 1) {
-    const ytelse = activeYtelser[0];
-    if (ytelse?.data) {
-      return Response.redirect(ytelse.data.url, 307); // 307 = Temporary Redirect
-    }
-  }
-
-  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
-  // Frontend viser enten tom landingsside (0) eller landingsside med flere ytelser (>1)
-  const alleMeldekort: AlleMeldekortData = {
-    ...(dpData && { dagpenger: dpData }),
-    ...(aapData && { aap: aapData }),
-    ...(tpData && { tiltakspenger: tpData }),
-  };
-
-  return new Response(JSON.stringify(alleMeldekort), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+  // Hent data fra resultatene og returner response
+  return handleMeldekortResponse({
+    dagpenger: dpData,
+    aap: aapResult.data,
+    tiltakspenger: tpResult.data,
   });
 };

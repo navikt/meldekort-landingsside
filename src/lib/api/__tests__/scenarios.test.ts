@@ -18,6 +18,13 @@ describe('scenarios', () => {
       expect(result).toEqual(scenarios.default);
     });
 
+    it('skal returnere default scenario når name er en prototype-nøkkel', () => {
+      expect(getScenario('toString')).toEqual(scenarios.default);
+      expect(getScenario('__proto__')).toEqual(scenarios.default);
+      expect(getScenario('constructor')).toEqual(scenarios.default);
+      expect(getScenario('hasOwnProperty')).toEqual(scenarios.default);
+    });
+
     it('skal returnere riktig scenario når name er "default"', () => {
       const result = getScenario('default');
       expect(result).toEqual(scenarios.default);
