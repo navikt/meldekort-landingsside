@@ -247,8 +247,14 @@ export const scenarioMetadata = [
     category: 'Spesialtilfeller',
     items: [
       { name: 'ingen-meldekort', description: 'Ingen ytelser har aktive meldekort (empty state)' },
-      { name: 'kun-innsendte', description: 'Alle ytelser har kun innsendte meldekort ("Se innsendte")' },
-      { name: 'kun-utfylling', description: 'Alle ytelser har kun meldekort til utfylling ("Send inn" / "Fyll ut")' },
+      {
+        name: 'kun-innsendte',
+        description: 'Alle ytelser har kun innsendte meldekort ("Se innsendte")',
+      },
+      {
+        name: 'kun-utfylling',
+        description: 'Alle ytelser har kun meldekort til utfylling ("Send inn" / "Fyll ut")',
+      },
     ],
   },
 ] as const;
