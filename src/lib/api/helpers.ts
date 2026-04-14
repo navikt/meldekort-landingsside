@@ -4,7 +4,7 @@ import type { MeldekortData } from '../types/meldekort';
  * Sjekker om mock data skal brukes basert på ENFORCE_LOGIN env var.
  */
 export function shouldUseMockData(): boolean {
-  return process.env.ENFORCE_LOGIN === 'false';
+  return import.meta.env.ENFORCE_LOGIN === 'false';
 }
 
 /**

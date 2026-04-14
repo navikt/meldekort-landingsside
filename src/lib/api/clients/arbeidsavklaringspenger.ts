@@ -12,8 +12,8 @@ export async function hentMeldekortDataFraAAP(
     return aapMock;
   }
 
-  const apiUrl = process.env.AAP_API_URL;
-  const audience = process.env.AAP_API_AUDIENCE;
+  const apiUrl = import.meta.env.AAP_API_URL;
+  const audience = import.meta.env.AAP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     logger.error(

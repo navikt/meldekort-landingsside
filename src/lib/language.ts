@@ -22,12 +22,20 @@ export function getLanguageFromCookie(cookieString: string | null): DecoratorLoc
     : DEFAULT_LANGUAGE;
 }
 
-// Fallback tittel hvis Sanity-data ikke er tilgjengelig
+// Fallback oversettelser hvis Sanity-data ikke er tilgjengelig
 export const translations = {
   nb: {
     tittel: 'Meldekortene dine',
+    feilmelding: {
+      tittel: 'Teknisk feil',
+      beskrivelse: 'Vi opplever tekniske problemer. Vennligst prøv igjen senere.',
+    },
   },
   en: {
     tittel: 'Your employment status forms',
+    feilmelding: {
+      tittel: 'Technical error',
+      beskrivelse: 'We are experiencing technical difficulties. Please try again later.',
+    },
   },
 };

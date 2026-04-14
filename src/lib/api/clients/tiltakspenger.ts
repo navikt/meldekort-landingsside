@@ -10,8 +10,8 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<Meldekor
     return tiltakspengerMock;
   }
 
-  const apiUrl = process.env.TP_API_URL;
-  const audience = process.env.TP_API_AUDIENCE;
+  const apiUrl = import.meta.env.TP_API_URL;
+  const audience = import.meta.env.TP_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     logger.error(

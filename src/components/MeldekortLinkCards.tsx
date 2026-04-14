@@ -43,6 +43,7 @@ function MeldekortLinkCard({
   language,
 }: MeldekortLinkCardProps) {
   const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
+  const tagTekst = data.fristTag ?? data.kanSendesFraTag;
 
   return (
     <LinkCard size="medium">
@@ -54,9 +55,9 @@ function MeldekortLinkCard({
         {tilleggstekst && <> {erstatt(tilleggstekst)}</>}
       </LinkCard.Description>
       <LinkCard.Footer>
-        {(data.fristTag || data.kanSendesFraTag) && (
+        {tagTekst && (
           <Tag variant="info" size="small">
-            {erstatt(data.fristTag || data.kanSendesFraTag || '')}
+            {erstatt(tagTekst)}
           </Tag>
         )}
       </LinkCard.Footer>
@@ -70,45 +71,42 @@ export function MeldekortLinkCards({
   ytelser,
   language,
 }: MeldekortLinkCardsProps) {
+  const renderLinkCards = <T extends LenkeInfo>(
+    lenker: T[],
+    data: LinkData | undefined,
+    keyPrefix: string,
+    getTilleggstekst?: (info: T) => string | undefined,
+  ) => {
+    if (!data) return null;
+
+    return lenker.map((info, index) => {
+      const tilleggstekst = getTilleggstekst?.(info);
+      return (
+        <MeldekortLinkCard
+          key={`${keyPrefix}-${info.ytelse}-${index}`}
+          info={info}
+          data={data}
+          ytelseNavn={ytelser[info.ytelse]}
+          language={language}
+          {...(tilleggstekst && { tilleggstekst })}
+        />
+      );
+    });
+  };
+
   return (
     <>
-      {visning.se.map((info, index) =>
-        content.linkForASe ? (
-          <MeldekortLinkCard
-            key={`se-${info.ytelse}-${index}`}
-            info={info}
-            data={content.linkForASe}
-            ytelseNavn={ytelser[info.ytelse]}
-            language={language}
-          />
-        ) : null,
+      {renderLinkCards(visning.se, content.linkForASe, 'se')}
+      {renderLinkCards(
+        visning.sende,
+        content.linkForASende,
+        'sende',
+        (info) =>
+          info.harOgsaInnsendte
+            ? content.linkForASende?.tilleggstekstVedInnsendteMeldekort
+            : undefined,
       )}
-      {visning.sende.map((info, index) =>
-        content.linkForASende ? (
-          <MeldekortLinkCard
-            key={`sende-${info.ytelse}-${index}`}
-            info={info}
-            data={content.linkForASende}
-            ytelseNavn={ytelser[info.ytelse]}
-            language={language}
-            {...(info.harOgsaInnsendte &&
-              content.linkForASende.tilleggstekstVedInnsendteMeldekort && {
-                tilleggstekst: content.linkForASende.tilleggstekstVedInnsendteMeldekort,
-              })}
-          />
-        ) : null,
-      )}
-      {visning.fyllUt.map((info, index) =>
-        content.linkForAFylleUt ? (
-          <MeldekortLinkCard
-            key={`fyllUt-${info.ytelse}-${index}`}
-            info={info}
-            data={content.linkForAFylleUt}
-            ytelseNavn={ytelser[info.ytelse]}
-            language={language}
-          />
-        ) : null,
-      )}
+      {renderLinkCards(visning.fyllUt, content.linkForAFylleUt, 'fyllUt')}
     </>
   );
 }
