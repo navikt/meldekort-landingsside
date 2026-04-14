@@ -10,6 +10,7 @@ import { harAktiveMeldekort, shouldUseMockData } from '../../lib/api/helpers';
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
  *
  * Logikk:
+ * - Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
  * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
  * - Hvis 0 ytelser har aktive meldekort → returner data (tom landingsside vises)
  * - Hvis >1 ytelser har aktive meldekort → returner data (landingsside med flere ytelser vises)
@@ -35,12 +36,37 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   // Hent data fra alle ytelser parallelt
-  const [aapData, tpData] = await Promise.all([
+  const [aapResult, tpResult] = await Promise.all([
     hentMeldekortDataFraAAP(token),
     hentMeldekortDataFraTP(token),
   ]);
 
   const dpData = dagpengerMock; // TODO: Bytt ut med faktisk kall til DP API
+
+  // Sjekk om noen API-kall feilet
+  const apiKallFeilet = !aapResult.success || !tpResult.success;
+
+  if (apiKallFeilet) {
+    return new Response(
+      JSON.stringify({
+        error: 'Failed to fetch data from one or more services',
+        details: {
+          aap: aapResult.success ? 'ok' : aapResult.error,
+          tiltakspenger: tpResult.success ? 'ok' : tpResult.error,
+        },
+      }),
+      {
+        status: 503, // Service Unavailable
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+  }
+
+  // Hent data fra resultatene
+  const aapData = aapResult.data;
+  const tpData = tpResult.data;
 
   // Tell antall ytelser med aktive meldekort
   const activeYtelser = [

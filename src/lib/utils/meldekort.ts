@@ -115,6 +115,28 @@ export function kanFyllesUt(meldekort: MeldekortTilUtfylling): boolean {
 }
 
 /**
+ * Henter nærmeste (tidligste) dato fra liste av meldekort.
+ * @param meldekort - Liste av meldekort
+ * @param datoFelt - Feltnavn for dato som skal sorteres
+ * @returns Nærmeste dato etter sortering, eller undefined hvis listen er tom
+ */
+function hentNærmesteDato(
+  meldekort: MeldekortTilUtfylling[],
+  datoFelt: keyof MeldekortTilUtfylling,
+): string | undefined {
+  const sortert = [...meldekort].sort((a, b) => {
+    const datoA = a[datoFelt];
+    const datoB = b[datoFelt];
+    if (typeof datoA === 'string' && typeof datoB === 'string') {
+      return datoA.localeCompare(datoB);
+    }
+    return 0;
+  });
+  const nærmesteDato = sortert[0]?.[datoFelt];
+  return typeof nærmesteDato === 'string' ? nærmesteDato : undefined;
+}
+
+/**
  * Oppdaterer visningsobjektet basert på en ytelses meldekortdata.
  *
  * Hver ytelse legger til ETT kort basert på prioritet:
@@ -134,19 +156,13 @@ function oppdaterVisning(
   sjekkFyllUt = false,
 ): void {
   const meldekortSomKanSendes = data.meldekortTilUtfylling.filter(kanSendes);
-  const kanSendeNoe = meldekortSomKanSendes.length > 0;
   const harInnsendte = data.innsendteMeldekort;
 
-  if (kanSendeNoe) {
-    // Finn nærmeste frist
-    const sortert = meldekortSomKanSendes.sort((a, b) =>
-      a.fristForInnsending.localeCompare(b.fristForInnsending),
-    );
-
+  if (meldekortSomKanSendes.length > 0) {
     visning.sende.push({
       url: data.url,
       ytelse,
-      dato: sortert[0]?.fristForInnsending,
+      dato: hentNærmesteDato(meldekortSomKanSendes, 'fristForInnsending'),
       harOgsaInnsendte: harInnsendte,
     });
   } else if (harInnsendte) {
@@ -155,17 +171,15 @@ function oppdaterVisning(
       ytelse,
       dato: undefined,
     });
-  } else if (sjekkFyllUt && data.meldekortTilUtfylling.some(kanFyllesUt)) {
+  } else if (sjekkFyllUt) {
     const meldekortSomKanFyllesUt = data.meldekortTilUtfylling.filter(kanFyllesUt);
-    // Finn tidligste dato det kan sendes fra
-    const sortert = meldekortSomKanFyllesUt.sort((a, b) =>
-      a.kanSendesFra.localeCompare(b.kanSendesFra),
-    );
-    visning.fyllUt.push({
-      url: data.url,
-      ytelse,
-      dato: sortert[0]?.kanSendesFra,
-    });
+    if (meldekortSomKanFyllesUt.length > 0) {
+      visning.fyllUt.push({
+        url: data.url,
+        ytelse,
+        dato: hentNærmesteDato(meldekortSomKanFyllesUt, 'kanSendesFra'),
+      });
+    }
   }
 }
 
@@ -191,9 +205,18 @@ export function skalViseLenker(data: AlleMeldekortData): LenkeVisning {
     fyllUt: [],
   };
 
-  if (data.dagpenger) oppdaterVisning(data.dagpenger, 'dagpenger', visning);
-  if (data.tiltakspenger) oppdaterVisning(data.tiltakspenger, 'tiltakspenger', visning);
-  if (data.aap) oppdaterVisning(data.aap, 'aap', visning, true);
+  const ytelser: Array<{ data: MeldekortData | undefined; ytelse: Ytelse; sjekkFyllUt: boolean }> =
+    [
+      { data: data.dagpenger, ytelse: 'dagpenger', sjekkFyllUt: false },
+      { data: data.tiltakspenger, ytelse: 'tiltakspenger', sjekkFyllUt: false },
+      { data: data.aap, ytelse: 'aap', sjekkFyllUt: true },
+    ];
+
+  for (const { data: ytelseData, ytelse, sjekkFyllUt } of ytelser) {
+    if (ytelseData) {
+      oppdaterVisning(ytelseData, ytelse, visning, sjekkFyllUt);
+    }
+  }
 
   return visning;
 }

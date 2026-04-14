@@ -1,10 +1,21 @@
 import type { MeldekortData } from '../types/meldekort';
 
 /**
+ * Resultat fra API-kall som kan enten lykkes eller feile.
+ */
+export interface ApiResult<T> {
+  success: boolean;
+  data?: T | undefined;
+  error?: string;
+}
+
+/**
  * Sjekker om mock data skal brukes basert på ENFORCE_LOGIN env var.
+ * Bruker import.meta.env i dev (Vite leser .env) og process.env i prod (NAIS).
  */
 export function shouldUseMockData(): boolean {
-  return process.env.ENFORCE_LOGIN === 'false';
+  const enforceLogin = import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
+  return enforceLogin === 'false';
 }
 
 /**

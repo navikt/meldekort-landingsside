@@ -14,7 +14,7 @@ import { logger } from '../lib/utils/logger';
 const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
-const enforceLogin = process.env.ENFORCE_LOGIN !== 'false';
+const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
 
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
@@ -33,20 +33,30 @@ if (apiResponse.status === 307 || apiResponse.status === 308) {
   }
 }
 
-// Kræsj hardt hvis API-kallet feiler
+// Håndter API-feil
+let alleMeldekort: AlleMeldekortData | null = null;
+
 if (!apiResponse.ok) {
-  logger.error('Failed to fetch meldekort data from API', {
+  logger.error('Failed to fetch meldekort data from API - showing error page to user', {
     status: apiResponse.status,
     statusText: apiResponse.statusText,
+    url: `${Astro.url.origin}/api/meldekort`,
   });
-  throw new Error(
-    `Failed to fetch meldekort data: ${apiResponse.status} ${apiResponse.statusText}`,
-  );
+  Astro.response.status = apiResponse.status >= 500 ? apiResponse.status : 500;
+} else {
+  try {
+    alleMeldekort = await apiResponse.json();
+  } catch (error) {
+    logger.error('Failed to parse meldekort API response - showing error page to user', {
+      error: error instanceof Error ? error.message : 'Unknown error',
+      status: apiResponse.status,
+    });
+    Astro.response.status = 500;
+  }
 }
 
-const alleMeldekort: AlleMeldekortData = await apiResponse.json();
-
-const visning = skalViseLenker(alleMeldekort);
+const apiFeil = !alleMeldekort;
+const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
 const visNoenLenker =
   visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
@@ -69,6 +79,12 @@ const contentMissing = sanityDataMissing(
 // Fallback til hardkodede oversettelser hvis Sanity-data ikke er tilgjengelig
 const t = translations[language as keyof typeof translations] || translations.nb;
 
+// Helper-variabler for å forenkle rendering-logikken
+const hasValidContent = !contentMissing && !!content;
+const tittel = hasValidContent && content ? content.tittel : t.tittel;
+const hasEmptyState = hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
+const hasBunntekst = hasValidContent && (content?.bunntekst?.length ?? 0) > 0;
+
 const decorator = await getDecoratorHTML({
   env: import.meta.env.PROD ? 'prod' : 'dev',
   context: 'privatperson',
@@ -90,7 +106,7 @@ const decorator = await getDecoratorHTML({
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{contentMissing || !content ? t.tittel : content.tittel}</title>
+    <title>{tittel}</title>
     <Fragment set:html={decorator.DECORATOR_HEAD_ASSETS} />
     <script>
       import "../scripts/languageHandler";
@@ -101,12 +117,17 @@ const decorator = await getDecoratorHTML({
     <Page contentBlockPadding="end">
       <Page.Block as="main" width="2xl" gutters>
         <VStack gap="space-40">
-          <Heading size="xlarge" level="1"
-            >{contentMissing || !content ? t.tittel : content.tittel}</Heading
-          >
+          <Heading size="xlarge" level="1">{tittel}</Heading>
           {
-            visNoenLenker ? (
-              !contentMissing && content && (
+            apiFeil ? (
+              <div>
+                <Heading size="medium" level="2" spacing>
+                  {t.feilmelding.tittel}
+                </Heading>
+                <p>{t.feilmelding.beskrivelse}</p>
+              </div>
+            ) : visNoenLenker ? (
+              hasValidContent && content && (
                 <VStack gap="space-24" maxWidth="525px">
                   <MeldekortLinkCards
                     client:load
@@ -122,22 +143,10 @@ const decorator = await getDecoratorHTML({
                 </VStack>
               )
             ) : (
-              !contentMissing &&
-              content &&
-              content.emptyStateTekst &&
-              content.emptyStateTekst.length > 0 && (
-                <PortableText value={content.emptyStateTekst} />
-              )
+              hasEmptyState && content && <PortableText value={content.emptyStateTekst} />
             )
           }
-          {
-            !contentMissing &&
-            content &&
-            content.bunntekst &&
-            content.bunntekst.length > 0 && (
-              <PortableText value={content.bunntekst} />
-            )
-          }
+          {hasBunntekst && content && <PortableText value={content.bunntekst} />}
         </VStack>
       </Page.Block>
     </Page>
