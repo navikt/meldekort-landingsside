@@ -1,5 +1,5 @@
-import type { MeldekortData, AlleMeldekortData } from '../types/meldekort';
-import { logger } from '../utils/logger';
+import type { MeldekortData, AlleMeldekortData } from "../types/meldekort";
+import { logger } from "../utils/logger";
 
 /**
  * Resultat fra API-kall som kan enten lykkes eller feile.
@@ -14,6 +14,7 @@ interface YtelseData {
   dagpenger?: MeldekortData | undefined;
   aap?: MeldekortData | undefined;
   tiltakspenger?: MeldekortData | undefined;
+  redirectUrl?: string;
 }
 
 /**
@@ -21,8 +22,9 @@ interface YtelseData {
  * Bruker import.meta.env i dev (Vite leser .env) og process.env i prod (NAIS).
  */
 export function shouldUseMockData(): boolean {
-  const enforceLogin = import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
-  return enforceLogin === 'false';
+  const enforceLogin =
+    import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
+  return enforceLogin === "false";
 }
 
 /**
@@ -39,16 +41,16 @@ export function harAktiveMeldekort(data: MeldekortData | undefined): boolean {
  * Validerer at data matcher MeldekortData typen.
  */
 export function validerMeldekortData(data: unknown): data is MeldekortData {
-  if (!data || typeof data !== 'object') {
+  if (!data || typeof data !== "object") {
     return false;
   }
 
   const obj = data as Record<string, unknown>;
 
   return (
-    typeof obj.innsendteMeldekort === 'boolean' &&
+    typeof obj.innsendteMeldekort === "boolean" &&
     Array.isArray(obj.meldekortTilUtfylling) &&
-    typeof obj.url === 'string'
+    typeof obj.url === "string"
   );
 }
 
@@ -72,7 +74,7 @@ export async function fetchWithTimeout(
     return response;
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
+    if (error instanceof Error && error.name === "AbortError") {
       throw new Error(`Request timeout after ${timeout}ms`);
     }
     throw error;
@@ -81,37 +83,76 @@ export async function fetchWithTimeout(
 
 /**
  * Håndterer redirect/response logikk basert på antall aktive ytelser.
+ * - Hvis 0 ytelser har aktive meldekort OG redirectUrl er satt → HTTP 307 redirect til redirectUrl
  * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
  * - Ellers → returner JSON med meldekortdata for alle ytelser
  */
 export function handleMeldekortResponse(ytelseData: YtelseData): Response {
-  const { dagpenger, aap, tiltakspenger } = ytelseData;
+  const { dagpenger, aap, tiltakspenger, redirectUrl } = ytelseData;
 
   // Tell antall ytelser med aktive meldekort
   const activeYtelser = [
-    { name: 'dagpenger', data: dagpenger, active: harAktiveMeldekort(dagpenger) },
-    { name: 'aap', data: aap, active: harAktiveMeldekort(aap) },
-    { name: 'tiltakspenger', data: tiltakspenger, active: harAktiveMeldekort(tiltakspenger) },
+    {
+      name: "dagpenger",
+      data: dagpenger,
+      active: harAktiveMeldekort(dagpenger),
+    },
+    { name: "aap", data: aap, active: harAktiveMeldekort(aap) },
+    {
+      name: "tiltakspenger",
+      data: tiltakspenger,
+      active: harAktiveMeldekort(tiltakspenger),
+    },
   ].filter((ytelse) => ytelse.active);
+
+  // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
+  if (activeYtelser.length === 0 && redirectUrl) {
+    // redirectUrl fra arena kan være relativ (/felles-meldekort) eller absolutt
+    // Response.redirect krever absolutt URL, men siden denne responsen håndteres av index.astro
+    // som bruker Astro.redirect (som aksepterer relative URLs), kan vi sende relativ URL her
+    // ved å konstruere en absolutt URL basert på origin
+    // For enkelhetens skyld, hvis URL er relativ, returner den som er
+    // (index.astro vil håndtere den korrekt)
+    if (
+      !redirectUrl.startsWith("http://") &&
+      !redirectUrl.startsWith("https://")
+    ) {
+      // For relativ URL, må vi ha en absolutt URL for Response.redirect
+      // Vi bruker en placeholder origin som index.astro vil overskrive
+      return new Response(null, {
+        status: 307,
+        headers: {
+          Location: redirectUrl,
+        },
+      });
+    }
+    return Response.redirect(redirectUrl, 307);
+  }
 
   // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
   if (activeYtelser.length === 1) {
     const ytelse = activeYtelser[0];
     if (ytelse?.data) {
-      const redirectUrl = ytelse.data.url;
+      const ytelseRedirectUrl = ytelse.data.url;
       // Response.redirect krever absolutt URL
-      if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
-        logger.error('Invalid redirect URL in handleMeldekortResponse', {
-          redirectUrl,
+      if (
+        !ytelseRedirectUrl.startsWith("http://") &&
+        !ytelseRedirectUrl.startsWith("https://")
+      ) {
+        logger.error("Invalid redirect URL in handleMeldekortResponse", {
+          redirectUrl: ytelseRedirectUrl,
           ytelse: ytelse.name,
         });
-        throw new Error(`Redirect URL must be absolute, got: ${redirectUrl}`);
+        throw new Error(
+          `Redirect URL must be absolute, got: ${ytelseRedirectUrl}`,
+        );
       }
-      return Response.redirect(redirectUrl, 307);
+      return Response.redirect(ytelseRedirectUrl, 307);
     }
   }
 
-  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
+  // Ellers (flere ytelser med aktive meldekort), returner JSON med meldekortdata
+  // redirectUrl inkluderes ikke her fordi den kun brukes for redirect når ingen ytelser er aktive
   const alleMeldekort: AlleMeldekortData = {
     ...(dagpenger && { dagpenger }),
     ...(aap && { aap }),
@@ -121,7 +162,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   return new Response(JSON.stringify(alleMeldekort), {
     status: 200,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 }
