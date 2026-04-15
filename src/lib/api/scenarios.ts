@@ -257,7 +257,10 @@ export const scenarioMetadata = [
   {
     category: 'Redirect scenarier',
     items: [
-      { name: 'kun-felles-meldekort', description: 'Kun felles meldekort fra arena → redirect til /felles-meldekort' },
+      {
+        name: 'kun-felles-meldekort',
+        description: 'Kun felles meldekort fra arena → redirect til /felles-meldekort',
+      },
       { name: 'kun-dagpenger', description: 'Kun dagpenger har aktive meldekort → redirect' },
       { name: 'kun-aap', description: 'Kun AAP har aktive meldekort → redirect' },
       { name: 'kun-tp', description: 'Kun tiltakspenger har aktive meldekort → redirect' },

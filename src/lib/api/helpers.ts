@@ -114,8 +114,8 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
       try {
         const url = new URL(redirectUrl);
         const allowedHosts = ['nav.no', 'www.nav.no'];
-        const isAllowedHost = allowedHosts.some(host =>
-          url.hostname === host || url.hostname.endsWith(`.${host}`)
+        const isAllowedHost = allowedHosts.some(
+          (host) => url.hostname === host || url.hostname.endsWith(`.${host}`),
         );
 
         if (!isAllowedHost) {
@@ -127,7 +127,10 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
         }
       } catch (error) {
         // Hvis det er en Error vi selv kastet, re-throw den
-        if (error instanceof Error && error.message.includes('Redirect URL must be to nav.no domain')) {
+        if (
+          error instanceof Error &&
+          error.message.includes('Redirect URL must be to nav.no domain')
+        ) {
           throw error;
         }
         // Ellers, håndter parsing-feil
