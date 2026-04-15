@@ -35,10 +35,12 @@ export const GET: APIRoute = async ({ request, url }) => {
   // Hvis mock mode OG scenario er satt, bruk scenario data direkte
   if (useMock && scenario) {
     const scenarioData = getScenario(scenario);
+    const redirectUrl = (scenarioData as { redirectUrl?: string }).redirectUrl;
     return handleMeldekortResponse({
       dagpenger: scenarioData.dagpenger,
       aap: scenarioData.aap,
       tiltakspenger: scenarioData.tiltakspenger,
+      ...(redirectUrl && { redirectUrl }),
     });
   }
 

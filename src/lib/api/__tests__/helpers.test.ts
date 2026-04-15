@@ -384,5 +384,72 @@ describe('helpers', () => {
       const data = await response.json();
       expect(data).toEqual({ dagpenger: ytelseData.dagpenger });
     });
+
+    it('skal redirecte til redirectUrl når ingen ytelser har aktive meldekort', () => {
+      const ytelseData = {
+        dagpenger: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/dagpenger/meldekort',
+        },
+        aap: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/aap/meldekort',
+        },
+        tiltakspenger: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/tiltakspenger/meldekort',
+        },
+        redirectUrl: '/felles-meldekort',
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('Location')).toBe('/felles-meldekort');
+    });
+
+    it('skal returnere JSON når ingen ytelser har aktive meldekort og redirectUrl mangler', async () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data).toEqual({});
+    });
+
+    it('skal ikke inkludere redirectUrl i JSON response når flere ytelser har aktive meldekort', async () => {
+      const ytelseData = {
+        dagpenger: {
+          innsendteMeldekort: true,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/dagpenger/meldekort',
+        },
+        aap: {
+          innsendteMeldekort: true,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/aap/meldekort',
+        },
+        tiltakspenger: undefined,
+        redirectUrl: '/felles-meldekort',
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data).toEqual({
+        dagpenger: ytelseData.dagpenger,
+        aap: ytelseData.aap,
+      });
+      expect(data).not.toHaveProperty('redirectUrl');
+    });
   });
 });

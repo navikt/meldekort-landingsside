@@ -53,6 +53,8 @@ function MeldekortLinkCard({
 }: MeldekortLinkCardProps) {
   const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
   const tagTekst = data.fristTag || data.kanSendesFraTag;
+  // Vis ikke tag hvis dato er undefined (f.eks. tiltakspenger uten frist)
+  const visTag = tagTekst && info.dato !== undefined;
 
   const handleClick = () => {
     onNavigate(info.ytelse, kortType, info.url);
@@ -70,7 +72,7 @@ function MeldekortLinkCard({
         {tilleggstekst && <> {erstatt(tilleggstekst)}</>}
       </LinkCard.Description>
       <LinkCard.Footer>
-        {tagTekst && (
+        {visTag && (
           <Tag variant="info" size="small">
             {erstatt(tagTekst)}
           </Tag>

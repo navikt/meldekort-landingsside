@@ -33,7 +33,7 @@ export const tiltakspengerMock: MeldekortData = {
     {
       kanSendesFra: '2026-03-10', // Kan sendes nå
       kanFyllesUtFra: null,
-      fristForInnsending: '2026-03-24',
+      fristForInnsending: null,
     },
   ],
   url: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',

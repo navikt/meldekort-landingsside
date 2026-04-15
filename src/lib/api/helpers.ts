@@ -14,6 +14,7 @@ interface YtelseData {
   dagpenger?: MeldekortData | undefined;
   aap?: MeldekortData | undefined;
   tiltakspenger?: MeldekortData | undefined;
+  redirectUrl?: string;
 }
 
 /**
@@ -81,11 +82,12 @@ export async function fetchWithTimeout(
 
 /**
  * Håndterer redirect/response logikk basert på antall aktive ytelser.
+ * - Hvis 0 ytelser har aktive meldekort OG redirectUrl er satt → HTTP 307 redirect til redirectUrl
  * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
  * - Ellers → returner JSON med meldekortdata for alle ytelser
  */
 export function handleMeldekortResponse(ytelseData: YtelseData): Response {
-  const { dagpenger, aap, tiltakspenger } = ytelseData;
+  const { dagpenger, aap, tiltakspenger, redirectUrl } = ytelseData;
 
   // Tell antall ytelser med aktive meldekort
   const activeYtelser = [
@@ -94,24 +96,46 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
     { name: 'tiltakspenger', data: tiltakspenger, active: harAktiveMeldekort(tiltakspenger) },
   ].filter((ytelse) => ytelse.active);
 
+  // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
+  if (activeYtelser.length === 0 && redirectUrl) {
+    // redirectUrl fra arena kan være relativ (/felles-meldekort) eller absolutt
+    // Response.redirect krever absolutt URL, men siden denne responsen håndteres av index.astro
+    // som bruker Astro.redirect (som aksepterer relative URLs), kan vi sende relativ URL her
+    // ved å konstruere en absolutt URL basert på origin
+    // For enkelhetens skyld, hvis URL er relativ, returner den som er
+    // (index.astro vil håndtere den korrekt)
+    if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+      // For relativ URL, må vi ha en absolutt URL for Response.redirect
+      // Vi bruker en placeholder origin som index.astro vil overskrive
+      return new Response(null, {
+        status: 307,
+        headers: {
+          Location: redirectUrl,
+        },
+      });
+    }
+    return Response.redirect(redirectUrl, 307);
+  }
+
   // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
   if (activeYtelser.length === 1) {
     const ytelse = activeYtelser[0];
     if (ytelse?.data) {
-      const redirectUrl = ytelse.data.url;
+      const ytelseRedirectUrl = ytelse.data.url;
       // Response.redirect krever absolutt URL
-      if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+      if (!ytelseRedirectUrl.startsWith('http://') && !ytelseRedirectUrl.startsWith('https://')) {
         logger.error('Invalid redirect URL in handleMeldekortResponse', {
-          redirectUrl,
+          redirectUrl: ytelseRedirectUrl,
           ytelse: ytelse.name,
         });
-        throw new Error(`Redirect URL must be absolute, got: ${redirectUrl}`);
+        throw new Error(`Redirect URL must be absolute, got: ${ytelseRedirectUrl}`);
       }
-      return Response.redirect(redirectUrl, 307);
+      return Response.redirect(ytelseRedirectUrl, 307);
     }
   }
 
-  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
+  // Ellers (flere ytelser med aktive meldekort), returner JSON med meldekortdata
+  // redirectUrl inkluderes ikke her fordi den kun brukes for redirect når ingen ytelser er aktive
   const alleMeldekort: AlleMeldekortData = {
     ...(dagpenger && { dagpenger }),
     ...(aap && { aap }),

@@ -1,7 +1,7 @@
 export interface MeldekortTilUtfylling {
   kanSendesFra: string;
   kanFyllesUtFra: string | null;
-  fristForInnsending: string;
+  fristForInnsending: string | null;
 }
 
 export interface MeldekortData {
@@ -14,6 +14,7 @@ export interface AlleMeldekortData {
   dagpenger?: MeldekortData;
   aap?: MeldekortData;
   tiltakspenger?: MeldekortData;
+  redirectUrl?: string;
 }
 
 export type Ytelse = 'dagpenger' | 'aap' | 'tiltakspenger';
