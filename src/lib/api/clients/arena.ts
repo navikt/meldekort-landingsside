@@ -1,11 +1,7 @@
 import { requestTokenxOboToken } from '@navikt/oasis';
 import type { ArenaMeldekortResponse } from '../../types/meldekort';
 import { logger } from '../../utils/logger';
-import {
-  shouldUseMockData,
-  fetchWithTimeout,
-  type ApiResult,
-} from '../helpers';
+import { shouldUseMockData, fetchWithTimeout, type ApiResult } from '../helpers';
 
 /**
  * Mock data for arena når ingen ytelser har aktive meldekort.
@@ -46,8 +42,7 @@ export async function hentMeldekortDataFraArena(
   }
 
   const apiUrl = import.meta.env.ARENA_API_URL ?? process.env.ARENA_API_URL;
-  const audience =
-    import.meta.env.ARENA_API_AUDIENCE ?? process.env.ARENA_API_AUDIENCE;
+  const audience = import.meta.env.ARENA_API_AUDIENCE ?? process.env.ARENA_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     const error = 'Missing Arena API configuration';

@@ -1,5 +1,5 @@
-import type { MeldekortData, AlleMeldekortData } from "../types/meldekort";
-import { logger } from "../utils/logger";
+import type { MeldekortData, AlleMeldekortData } from '../types/meldekort';
+import { logger } from '../utils/logger';
 
 /**
  * Resultat fra API-kall som kan enten lykkes eller feile.
@@ -22,9 +22,8 @@ interface YtelseData {
  * Bruker import.meta.env i dev (Vite leser .env) og process.env i prod (NAIS).
  */
 export function shouldUseMockData(): boolean {
-  const enforceLogin =
-    import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
-  return enforceLogin === "false";
+  const enforceLogin = import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN;
+  return enforceLogin === 'false';
 }
 
 /**
@@ -41,16 +40,16 @@ export function harAktiveMeldekort(data: MeldekortData | undefined): boolean {
  * Validerer at data matcher MeldekortData typen.
  */
 export function validerMeldekortData(data: unknown): data is MeldekortData {
-  if (!data || typeof data !== "object") {
+  if (!data || typeof data !== 'object') {
     return false;
   }
 
   const obj = data as Record<string, unknown>;
 
   return (
-    typeof obj.innsendteMeldekort === "boolean" &&
+    typeof obj.innsendteMeldekort === 'boolean' &&
     Array.isArray(obj.meldekortTilUtfylling) &&
-    typeof obj.url === "string"
+    typeof obj.url === 'string'
   );
 }
 
@@ -74,7 +73,7 @@ export async function fetchWithTimeout(
     return response;
   } catch (error) {
     clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === "AbortError") {
+    if (error instanceof Error && error.name === 'AbortError') {
       throw new Error(`Request timeout after ${timeout}ms`);
     }
     throw error;
@@ -93,13 +92,13 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   // Tell antall ytelser med aktive meldekort
   const activeYtelser = [
     {
-      name: "dagpenger",
+      name: 'dagpenger',
       data: dagpenger,
       active: harAktiveMeldekort(dagpenger),
     },
-    { name: "aap", data: aap, active: harAktiveMeldekort(aap) },
+    { name: 'aap', data: aap, active: harAktiveMeldekort(aap) },
     {
-      name: "tiltakspenger",
+      name: 'tiltakspenger',
       data: tiltakspenger,
       active: harAktiveMeldekort(tiltakspenger),
     },
@@ -113,10 +112,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
     // ved å konstruere en absolutt URL basert på origin
     // For enkelhetens skyld, hvis URL er relativ, returner den som er
     // (index.astro vil håndtere den korrekt)
-    if (
-      !redirectUrl.startsWith("http://") &&
-      !redirectUrl.startsWith("https://")
-    ) {
+    if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
       // For relativ URL, må vi ha en absolutt URL for Response.redirect
       // Vi bruker en placeholder origin som index.astro vil overskrive
       return new Response(null, {
@@ -135,17 +131,12 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
     if (ytelse?.data) {
       const ytelseRedirectUrl = ytelse.data.url;
       // Response.redirect krever absolutt URL
-      if (
-        !ytelseRedirectUrl.startsWith("http://") &&
-        !ytelseRedirectUrl.startsWith("https://")
-      ) {
-        logger.error("Invalid redirect URL in handleMeldekortResponse", {
+      if (!ytelseRedirectUrl.startsWith('http://') && !ytelseRedirectUrl.startsWith('https://')) {
+        logger.error('Invalid redirect URL in handleMeldekortResponse', {
           redirectUrl: ytelseRedirectUrl,
           ytelse: ytelse.name,
         });
-        throw new Error(
-          `Redirect URL must be absolute, got: ${ytelseRedirectUrl}`,
-        );
+        throw new Error(`Redirect URL must be absolute, got: ${ytelseRedirectUrl}`);
       }
       return Response.redirect(ytelseRedirectUrl, 307);
     }
@@ -162,7 +153,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   return new Response(JSON.stringify(alleMeldekort), {
     status: 200,
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
   });
 }

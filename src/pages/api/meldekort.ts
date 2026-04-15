@@ -4,7 +4,11 @@ import { dagpengerMock } from '../../lib/api/mockData';
 import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
 import { hentMeldekortDataFraArena } from '../../lib/api/clients/arena';
-import { shouldUseMockData, handleMeldekortResponse, harAktiveMeldekort } from '../../lib/api/helpers';
+import {
+  shouldUseMockData,
+  handleMeldekortResponse,
+  harAktiveMeldekort,
+} from '../../lib/api/helpers';
 import { getScenario } from '../../lib/api/scenarios';
 
 /**
