@@ -5,6 +5,13 @@ import type { MeldekortData } from '../types/meldekort';
  * Brukes med ?scenario=<navn> query parameter i mock mode.
  */
 
+export interface ScenarioData {
+  dagpenger?: MeldekortData | undefined;
+  aap?: MeldekortData | undefined;
+  tiltakspenger?: MeldekortData | undefined;
+  redirectUrl?: string;
+}
+
 export const scenarios = {
   // Standard mock data (default)
   default: {
@@ -236,7 +243,7 @@ export type ScenarioName = keyof typeof scenarios;
  * Henter scenario basert på navn.
  * Returnerer default scenario hvis navnet ikke finnes.
  */
-export function getScenario(name?: string) {
+export function getScenario(name?: string): ScenarioData {
   if (!name || !Object.hasOwn(scenarios, name)) {
     return scenarios.default;
   }

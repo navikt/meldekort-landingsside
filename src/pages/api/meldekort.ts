@@ -11,8 +11,9 @@ import { getScenario } from '../../lib/api/scenarios';
  *
  * Logikk:
  * - Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
+ * - Hvis 0 ytelser har aktive meldekort OG redirectUrl er satt → HTTP 307 redirect til redirectUrl
  * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
- * - Hvis 0 ytelser har aktive meldekort → returner data (tom landingsside vises)
+ * - Hvis 0 ytelser har aktive meldekort (uten redirectUrl) → returner data (tom landingsside vises)
  * - Hvis >1 ytelser har aktive meldekort → returner data (landingsside med flere ytelser vises)
  *
  * En ytelse regnes som aktiv hvis den har:
@@ -21,7 +22,7 @@ import { getScenario } from '../../lib/api/scenarios';
  *
  * Mock mode med scenarier (kun når ENFORCE_LOGIN=false):
  * Bruk ?scenario=<navn> query parameter for å teste forskjellige tilstander.
- * Tilgjengelige scenarier: ingen-meldekort, kun-dagpenger, kun-aap, kun-tp,
+ * Tilgjengelige scenarier: ingen-meldekort, kun-felles-meldekort, kun-dagpenger, kun-aap, kun-tp,
  * aap-og-tp, alle-ytelser, kun-innsendte, kun-utfylling
  * Se src/lib/api/scenarios.ts for alle scenarier.
  */
@@ -35,12 +36,11 @@ export const GET: APIRoute = async ({ request, url }) => {
   // Hvis mock mode OG scenario er satt, bruk scenario data direkte
   if (useMock && scenario) {
     const scenarioData = getScenario(scenario);
-    const redirectUrl = (scenarioData as { redirectUrl?: string }).redirectUrl;
     return handleMeldekortResponse({
       dagpenger: scenarioData.dagpenger,
       aap: scenarioData.aap,
       tiltakspenger: scenarioData.tiltakspenger,
-      ...(redirectUrl && { redirectUrl }),
+      ...(scenarioData.redirectUrl && { redirectUrl: scenarioData.redirectUrl }),
     });
   }
 
