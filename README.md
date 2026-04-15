@@ -36,8 +36,8 @@ Dette repoet erstatter felles-meldekort som inngangsport til meldekort i Nav. De
 
 ### Forutsetninger
 
-- Node.js 25+
-- pnpm 9.15.4+
+- Node.js 24.0.0+
+- pnpm 10.33.0+
 - GitHub Personal Access Token med `read:packages` scope (for å hente @navikt-pakker)
 
 ### Installasjon
@@ -134,7 +134,7 @@ Tilgjengelige scenarier:
 
 Se [SCENARIOS.md](./SCENARIOS.md) for full dokumentasjon.
 
-Testing av ulike scenarier er også tilgengelig i Demo.
+Testing av ulike scenarier er også tilgjengelig i Demo.
 
 ### Bygging
 

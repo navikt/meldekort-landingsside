@@ -57,6 +57,26 @@ export const scenarios = {
     tiltakspenger: undefined,
   },
 
+  // Kun felles meldekort fra arena (redirect)
+  'kun-felles-meldekort': {
+    dagpenger: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/dagpenger/meldekort',
+    } as MeldekortData,
+    aap: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/aap/meldekort',
+    } as MeldekortData,
+    tiltakspenger: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/tiltakspenger/meldekort',
+    } as MeldekortData,
+    redirectUrl: '/felles-meldekort',
+  },
+
   // Kun dagpenger har aktive meldekort (skal redirecte)
   'kun-dagpenger': {
     dagpenger: {
@@ -235,8 +255,9 @@ export function getScenario(name?: string): ScenarioData {
  */
 export const scenarioMetadata = [
   {
-    category: 'Redirect scenarier (kun én ytelse)',
+    category: 'Redirect scenarier',
     items: [
+      { name: 'kun-felles-meldekort', description: 'Kun felles meldekort fra arena → redirect til /felles-meldekort' },
       { name: 'kun-dagpenger', description: 'Kun dagpenger har aktive meldekort → redirect' },
       { name: 'kun-aap', description: 'Kun AAP har aktive meldekort → redirect' },
       { name: 'kun-tp', description: 'Kun tiltakspenger har aktive meldekort → redirect' },

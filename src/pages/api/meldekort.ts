@@ -10,6 +10,7 @@ import {
   harAktiveMeldekort,
 } from '../../lib/api/helpers';
 import { getScenario } from '../../lib/api/scenarios';
+import { logger } from '../../lib/utils/logger';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
@@ -107,6 +108,9 @@ export const GET: APIRoute = async ({ request, url }) => {
     // Hvis arena-kallet feiler, logg men fortsett (vi viser tom landingsside)
     if (!arenaResult.success) {
       // Arena-feil er ikke kritisk, fortsett uten redirectUrl
+      logger.warn('Arena-kall for meldekort feilet, fortsetter uten redirectUrl', {
+        error: arenaResult.error,
+      });
     } else if (arenaResult.data) {
       redirectUrl = arenaResult.data.redirectUrl;
     }
