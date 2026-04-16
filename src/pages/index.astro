@@ -94,15 +94,19 @@ const decorator = await getDecoratorHTML({
   env: import.meta.env.PROD ? 'prod' : 'dev',
   context: 'privatperson',
   simple: false,
-  enforceLogin,
-  level: 'Level3',
-  redirectToApp: true,
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({
     locale,
     url: import.meta.env.BASE_URL,
     handleInApp: true,
   })),
+  // Auth-params sendes kun i lokal utvikling (når enforceLogin=false)
+  // I prod/dev håndterer idporten sidecar autentiseringen
+  ...(enforceLogin === false && {
+    enforceLogin: false,
+    level: 'Level3',
+    redirectToApp: true,
+  }),
 });
 ---
 

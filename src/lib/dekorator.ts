@@ -12,15 +12,16 @@ interface DecoratorParams {
   env?: 'prod' | 'dev' | 'localhost';
   context?: 'privatperson' | 'arbeidsgiver';
   simple?: boolean;
-  enforceLogin?: boolean;
-  level?: 'Level3' | 'Level4';
-  redirectToApp?: boolean;
   language?: DecoratorLocale;
   availableLanguages?: Array<{
     locale: string;
     url: string;
     handleInApp?: boolean;
   }>;
+  // Disse parameterne brukes kun i lokal utvikling uten idporten
+  enforceLogin?: boolean;
+  level?: 'Level3' | 'Level4';
+  redirectToApp?: boolean;
 }
 
 export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<DecoratorElements> {
@@ -28,11 +29,11 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
     env = 'dev',
     context = 'privatperson',
     simple = false,
-    enforceLogin = true,
-    level = 'Level3',
-    redirectToApp = true,
     language = 'nb',
     availableLanguages,
+    enforceLogin,
+    level,
+    redirectToApp,
   } = params;
 
   const baseUrl =
@@ -41,11 +42,20 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
   const queryParams = new URLSearchParams({
     context,
     simple: simple.toString(),
-    enforceLogin: enforceLogin.toString(),
-    level,
-    redirectToApp: redirectToApp.toString(),
     language,
   });
+
+  // Bare legg til auth-params hvis de eksplisitt er satt (for lokal utvikling)
+  // I prod/dev med idporten sidecar skal disse IKKE sendes
+  if (enforceLogin !== undefined) {
+    queryParams.set('enforceLogin', enforceLogin.toString());
+  }
+  if (level !== undefined) {
+    queryParams.set('level', level);
+  }
+  if (redirectToApp !== undefined) {
+    queryParams.set('redirectToApp', redirectToApp.toString());
+  }
 
   if (availableLanguages) {
     queryParams.set('availableLanguages', JSON.stringify(availableLanguages));
