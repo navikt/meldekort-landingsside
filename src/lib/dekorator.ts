@@ -29,10 +29,16 @@ interface DecoratorParams {
  * Følger samme pattern som meldekort-frontend.
  */
 export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<DecoratorElements> {
-  const { env = 'dev', context = 'privatperson', simple = false, language = 'nb', availableLanguages } = params;
+  const {
+    env = 'dev',
+    context = 'privatperson',
+    simple = false,
+    language = 'nb',
+    availableLanguages,
+  } = params;
 
   const config: DecoratorFetchProps = {
-    env: (import.meta.env.DEKORATOR_MILJO || env) as DecoratorEnvProps['env'],
+    env: (process.env.DEKORATOR_MILJO || import.meta.env.DEKORATOR_MILJO || env) as DecoratorEnvProps['env'],
     localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
     // serviceDiscovery er kritisk for at dekoratøren skal kunne
     // kommunisere med Wonderwall/IDporten for innloggingsstatus
