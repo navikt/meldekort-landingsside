@@ -1,9 +1,9 @@
 import type { APIRoute } from 'astro';
 import { getToken } from '@navikt/oasis';
-import { dagpengerMock } from '../../lib/api/mockData';
 import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
 import { hentMeldekortDataFraArena } from '../../lib/api/clients/arena';
+import { hentMeldekortDataFraDP } from '../../lib/api/clients/dagpenger';
 import {
   shouldUseMockData,
   handleMeldekortResponse,
@@ -66,21 +66,21 @@ export const GET: APIRoute = async ({ request, url }) => {
   }
 
   // Hent data fra alle ytelser parallelt
-  const [aapResult, tpResult] = await Promise.all([
+  const [dpResult, aapResult, tpResult] = await Promise.all([
+    hentMeldekortDataFraDP(token),
     hentMeldekortDataFraAAP(token),
     hentMeldekortDataFraTP(token),
   ]);
 
-  const dpData = dagpengerMock; // TODO: Bytt ut med faktisk kall til DP API
-
   // Sjekk om noen API-kall feilet
-  const apiKallFeilet = !aapResult.success || !tpResult.success;
+  const apiKallFeilet = !dpResult.success || !aapResult.success || !tpResult.success;
 
   if (apiKallFeilet) {
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch data from one or more services',
         details: {
+          dagpenger: dpResult.success ? 'ok' : dpResult.error,
           aap: aapResult.success ? 'ok' : aapResult.error,
           tiltakspenger: tpResult.success ? 'ok' : tpResult.error,
         },
@@ -96,7 +96,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   // Sjekk om noen ytelser har aktive meldekort
   const harAktiveYtelser =
-    harAktiveMeldekort(dpData) ||
+    harAktiveMeldekort(dpResult.data) ||
     harAktiveMeldekort(aapResult.data) ||
     harAktiveMeldekort(tpResult.data);
 
@@ -118,7 +118,7 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   // Hent data fra resultatene og returner response
   return handleMeldekortResponse({
-    dagpenger: dpData,
+    dagpenger: dpResult.data,
     aap: aapResult.data,
     tiltakspenger: tpResult.data,
     ...(redirectUrl && { redirectUrl }),

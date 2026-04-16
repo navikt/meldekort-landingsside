@@ -47,6 +47,8 @@ spec:
           namespace: tpts
         - application: meldekort-api
           namespace: meldekort
+        - application: dp-rapportering
+          namespace: teamdagpenger
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
@@ -73,3 +75,7 @@ spec:
       value: "{{arenaApiUrl}}"
     - name: ARENA_API_AUDIENCE
       value: "{{arenaApiAudience}}"
+    - name: DP_API_URL
+      value: "{{dpApiUrl}}"
+    - name: DP_API_AUDIENCE
+      value: "{{dpApiAudience}}"

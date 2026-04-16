@@ -411,21 +411,7 @@ describe('helpers', () => {
       expect(response.headers.get('Location')).toBe('/felles-meldekort');
     });
 
-    it('skal redirecte til absolutt nav.no redirectUrl når ingen ytelser har aktive meldekort', () => {
-      const ytelseData = {
-        dagpenger: undefined,
-        aap: undefined,
-        tiltakspenger: undefined,
-        redirectUrl: 'https://www.nav.no/felles-meldekort',
-      };
-
-      const response = handleMeldekortResponse(ytelseData);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('Location')).toBe('https://www.nav.no/felles-meldekort');
-    });
-
-    it('skal kaste error for redirectUrl til annet domene enn nav.no', () => {
+    it('skal kaste error hvis redirectUrl ikke starter med /', () => {
       const ytelseData = {
         dagpenger: undefined,
         aap: undefined,
@@ -434,22 +420,8 @@ describe('helpers', () => {
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
-        'Redirect URL must be to nav.no domain, got: evil.com',
+        'Redirect URL must start with /, got: https://evil.com/phishing',
       );
-    });
-
-    it('skal tillate redirectUrl til subdomene av nav.no', () => {
-      const ytelseData = {
-        dagpenger: undefined,
-        aap: undefined,
-        tiltakspenger: undefined,
-        redirectUrl: 'https://intern.dev.nav.no/felles-meldekort',
-      };
-
-      const response = handleMeldekortResponse(ytelseData);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('Location')).toBe('https://intern.dev.nav.no/felles-meldekort');
     });
   });
 });

@@ -106,44 +106,15 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
 
   // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
   if (activeYtelser.length === 0 && redirectUrl) {
-    // Valider redirectUrl for å unngå open redirect
-    const isRelative = !redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://');
-
-    if (!isRelative) {
-      // Absolutt URL - valider at den er til nav.no eller intern.nav.no
-      try {
-        const url = new URL(redirectUrl);
-        const allowedHosts = ['nav.no', 'www.nav.no'];
-        const isAllowedHost = allowedHosts.some(
-          (host) => url.hostname === host || url.hostname.endsWith(`.${host}`),
-        );
-
-        if (!isAllowedHost) {
-          logger.error('Invalid redirect URL from arena - not a nav.no domain', {
-            redirectUrl,
-            hostname: url.hostname,
-          });
-          throw new Error(`Redirect URL must be to nav.no domain, got: ${url.hostname}`);
-        }
-      } catch (error) {
-        // Hvis det er en Error vi selv kastet, re-throw den
-        if (
-          error instanceof Error &&
-          error.message.includes('Redirect URL must be to nav.no domain')
-        ) {
-          throw error;
-        }
-        // Ellers, håndter parsing-feil
-        logger.error('Invalid redirect URL from arena', {
-          redirectUrl,
-          error: error instanceof Error ? error.message : 'Unknown error',
-        });
-        throw new Error(`Invalid redirect URL: ${redirectUrl}`);
-      }
-      return Response.redirect(redirectUrl, 307);
+    // Valider at redirectUrl er en relativ path (må starte med /)
+    if (!redirectUrl.startsWith('/')) {
+      logger.error('Invalid redirect URL from arena - must be relative path', {
+        redirectUrl,
+      });
+      throw new Error(`Redirect URL must start with /, got: ${redirectUrl}`);
     }
 
-    // Relativ URL - returner som er (index.astro vil håndtere den)
+    // Returner 307 redirect med Location header
     return new Response(null, {
       status: 307,
       headers: {

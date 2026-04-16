@@ -17,7 +17,7 @@ Dette repoet erstatter felles-meldekort som inngangsport til meldekort i Nav. De
 ### Backend / API
 
 - **Meldekort-API integrasjoner**:
-  - **Dagpenger** - Mock data (TODO: Implementer faktisk API-kall)
+  - **Dagpenger** - `dp-rapportering` (teamdagpenger namespace)
   - **Arbeidsavklaringspenger** - `meldekort-backend` (AAP namespace)
   - **Tiltakspenger** - `tiltakspenger-meldekort-api` (tpts namespace)
   - **Arena** - `meldekort-api` (meldekort namespace) - Returnerer redirectUrl til felles-meldekort
@@ -75,6 +75,7 @@ pnpm run dev
 
 Applikasjonen vil være tilgjengelig på:
 
+- **Prod**: https://www.nav.no/meldekort
 - **Dev**: https://meldekort-landingsside.intern.dev.nav.no/meldekort
 - **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no/meldekort
 - **Lokal**: http://localhost:4321/meldekort
@@ -160,8 +161,9 @@ pnpm run preview
 ├── .husky/               # Git hooks
 ├── nais/                 # NAIS deployment konfigurasjon
 │   ├── nais.yaml         # NAIS manifest template
-│   ├── vars-demo.yaml    # Demo miljø variabler
-│   └── vars-dev.yaml     # Dev miljø variabler
+│   ├── vars-prod.yaml    # Prod miljø variabler
+│   ├── vars-dev.yaml     # Dev miljø variabler
+│   └── vars-demo.yaml    # Demo miljø variabler
 ├── public/               # Statiske filer
 ├── src/                  # Kildekode
 │   ├── components/       # React komponenter
@@ -215,10 +217,10 @@ En ytelse regnes som aktiv hvis den har:
 
 ### API-integrasjoner
 
+- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-rapportering`
 - **AAP**: `hentMeldekortDataFraAAP()` - Henter data fra `meldekort-backend` (AAP)
 - **Tiltakspenger**: `hentMeldekortDataFraTP()` - Henter data fra `tiltakspenger-meldekort-api`
 - **Arena**: `hentMeldekortDataFraArena()` - Henter redirectUrl fra `meldekort-api` (kalles kun når ingen ytelser har aktive meldekort)
-- **Dagpenger**: Bruker mock data (TODO: Implementer faktisk API-kall)
 
 ### Analytics
 
@@ -251,7 +253,7 @@ Prosjektet bruker GitHub Actions for automatisk testing, bygging og deployment:
 
 - **Test og Lint**: Kjører på alle PRs og pushes
 - **Build**: Bygger Docker image ved push til main
-- **Deploy**: Deployer automatisk til demo ved push til main
+- **Deploy**: Deployer automatisk til demo → dev → prod ved push til main
 
 ### Secrets som kreves
 
@@ -261,8 +263,9 @@ Prosjektet bruker GitHub Actions for automatisk testing, bygging og deployment:
 
 Applikasjonen deployes til NAIS med base path `/meldekort`:
 
-- **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no/meldekort
+- **Prod**: https://www.nav.no/meldekort
 - **Dev**: https://meldekort-landingsside.intern.dev.nav.no/meldekort
+- **Demo**: https://meldekort-landingsside-demo.intern.dev.nav.no/meldekort
 
 ## Viktig dokumentasjon
 
@@ -272,13 +275,15 @@ Applikasjonen deployes til NAIS med base path `/meldekort`:
 
 ## Miljøvariabler
 
-Konfigureres i `.env` lokalt og via NAIS i dev/demo:
+Konfigureres i `.env` lokalt og via NAIS i prod/dev/demo:
 
 - `BASE_URL` - Base path for applikasjonen (default: `/meldekort`)
 - `ENFORCE_LOGIN` - Krever innlogging (`true`/`false`, default: `true`)
 - `SANITY_PROJECT_ID` - Sanity prosjekt-ID
 - `SANITY_DATASET` - Sanity dataset (production/development)
 - `SANITY_API_VERSION` - Sanity API versjon
+- `DP_API_URL` - URL til Dagpenger meldekort-api
+- `DP_API_AUDIENCE` - TokenX audience for Dagpenger
 - `AAP_API_URL` - URL til AAP meldekort-api
 - `AAP_API_AUDIENCE` - TokenX audience for AAP
 - `TP_API_URL` - URL til Tiltakspenger meldekort-api
