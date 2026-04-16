@@ -48,7 +48,9 @@ export const GET: APIRoute = async ({ request, url }) => {
       dagpenger: scenarioData.dagpenger,
       aap: scenarioData.aap,
       tiltakspenger: scenarioData.tiltakspenger,
-      ...(scenarioData.redirectUrl && { redirectUrl: scenarioData.redirectUrl }),
+      ...(scenarioData.redirectUrl && {
+        redirectUrl: scenarioData.redirectUrl,
+      }),
     });
   }
 
@@ -111,17 +113,26 @@ export const GET: APIRoute = async ({ request, url }) => {
       logger.warn('Arena-kall for meldekort feilet, fortsetter uten redirectUrl', {
         error: arenaResult.error,
       });
-    } else if (arenaResult.data?.redirectUrl) {
+    } else if (arenaResult.data) {
       // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
       // Arena er ikke kritisk, så en ugyldig redirectUrl skal ikke føre til 500-feil
-      const url = arenaResult.data.redirectUrl;
-      // Må være sikker intern path: starter med / men ikke //, ingen backslash eller whitespace
-      if (url.startsWith('/') && !url.startsWith('//') && !url.includes('\\') && !/\s/.test(url)) {
-        redirectUrl = url;
+      const arenaRedirectUrl = arenaResult.data.redirectUrl;
+
+      // Arena returnerer tom string når det ikke er noen redirect
+      if (arenaRedirectUrl === '') {
+        // Ingen redirect - fortsett uten (vis tom landingsside)
+        logger.info('Arena returnerte tom redirectUrl - ingen redirect tilgjengelig');
+      } else if (
+        arenaRedirectUrl.startsWith('/') &&
+        !arenaRedirectUrl.startsWith('//') &&
+        !arenaRedirectUrl.includes('\\') &&
+        !/\s/.test(arenaRedirectUrl)
+      ) {
+        redirectUrl = arenaRedirectUrl;
       } else {
         // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
         logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path', {
-          redirectUrl: url,
+          redirectUrl: arenaRedirectUrl,
         });
       }
     }

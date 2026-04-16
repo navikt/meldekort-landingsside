@@ -416,7 +416,7 @@ describe('helpers', () => {
         dagpenger: undefined,
         aap: undefined,
         tiltakspenger: undefined,
-        redirectUrl: 'https://evil.com/phishing',
+        redirectUrl: 'https://example',
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
@@ -429,7 +429,7 @@ describe('helpers', () => {
         dagpenger: undefined,
         aap: undefined,
         tiltakspenger: undefined,
-        redirectUrl: '//evil.com/phishing',
+        redirectUrl: '//example',
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(

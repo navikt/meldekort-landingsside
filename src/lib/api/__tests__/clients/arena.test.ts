@@ -146,6 +146,32 @@ describe('arena', () => {
       expect(result.data?.meldekortTilUtfylling).toEqual([]);
     });
 
+    it('returnerer success med tom redirectUrl når arena ikke har redirect', async () => {
+      const mockData: ArenaMeldekortResponse = {
+        harInnsendteMeldekort: false,
+        meldekortTilUtfylling: [],
+        redirectUrl: '',
+      };
+
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => mockData,
+      } as Response);
+
+      const result = await hentMeldekortDataFraArena('test-obo-token');
+
+      expect(result.success).toBe(true);
+      expect(result.data).toEqual(mockData);
+      expect(result.data?.redirectUrl).toBe('');
+    });
+
     it('håndterer AbortError fra fetch', async () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
