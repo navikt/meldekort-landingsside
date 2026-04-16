@@ -1,37 +1,28 @@
 ---
-import "@navikt/ds-css";
-import { Page, Heading, VStack, Alert, Link } from "@navikt/ds-react";
-import { PortableText } from "@portabletext/react";
-import { getDecoratorHTML } from "../lib/dekorator";
-import {
-  getLanguageFromCookie,
-  translations,
-  SUPPORTED_LANGUAGES,
-} from "../lib/language";
-import {
-  sanityClient,
-  getLandingssideQuery,
-  sanityDataMissing,
-} from "../lib/sanity";
-import type { MeldekortLandingsside } from "../lib/sanity";
-import type { AlleMeldekortData } from "../lib/types/meldekort";
-import { skalViseLenker } from "../lib/utils/meldekort";
-import { MeldekortLinkCards } from "../components/MeldekortLinkCards";
-import { logger } from "../lib/utils/logger";
-import { getToken } from "@navikt/oasis";
-import { getMeldekortData } from "../lib/api/getMeldekortData";
+import '@navikt/ds-css';
+import { Page, Heading, VStack, Alert, Link } from '@navikt/ds-react';
+import { PortableText } from '@portabletext/react';
+import { getDecoratorHTML } from '../lib/dekorator';
+import { getLanguageFromCookie, translations, SUPPORTED_LANGUAGES } from '../lib/language';
+import { sanityClient, getLandingssideQuery, sanityDataMissing } from '../lib/sanity';
+import type { MeldekortLandingsside } from '../lib/sanity';
+import type { AlleMeldekortData } from '../lib/types/meldekort';
+import { skalViseLenker } from '../lib/utils/meldekort';
+import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
+import { logger } from '../lib/utils/logger';
+import { getToken } from '@navikt/oasis';
+import { getMeldekortData } from '../lib/api/getMeldekortData';
 
-const cookieHeader = Astro.request.headers.get("cookie");
+const cookieHeader = Astro.request.headers.get('cookie');
 const language = getLanguageFromCookie(cookieHeader);
 
-const enforceLogin =
-  (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== "false";
+const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
 
 // Hent token fra request
 const token = getToken(Astro.request.headers);
 
 // Hent scenario fra query parameter (for mock mode)
-const scenario = Astro.url.searchParams.get("scenario");
+const scenario = Astro.url.searchParams.get('scenario');
 
 // Hent meldekortdata direkte (ingen intern HTTP-kall)
 const meldekortResult = await getMeldekortData(token, scenario);
@@ -40,7 +31,7 @@ const meldekortResult = await getMeldekortData(token, scenario);
 let alleMeldekort: AlleMeldekortData | null = null;
 
 if (!meldekortResult.success) {
-  logger.error("Failed to fetch meldekort data - showing error page to user", {
+  logger.error('Failed to fetch meldekort data - showing error page to user', {
     status: meldekortResult.status,
     error: meldekortResult.error,
     details: meldekortResult.details,
@@ -56,7 +47,7 @@ if (!meldekortResult.success) {
   // Sjekk om kun 1 ytelse har aktive meldekort (redirect til den)
   const visning = skalViseLenker(meldekortResult.data);
   const alleMeldekortItems = [...visning.se, ...visning.sende, ...visning.fyllUt];
-  const uniqueYtelser = [...new Set(alleMeldekortItems.map(item => item.ytelse))];
+  const uniqueYtelser = [...new Set(alleMeldekortItems.map((item) => item.ytelse))];
 
   if (uniqueYtelser.length === 1) {
     const ytelse = uniqueYtelser[0];
@@ -71,13 +62,8 @@ if (!meldekortResult.success) {
 }
 
 const apiFeil = !alleMeldekort;
-const visning = alleMeldekort
-  ? skalViseLenker(alleMeldekort)
-  : { se: [], sende: [], fyllUt: [] };
-const harKort =
-  visning.se.length > 0 ||
-  visning.sende.length > 0 ||
-  visning.fyllUt.length > 0;
+const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
+const harKort = visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
 
 // Hent innhold fra Sanity
 const query = getLandingssideQuery(language);
@@ -85,33 +71,31 @@ let content: MeldekortLandingsside | null = null;
 try {
   content = await sanityClient.fetch<MeldekortLandingsside>(query);
 } catch (error) {
-  logger.error("Failed to fetch content from Sanity", { error });
+  logger.error('Failed to fetch content from Sanity', { error });
 }
 
 // Sjekk om viktige felter mangler
-const requiredFields: (keyof MeldekortLandingsside)[] = ["tittel", "ytelser"];
+const requiredFields: (keyof MeldekortLandingsside)[] = ['tittel', 'ytelser'];
 const contentMissing = sanityDataMissing(
   content as unknown as Record<string, unknown>,
   requiredFields,
 );
 
 // Fallback til hardkodede oversettelser hvis Sanity-data ikke er tilgjengelig
-const t =
-  translations[language as keyof typeof translations] || translations.nb;
+const t = translations[language as keyof typeof translations] || translations.nb;
 
 // Helper-variabler for å forenkle rendering-logikken
 const hasValidContent = !contentMissing && !!content;
 const tittel = hasValidContent && content ? content.tittel : t.tittel;
-const hasEmptyState =
-  hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
+const hasEmptyState = hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
 const hasBunntekst = hasValidContent && (content?.bunntekst?.length ?? 0) > 0;
 
 const decorator = await getDecoratorHTML({
-  env: import.meta.env.PROD ? "prod" : "dev",
-  context: "privatperson",
+  env: import.meta.env.PROD ? 'prod' : 'dev',
+  context: 'privatperson',
   simple: false,
   enforceLogin,
-  level: "Level3",
+  level: 'Level3',
   redirectToApp: true,
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({
