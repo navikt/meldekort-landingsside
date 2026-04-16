@@ -90,7 +90,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   const { dagpenger, aap, tiltakspenger, redirectUrl } = ytelseData;
 
   // Tell antall ytelser med aktive meldekort
-  const activeYtelser = [
+  const ytelserMedAktiveMeldekort = [
     {
       name: 'dagpenger',
       data: dagpenger,
@@ -105,7 +105,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   ].filter((ytelse) => ytelse.active);
 
   // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
-  if (activeYtelser.length === 0 && redirectUrl) {
+  if (ytelserMedAktiveMeldekort.length === 0 && redirectUrl) {
     // Valider at redirectUrl er en relativ path (må starte med /)
     if (!redirectUrl.startsWith('/')) {
       logger.error('Invalid redirect URL from arena - must be relative path', {
@@ -124,8 +124,8 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   }
 
   // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
-  if (activeYtelser.length === 1) {
-    const ytelse = activeYtelser[0];
+  if (ytelserMedAktiveMeldekort.length === 1) {
+    const ytelse = ytelserMedAktiveMeldekort[0];
     if (ytelse?.data) {
       const ytelseRedirectUrl = ytelse.data.url;
       // Response.redirect krever absolutt URL

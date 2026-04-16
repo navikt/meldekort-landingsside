@@ -416,11 +416,11 @@ describe('helpers', () => {
         dagpenger: undefined,
         aap: undefined,
         tiltakspenger: undefined,
-        redirectUrl: 'https://evil.com/phishing',
+        redirectUrl: 'https://example.com',
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
-        'Redirect URL must start with /, got: https://evil.com/phishing',
+        'Redirect URL must start with /, got: https://example.com',
       );
     });
   });

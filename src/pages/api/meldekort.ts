@@ -111,8 +111,18 @@ export const GET: APIRoute = async ({ request, url }) => {
       logger.warn('Arena-kall for meldekort feilet, fortsetter uten redirectUrl', {
         error: arenaResult.error,
       });
-    } else if (arenaResult.data) {
-      redirectUrl = arenaResult.data.redirectUrl;
+    } else if (arenaResult.data?.redirectUrl) {
+      // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
+      // Arena er ikke kritisk, så en ugyldig redirectUrl skal ikke føre til 500-feil
+      const url = arenaResult.data.redirectUrl;
+      if (url.startsWith('/')) {
+        redirectUrl = url;
+      } else {
+        // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
+        logger.warn('Ugyldig redirectUrl fra arena - må starte med /', {
+          redirectUrl: url,
+        });
+      }
     }
   }
 
