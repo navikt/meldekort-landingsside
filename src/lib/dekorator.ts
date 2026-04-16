@@ -1,7 +1,11 @@
-import type { DecoratorLocale } from '@navikt/nav-dekoratoren-moduler';
+import {
+  type DecoratorEnvProps,
+  type DecoratorFetchProps,
+  fetchDecoratorHtml,
+} from '@navikt/nav-dekoratoren-moduler/ssr';
 import { logger } from './utils/logger';
 
-interface DecoratorElements {
+export interface DecoratorElements {
   DECORATOR_HEAD_ASSETS: string;
   DECORATOR_HEADER: string;
   DECORATOR_FOOTER: string;
@@ -9,75 +13,48 @@ interface DecoratorElements {
 }
 
 interface DecoratorParams {
-  env?: 'prod' | 'dev' | 'localhost';
+  env?: DecoratorEnvProps['env'];
   context?: 'privatperson' | 'arbeidsgiver';
   simple?: boolean;
-  language?: DecoratorLocale;
+  language?: string;
   availableLanguages?: Array<{
     locale: string;
     url: string;
     handleInApp?: boolean;
   }>;
-  // Disse parameterne brukes kun i lokal utvikling uten idporten
-  enforceLogin?: boolean;
-  level?: 'Level3' | 'Level4';
-  redirectToApp?: boolean;
 }
 
+/**
+ * Henter dekoratør HTML fra NAV dekoratøren.
+ * Følger samme pattern som meldekort-frontend.
+ */
 export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<DecoratorElements> {
-  const {
-    env = 'dev',
-    context = 'privatperson',
-    simple = false,
-    language = 'nb',
-    availableLanguages,
-    enforceLogin,
-    level,
-    redirectToApp,
-  } = params;
+  const { env = 'dev', context = 'privatperson', simple = false, language = 'nb', availableLanguages } = params;
 
-  const baseUrl =
-    env === 'prod' ? 'https://www.nav.no/dekoratoren' : 'https://dekoratoren.ekstern.dev.nav.no';
-
-  const queryParams = new URLSearchParams({
-    context,
-    simple: simple.toString(),
-    language,
-  });
-
-  // Bare legg til auth-params hvis de eksplisitt er satt (for lokal utvikling)
-  // I prod/dev med idporten sidecar skal disse IKKE sendes
-  if (enforceLogin !== undefined) {
-    queryParams.set('enforceLogin', enforceLogin.toString());
-  }
-  if (level !== undefined) {
-    queryParams.set('level', level);
-  }
-  if (redirectToApp !== undefined) {
-    queryParams.set('redirectToApp', redirectToApp.toString());
-  }
-
-  if (availableLanguages) {
-    queryParams.set('availableLanguages', JSON.stringify(availableLanguages));
-  }
-
-  const url = `${baseUrl}/ssr?${queryParams.toString()}`;
+  const config: DecoratorFetchProps = {
+    env: (import.meta.env.DEKORATOR_MILJO || env) as DecoratorEnvProps['env'],
+    localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
+    // serviceDiscovery er kritisk for at dekoratøren skal kunne
+    // kommunisere med Wonderwall/IDporten for innloggingsstatus
+    serviceDiscovery: true,
+    params: {
+      context,
+      simple,
+      language,
+      ...(availableLanguages && { availableLanguages }),
+    },
+  };
 
   try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch decorator: ${response.statusText}`);
-    }
-
-    const data = await response.json();
+    const result = await fetchDecoratorHtml(config);
     return {
-      DECORATOR_HEAD_ASSETS: data.headAssets || '',
-      DECORATOR_HEADER: data.header || '',
-      DECORATOR_FOOTER: data.footer || '',
-      DECORATOR_SCRIPTS: data.scripts || '',
+      DECORATOR_HEAD_ASSETS: result.headAssets || '',
+      DECORATOR_HEADER: result.header || '',
+      DECORATOR_FOOTER: result.footer || '',
+      DECORATOR_SCRIPTS: result.scripts || '',
     };
   } catch (error) {
-    logger.error('Error fetching decorator', { error, url });
+    logger.error('Error fetching decorator', { error, config });
     return {
       DECORATOR_HEAD_ASSETS: '',
       DECORATOR_HEADER: '',

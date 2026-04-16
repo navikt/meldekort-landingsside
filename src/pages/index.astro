@@ -100,13 +100,6 @@ const decorator = await getDecoratorHTML({
     url: import.meta.env.BASE_URL,
     handleInApp: true,
   })),
-  // Auth-params sendes kun i lokal utvikling (når enforceLogin=false)
-  // I prod/dev håndterer idporten sidecar autentiseringen
-  ...(enforceLogin === false && {
-    enforceLogin: false,
-    level: 'Level3',
-    redirectToApp: true,
-  }),
 });
 ---
 
