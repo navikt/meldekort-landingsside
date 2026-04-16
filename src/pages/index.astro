@@ -1,37 +1,48 @@
 ---
-import '@navikt/ds-css';
-import { Page, Heading, VStack, Alert, Link } from '@navikt/ds-react';
-import { PortableText } from '@portabletext/react';
-import { getDecoratorHTML } from '../lib/dekorator';
-import { getLanguageFromCookie, translations, SUPPORTED_LANGUAGES } from '../lib/language';
-import { sanityClient, getLandingssideQuery, sanityDataMissing } from '../lib/sanity';
-import type { MeldekortLandingsside } from '../lib/sanity';
-import type { AlleMeldekortData } from '../lib/types/meldekort';
-import { skalViseLenker } from '../lib/utils/meldekort';
-import { MeldekortLinkCards } from '../components/MeldekortLinkCards';
-import { logger } from '../lib/utils/logger';
+import "@navikt/ds-css";
+import { Page, Heading, VStack, Alert, Link } from "@navikt/ds-react";
+import { PortableText } from "@portabletext/react";
+import { getDecoratorHTML } from "../lib/dekorator";
+import {
+  getLanguageFromCookie,
+  translations,
+  SUPPORTED_LANGUAGES,
+} from "../lib/language";
+import {
+  sanityClient,
+  getLandingssideQuery,
+  sanityDataMissing,
+} from "../lib/sanity";
+import type { MeldekortLandingsside } from "../lib/sanity";
+import type { AlleMeldekortData } from "../lib/types/meldekort";
+import { skalViseLenker } from "../lib/utils/meldekort";
+import { MeldekortLinkCards } from "../components/MeldekortLinkCards";
+import { logger } from "../lib/utils/logger";
 
-const cookieHeader = Astro.request.headers.get('cookie');
+const cookieHeader = Astro.request.headers.get("cookie");
 const language = getLanguageFromCookie(cookieHeader);
 
-const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
+const enforceLogin =
+  (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== "false";
 
 // Hent meldekortdata fra API (server-side)
 // redirect: 'manual' hindrer automatisk redirect og lar oss håndtere 307 eksplisitt
 // Videresend query parametere (f.eks. ?scenario=...) til API-et
-const basePath = import.meta.env.BASE_URL || '/';
-const apiPath = basePath.endsWith('/') ? `${basePath}api/meldekort` : `${basePath}/api/meldekort`;
+const basePath = import.meta.env.BASE_URL || "/";
+const apiPath = basePath.endsWith("/")
+  ? `${basePath}api/meldekort`
+  : `${basePath}/api/meldekort`;
 const apiUrl = `${Astro.url.origin}${apiPath}${Astro.url.search}`;
 const apiResponse = await fetch(apiUrl, {
   headers: {
-    cookie: cookieHeader || '',
+    cookie: cookieHeader || "",
   },
-  redirect: 'manual',
+  redirect: "manual",
 });
 
 // Hvis API returnerer 307 redirect, følg den
 if (apiResponse.status === 307 || apiResponse.status === 308) {
-  const redirectUrl = apiResponse.headers.get('Location');
+  const redirectUrl = apiResponse.headers.get("Location");
   if (redirectUrl) {
     return Astro.redirect(redirectUrl);
   }
@@ -41,27 +52,47 @@ if (apiResponse.status === 307 || apiResponse.status === 308) {
 let alleMeldekort: AlleMeldekortData | null = null;
 
 if (!apiResponse.ok) {
-  logger.error('Failed to fetch meldekort data from API - showing error page to user', {
-    status: apiResponse.status,
-    statusText: apiResponse.statusText,
-    url: apiUrl,
-  });
+  // Prøv å hente error details fra API response body for å se hvilke tjenester som feiler
+  let errorDetails = null;
+  try {
+    errorDetails = await apiResponse.json();
+  } catch {
+    // Kunne ikke parse error body
+  }
+
+  logger.error(
+    "Failed to fetch meldekort data from API - showing error page to user",
+    {
+      status: apiResponse.status,
+      statusText: apiResponse.statusText,
+      url: apiUrl,
+      errorDetails, // Inneholder error og details fra API-en (hvilke tjenester som feiler)
+    },
+  );
   Astro.response.status = apiResponse.status >= 500 ? apiResponse.status : 500;
 } else {
   try {
     alleMeldekort = await apiResponse.json();
   } catch (error) {
-    logger.error('Failed to parse meldekort API response - showing error page to user', {
-      error: error instanceof Error ? error.message : 'Unknown error',
-      status: apiResponse.status,
-    });
+    logger.error(
+      "Failed to parse meldekort API response - showing error page to user",
+      {
+        error: error instanceof Error ? error.message : "Unknown error",
+        status: apiResponse.status,
+      },
+    );
     Astro.response.status = 500;
   }
 }
 
 const apiFeil = !alleMeldekort;
-const visning = alleMeldekort ? skalViseLenker(alleMeldekort) : { se: [], sende: [], fyllUt: [] };
-const harKort = visning.se.length > 0 || visning.sende.length > 0 || visning.fyllUt.length > 0;
+const visning = alleMeldekort
+  ? skalViseLenker(alleMeldekort)
+  : { se: [], sende: [], fyllUt: [] };
+const harKort =
+  visning.se.length > 0 ||
+  visning.sende.length > 0 ||
+  visning.fyllUt.length > 0;
 
 // Hent innhold fra Sanity
 const query = getLandingssideQuery(language);
@@ -69,31 +100,33 @@ let content: MeldekortLandingsside | null = null;
 try {
   content = await sanityClient.fetch<MeldekortLandingsside>(query);
 } catch (error) {
-  logger.error('Failed to fetch content from Sanity', { error });
+  logger.error("Failed to fetch content from Sanity", { error });
 }
 
 // Sjekk om viktige felter mangler
-const requiredFields: (keyof MeldekortLandingsside)[] = ['tittel', 'ytelser'];
+const requiredFields: (keyof MeldekortLandingsside)[] = ["tittel", "ytelser"];
 const contentMissing = sanityDataMissing(
   content as unknown as Record<string, unknown>,
   requiredFields,
 );
 
 // Fallback til hardkodede oversettelser hvis Sanity-data ikke er tilgjengelig
-const t = translations[language as keyof typeof translations] || translations.nb;
+const t =
+  translations[language as keyof typeof translations] || translations.nb;
 
 // Helper-variabler for å forenkle rendering-logikken
 const hasValidContent = !contentMissing && !!content;
 const tittel = hasValidContent && content ? content.tittel : t.tittel;
-const hasEmptyState = hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
+const hasEmptyState =
+  hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
 const hasBunntekst = hasValidContent && (content?.bunntekst?.length ?? 0) > 0;
 
 const decorator = await getDecoratorHTML({
-  env: import.meta.env.PROD ? 'prod' : 'dev',
-  context: 'privatperson',
+  env: import.meta.env.PROD ? "prod" : "dev",
+  context: "privatperson",
   simple: false,
   enforceLogin,
-  level: 'Level3',
+  level: "Level3",
   redirectToApp: true,
   language,
   availableLanguages: SUPPORTED_LANGUAGES.map((locale: string) => ({
@@ -134,9 +167,11 @@ const decorator = await getDecoratorHTML({
                 <Heading size="xsmall" level="2" spacing>
                   Mock mode
                 </Heading>
-                Du kjører i mock mode. <Link href="/meldekort/dev/scenarios">
+                Du kjører i mock mode.{" "}
+                <Link href="/meldekort/dev/scenarios">
                   Se alle tilgjengelige scenarier
-                </Link> eller bruk <code>?scenario=&lt;navn&gt;</code> i URL.
+                </Link>{" "}
+                eller bruk <code>?scenario=&lt;navn&gt;</code> i URL.
               </Alert>
             )
           }
@@ -150,7 +185,8 @@ const decorator = await getDecoratorHTML({
                 <p>{t.feilmelding.beskrivelse}</p>
               </div>
             ) : harKort ? (
-              hasValidContent && content && (
+              hasValidContent &&
+              content && (
                 <VStack gap="space-24" maxWidth="525px">
                   <MeldekortLinkCards
                     client:load
@@ -166,10 +202,15 @@ const decorator = await getDecoratorHTML({
                 </VStack>
               )
             ) : (
-              hasEmptyState && content && <PortableText value={content.emptyStateTekst} />
+              hasEmptyState &&
+              content && <PortableText value={content.emptyStateTekst} />
             )
           }
-          {hasBunntekst && content && <PortableText value={content.bunntekst} />}
+          {
+            hasBunntekst && content && (
+              <PortableText value={content.bunntekst} />
+            )
+          }
         </VStack>
       </Page.Block>
     </Page>
