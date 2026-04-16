@@ -38,7 +38,9 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
   } = params;
 
   const config: DecoratorFetchProps = {
-    env: (process.env.DEKORATOR_MILJO || import.meta.env.DEKORATOR_MILJO || env) as DecoratorEnvProps['env'],
+    env: (process.env.DEKORATOR_MILJO ||
+      import.meta.env.DEKORATOR_MILJO ||
+      env) as DecoratorEnvProps['env'],
     localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
     // serviceDiscovery er kritisk for at dekoratøren skal kunne
     // kommunisere med Wonderwall/IDporten for innloggingsstatus
