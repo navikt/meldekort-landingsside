@@ -1,24 +1,19 @@
 import {
+  type DecoratorElements,
   type DecoratorEnvProps,
   type DecoratorFetchProps,
+  type DecoratorLocale,
   fetchDecoratorHtml,
 } from '@navikt/nav-dekoratoren-moduler/ssr';
 import { logger } from './utils/logger';
-
-export interface DecoratorElements {
-  DECORATOR_HEAD_ASSETS: string;
-  DECORATOR_HEADER: string;
-  DECORATOR_FOOTER: string;
-  DECORATOR_SCRIPTS: string;
-}
 
 interface DecoratorParams {
   env?: DecoratorEnvProps['env'];
   context?: 'privatperson' | 'arbeidsgiver';
   simple?: boolean;
-  language?: string;
+  language?: DecoratorLocale;
   availableLanguages?: Array<{
-    locale: string;
+    locale: DecoratorLocale;
     url: string;
     handleInApp?: boolean;
   }>;
@@ -54,13 +49,8 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
   };
 
   try {
-    const result = await fetchDecoratorHtml(config);
-    return {
-      DECORATOR_HEAD_ASSETS: result.headAssets || '',
-      DECORATOR_HEADER: result.header || '',
-      DECORATOR_FOOTER: result.footer || '',
-      DECORATOR_SCRIPTS: result.scripts || '',
-    };
+    // fetchDecoratorHtml returnerer allerede DecoratorElements med riktige feltnavn
+    return await fetchDecoratorHtml(config);
   } catch (error) {
     logger.error('Error fetching decorator', { error, config });
     return {
