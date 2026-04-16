@@ -50,7 +50,14 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
 
     if (!validerMeldekortData(data)) {
       const error = 'DP API returned invalid data structure';
-      logger.error(error);
+      logger.error(error, {
+        receivedData: data,
+        expectedFields: {
+          innsendteMeldekort: 'boolean',
+          meldekortTilUtfylling: 'array',
+          url: 'string',
+        },
+      });
       return { success: false, error };
     }
 

@@ -52,7 +52,14 @@ export async function hentMeldekortDataFraAAP(oboToken: string): Promise<ApiResu
 
     if (!validerMeldekortData(data)) {
       const error = 'AAP API returned invalid data structure';
-      logger.error(error);
+      logger.error(error, {
+        receivedData: data,
+        expectedFields: {
+          innsendteMeldekort: 'boolean',
+          meldekortTilUtfylling: 'array',
+          url: 'string',
+        },
+      });
       return { success: false, error };
     }
 

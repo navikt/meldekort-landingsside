@@ -33,7 +33,7 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<ApiResul
       return { success: false, error };
     }
 
-    const response = await fetchWithTimeout(`${apiUrl}/api/meldekort-status`, {
+    const response = await fetchWithTimeout(`${apiUrl}/landingsside/status`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${tokenResult.token}`,
@@ -50,7 +50,14 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<ApiResul
 
     if (!validerMeldekortData(data)) {
       const error = 'TP API returned invalid data structure';
-      logger.error(error);
+      logger.error(error, {
+        receivedData: data,
+        expectedFields: {
+          innsendteMeldekort: 'boolean',
+          meldekortTilUtfylling: 'array',
+          url: 'string',
+        },
+      });
       return { success: false, error };
     }
 
