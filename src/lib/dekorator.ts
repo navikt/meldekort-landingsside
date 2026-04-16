@@ -26,8 +26,9 @@ export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<De
   const { context = 'privatperson', simple = false, language = 'nb', availableLanguages } = params;
 
   // Hvis DEKORATOR_MILJO er satt (i NAIS), bruk den, ellers 'localhost' (lokal utvikling)
-  const decoratorEnv =
-    (process.env.DEKORATOR_MILJO || import.meta.env.DEKORATOR_MILJO || 'localhost') as DecoratorEnvProps['env'];
+  const decoratorEnv = (process.env.DEKORATOR_MILJO ||
+    import.meta.env.DEKORATOR_MILJO ||
+    'localhost') as DecoratorEnvProps['env'];
 
   // Bygg config basert på miljø
   const config: DecoratorFetchProps =
