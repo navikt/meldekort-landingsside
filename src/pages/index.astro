@@ -19,7 +19,7 @@ const language = getLanguageFromCookie(cookieHeader);
 const enforceLogin = (import.meta.env.ENFORCE_LOGIN ?? process.env.ENFORCE_LOGIN) !== 'false';
 
 // Hent token fra request
-const token = getToken(Astro.request.headers);
+const token = getToken(Astro.request);
 
 // Hent scenario fra query parameter (for mock mode)
 const scenario = Astro.url.searchParams.get('scenario');
