@@ -1,16 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getToken } from '@navikt/oasis';
-import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
-import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
-import { hentMeldekortDataFraArena } from '../../lib/api/clients/arena';
-import { hentMeldekortDataFraDP } from '../../lib/api/clients/dagpenger';
-import {
-  shouldUseMockData,
-  handleMeldekortResponse,
-  harAktiveMeldekort,
-} from '../../lib/api/helpers';
-import { getScenario } from '../../lib/api/scenarios';
-import { logger } from '../../lib/utils/logger';
+import { getMeldekortData } from '../../lib/api/getMeldekortData';
+import { handleMeldekortResponse } from '../../lib/api/helpers';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
@@ -35,75 +26,19 @@ import { logger } from '../../lib/utils/logger';
  * Se src/lib/api/scenarios.ts for alle scenarier.
  */
 export const GET: APIRoute = async ({ request, url }) => {
-  // I mock-modus, skip token-kravet
-  const useMock = shouldUseMockData();
-
-  // Sjekk om et scenario er spesifisert via query parameter
+  const token = getToken(request.headers);
   const scenario = url.searchParams.get('scenario');
 
-  // Hvis mock mode OG scenario er satt, bruk scenario data direkte
-  if (useMock && scenario) {
-    const scenarioData = getScenario(scenario);
-    return handleMeldekortResponse({
-      dagpenger: scenarioData.dagpenger,
-      aap: scenarioData.aap,
-      tiltakspenger: scenarioData.tiltakspenger,
-      ...(scenarioData.redirectUrl && {
-        redirectUrl: scenarioData.redirectUrl,
-      }),
-    });
-  }
+  const result = await getMeldekortData(token, scenario);
 
-  // Normal flow (ikke scenario mode)
-  // Hent token fra request (dummy token i mock-modus)
-  const token = useMock ? 'mock-token' : getToken(request.headers);
-
-  if (!token) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }
-
-  // Hent data fra alle ytelser parallelt
-  const [dpResult, aapResult, tpResult] = await Promise.all([
-    hentMeldekortDataFraDP(token),
-    hentMeldekortDataFraAAP(token),
-    hentMeldekortDataFraTP(token),
-  ]);
-
-  // Sjekk om noen API-kall feilet
-  const apiKallFeilet = !dpResult.success || !aapResult.success || !tpResult.success;
-
-  if (apiKallFeilet) {
-    // Logger detaljert informasjon om hvilke tjenester som feiler
-    const failedServices = [];
-    if (!dpResult.success) failedServices.push('dagpenger');
-    if (!aapResult.success) failedServices.push('aap');
-    if (!tpResult.success) failedServices.push('tiltakspenger');
-
-    logger.error('Ett eller flere API-kall til meldekort-tjenester feilet', {
-      failedServices,
-      errors: {
-        dagpenger: dpResult.success ? null : dpResult.error,
-        aap: aapResult.success ? null : aapResult.error,
-        tiltakspenger: tpResult.success ? null : tpResult.error,
-      },
-    });
-
+  if (!result.success) {
     return new Response(
       JSON.stringify({
-        error: 'Failed to fetch data from one or more services',
-        details: {
-          dagpenger: dpResult.success ? 'ok' : dpResult.error,
-          aap: aapResult.success ? 'ok' : aapResult.error,
-          tiltakspenger: tpResult.success ? 'ok' : tpResult.error,
-        },
+        error: result.error,
+        ...(result.details && { details: result.details }),
       }),
       {
-        status: 503, // Service Unavailable
+        status: result.status,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -111,55 +46,8 @@ export const GET: APIRoute = async ({ request, url }) => {
     );
   }
 
-  // Sjekk om noen ytelser har aktive meldekort
-  const harAktiveYtelser =
-    harAktiveMeldekort(dpResult.data) ||
-    harAktiveMeldekort(aapResult.data) ||
-    harAktiveMeldekort(tpResult.data);
-
-  // Hvis ingen ytelser har aktive meldekort, sjekk arena for redirectUrl
-  let redirectUrl: string | undefined;
-  if (!harAktiveYtelser) {
-    const arenaResult = await hentMeldekortDataFraArena(token);
-
-    // Hvis arena-kallet feiler, logg men fortsett (vi viser tom landingsside)
-    if (!arenaResult.success) {
-      // Arena-feil er ikke kritisk, fortsett uten redirectUrl
-      logger.warn('Arena-kall (meldekort-api) feilet, fortsetter uten redirectUrl', {
-        service: 'arena/meldekort-api',
-        error: arenaResult.error,
-        consequence: 'Viser tom landingsside i stedet for redirect til felles-meldekort',
-      });
-    } else if (arenaResult.data) {
-      // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
-      // Arena er ikke kritisk, så en ugyldig redirectUrl skal ikke føre til 500-feil
-      const arenaRedirectUrl = arenaResult.data.redirectUrl;
-
-      // Arena returnerer tom string når det ikke er noen redirect
-      if (arenaRedirectUrl === '') {
-        // Ingen redirect - fortsett uten (vis tom landingsside)
-        logger.info('Arena returnerte tom redirectUrl - ingen redirect tilgjengelig');
-      } else if (
-        arenaRedirectUrl.startsWith('/') &&
-        !arenaRedirectUrl.startsWith('//') &&
-        !arenaRedirectUrl.includes('\\') &&
-        !/\s/.test(arenaRedirectUrl)
-      ) {
-        redirectUrl = arenaRedirectUrl;
-      } else {
-        // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
-        logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path', {
-          redirectUrl: arenaRedirectUrl,
-        });
-      }
-    }
-  }
-
-  // Hent data fra resultatene og returner response
   return handleMeldekortResponse({
-    dagpenger: dpResult.data,
-    aap: aapResult.data,
-    tiltakspenger: tpResult.data,
-    ...(redirectUrl && { redirectUrl }),
+    ...result.data,
+    ...(result.redirectUrl && { redirectUrl: result.redirectUrl }),
   });
 };
