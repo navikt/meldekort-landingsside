@@ -384,5 +384,83 @@ describe('helpers', () => {
       const data = await response.json();
       expect(data).toEqual({ dagpenger: ytelseData.dagpenger });
     });
+
+    it('skal redirecte til relativ redirectUrl når ingen ytelser har aktive meldekort', () => {
+      const ytelseData = {
+        dagpenger: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/dagpenger/meldekort',
+        },
+        aap: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/aap/meldekort',
+        },
+        tiltakspenger: {
+          innsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          url: 'https://www.nav.no/tiltakspenger/meldekort',
+        },
+        redirectUrl: '/felles-meldekort',
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('Location')).toBe('/felles-meldekort');
+    });
+
+    it('skal kaste error hvis redirectUrl ikke starter med /', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: 'https://example',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for protokoll-relativ URL (open redirect)', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '//example',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for backslash i path', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '/path\\with\\backslash',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for path med whitespace', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '/path with spaces',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
   });
 });

@@ -14,6 +14,7 @@ interface YtelseData {
   dagpenger?: MeldekortData | undefined;
   aap?: MeldekortData | undefined;
   tiltakspenger?: MeldekortData | undefined;
+  redirectUrl?: string;
 }
 
 /**
@@ -81,37 +82,75 @@ export async function fetchWithTimeout(
 
 /**
  * Håndterer redirect/response logikk basert på antall aktive ytelser.
+ * - Hvis 0 ytelser har aktive meldekort OG redirectUrl er satt → HTTP 307 redirect til redirectUrl
  * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
  * - Ellers → returner JSON med meldekortdata for alle ytelser
  */
 export function handleMeldekortResponse(ytelseData: YtelseData): Response {
-  const { dagpenger, aap, tiltakspenger } = ytelseData;
+  const { dagpenger, aap, tiltakspenger, redirectUrl } = ytelseData;
 
   // Tell antall ytelser med aktive meldekort
-  const activeYtelser = [
-    { name: 'dagpenger', data: dagpenger, active: harAktiveMeldekort(dagpenger) },
+  const ytelserMedAktiveMeldekort = [
+    {
+      name: 'dagpenger',
+      data: dagpenger,
+      active: harAktiveMeldekort(dagpenger),
+    },
     { name: 'aap', data: aap, active: harAktiveMeldekort(aap) },
-    { name: 'tiltakspenger', data: tiltakspenger, active: harAktiveMeldekort(tiltakspenger) },
+    {
+      name: 'tiltakspenger',
+      data: tiltakspenger,
+      active: harAktiveMeldekort(tiltakspenger),
+    },
   ].filter((ytelse) => ytelse.active);
 
+  // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
+  if (ytelserMedAktiveMeldekort.length === 0 && redirectUrl) {
+    // Valider at redirectUrl er en sikker intern path
+    // Må være relativ path som starter med / men ikke //
+    // Avviser også backslash og whitespace for å forhindre open redirect
+    if (
+      !redirectUrl.startsWith('/') ||
+      redirectUrl.startsWith('//') ||
+      redirectUrl.includes('\\') ||
+      /\s/.test(redirectUrl)
+    ) {
+      logger.error('Invalid redirect URL from arena - must be safe internal path', {
+        redirectUrl,
+      });
+      throw new Error(`Redirect URL must be safe internal path (e.g. /path), got: ${redirectUrl}`);
+    }
+
+    // Returner 307 redirect med Location header
+    return new Response(null, {
+      status: 307,
+      headers: {
+        Location: redirectUrl,
+      },
+    });
+  }
+
   // Hvis kun 1 ytelse har aktive meldekort, gjør HTTP redirect
-  if (activeYtelser.length === 1) {
-    const ytelse = activeYtelser[0];
+  if (ytelserMedAktiveMeldekort.length === 1) {
+    const ytelse = ytelserMedAktiveMeldekort[0];
     if (ytelse?.data) {
-      const redirectUrl = ytelse.data.url;
+      const ytelseRedirectUrl = ytelse.data.url;
       // Response.redirect krever absolutt URL
-      if (!redirectUrl.startsWith('http://') && !redirectUrl.startsWith('https://')) {
+      if (!ytelseRedirectUrl.startsWith('http://') && !ytelseRedirectUrl.startsWith('https://')) {
         logger.error('Invalid redirect URL in handleMeldekortResponse', {
-          redirectUrl,
+          redirectUrl: ytelseRedirectUrl,
           ytelse: ytelse.name,
         });
-        throw new Error(`Redirect URL must be absolute, got: ${redirectUrl}`);
+        throw new Error(`Redirect URL must be absolute, got: ${ytelseRedirectUrl}`);
       }
-      return Response.redirect(redirectUrl, 307);
+      return Response.redirect(ytelseRedirectUrl, 307);
     }
   }
 
-  // Ellers (0 eller flere ytelser), returner JSON med meldekortdata
+  // Ellers, returner JSON med meldekortdata:
+  // - Når ingen ytelser har aktive meldekort og redirectUrl mangler (viser tom landingsside)
+  // - Når flere ytelser har aktive meldekort (viser landingsside med kort)
+  // redirectUrl inkluderes ikke her fordi den kun brukes for redirect når ingen ytelser er aktive og redirectUrl finnes
   const alleMeldekort: AlleMeldekortData = {
     ...(dagpenger && { dagpenger }),
     ...(aap && { aap }),

@@ -1,0 +1,26 @@
+app: meldekort-landingsside
+basePath: /meldekort
+enforce_login: "true"
+ingresses:
+  - https://www.nav.no/meldekort
+replicas:
+  min: 2
+  max: 4
+resources:
+  limits:
+    memory: 512Mi
+  requests:
+    cpu: 50m
+    memory: 256Mi
+idporten:
+  enabled: true
+  level: Level3
+  autoLogin: true
+aapApiUrl: http://meldekort-backend.aap
+aapApiAudience: prod-gcp:aap:meldekort-backend
+tpApiUrl: https://tiltakspenger-meldekort-api.intern.nav.no
+tpApiAudience: prod-gcp:tpts:tiltakspenger-meldekort-api
+arenaApiUrl: http://meldekort-api.meldekort
+arenaApiAudience: prod-gcp:meldekort:meldekort-api
+dpApiUrl: http://dp-rapportering.teamdagpenger
+dpApiAudience: prod-gcp:teamdagpenger:dp-rapportering

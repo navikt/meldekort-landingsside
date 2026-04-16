@@ -5,6 +5,13 @@ import type { MeldekortData } from '../types/meldekort';
  * Brukes med ?scenario=<navn> query parameter i mock mode.
  */
 
+export interface ScenarioData {
+  dagpenger?: MeldekortData | undefined;
+  aap?: MeldekortData | undefined;
+  tiltakspenger?: MeldekortData | undefined;
+  redirectUrl?: string;
+}
+
 export const scenarios = {
   // Standard mock data (default)
   default: {
@@ -48,6 +55,26 @@ export const scenarios = {
     dagpenger: undefined,
     aap: undefined,
     tiltakspenger: undefined,
+  },
+
+  // Kun felles meldekort fra arena (redirect)
+  'kun-felles-meldekort': {
+    dagpenger: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/dagpenger/meldekort',
+    } as MeldekortData,
+    aap: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/aap/meldekort',
+    } as MeldekortData,
+    tiltakspenger: {
+      innsendteMeldekort: false,
+      meldekortTilUtfylling: [],
+      url: 'https://www.nav.no/tiltakspenger/meldekort',
+    } as MeldekortData,
+    redirectUrl: '/felles-meldekort',
   },
 
   // Kun dagpenger har aktive meldekort (skal redirecte)
@@ -216,7 +243,7 @@ export type ScenarioName = keyof typeof scenarios;
  * Henter scenario basert på navn.
  * Returnerer default scenario hvis navnet ikke finnes.
  */
-export function getScenario(name?: string) {
+export function getScenario(name?: string): ScenarioData {
   if (!name || !Object.hasOwn(scenarios, name)) {
     return scenarios.default;
   }
@@ -228,8 +255,12 @@ export function getScenario(name?: string) {
  */
 export const scenarioMetadata = [
   {
-    category: 'Redirect scenarier (kun én ytelse)',
+    category: 'Redirect scenarier',
     items: [
+      {
+        name: 'kun-felles-meldekort',
+        description: 'Kun felles meldekort fra arena → redirect til /felles-meldekort',
+      },
       { name: 'kun-dagpenger', description: 'Kun dagpenger har aktive meldekort → redirect' },
       { name: 'kun-aap', description: 'Kun AAP har aktive meldekort → redirect' },
       { name: 'kun-tp', description: 'Kun tiltakspenger har aktive meldekort → redirect' },

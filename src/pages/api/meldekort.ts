@@ -1,19 +1,28 @@
 import type { APIRoute } from 'astro';
 import { getToken } from '@navikt/oasis';
-import { dagpengerMock } from '../../lib/api/mockData';
 import { hentMeldekortDataFraAAP } from '../../lib/api/clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from '../../lib/api/clients/tiltakspenger';
-import { shouldUseMockData, handleMeldekortResponse } from '../../lib/api/helpers';
+import { hentMeldekortDataFraArena } from '../../lib/api/clients/arena';
+import { hentMeldekortDataFraDP } from '../../lib/api/clients/dagpenger';
+import {
+  shouldUseMockData,
+  handleMeldekortResponse,
+  harAktiveMeldekort,
+} from '../../lib/api/helpers';
 import { getScenario } from '../../lib/api/scenarios';
+import { logger } from '../../lib/utils/logger';
 
 /**
  * Samlet API-endepunkt som returnerer meldekortdata for alle ytelser.
  *
  * Logikk:
- * - Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
- * - Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
- * - Hvis 0 ytelser har aktive meldekort → returner data (tom landingsside vises)
- * - Hvis >1 ytelser har aktive meldekort → returner data (landingsside med flere ytelser vises)
+ * 1. Hent data fra dagpenger, AAP og tiltakspenger
+ * 2. Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
+ * 3. Hvis ingen av disse har aktive meldekort → kall arena (meldekort-api) for redirectUrl
+ * 4. Hvis 0 ytelser har aktive meldekort OG redirectUrl fra arena → HTTP 307 redirect til redirectUrl
+ * 5. Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
+ * 6. Hvis 0 ytelser har aktive meldekort (uten redirectUrl) → returner data (tom landingsside vises)
+ * 7. Hvis >1 ytelser har aktive meldekort → returner data (landingsside med flere ytelser vises)
  *
  * En ytelse regnes som aktiv hvis den har:
  * - innsendteMeldekort: true ELLER
@@ -21,7 +30,7 @@ import { getScenario } from '../../lib/api/scenarios';
  *
  * Mock mode med scenarier (kun når ENFORCE_LOGIN=false):
  * Bruk ?scenario=<navn> query parameter for å teste forskjellige tilstander.
- * Tilgjengelige scenarier: ingen-meldekort, kun-dagpenger, kun-aap, kun-tp,
+ * Tilgjengelige scenarier: ingen-meldekort, kun-felles-meldekort, kun-dagpenger, kun-aap, kun-tp,
  * aap-og-tp, alle-ytelser, kun-innsendte, kun-utfylling
  * Se src/lib/api/scenarios.ts for alle scenarier.
  */
@@ -39,6 +48,9 @@ export const GET: APIRoute = async ({ request, url }) => {
       dagpenger: scenarioData.dagpenger,
       aap: scenarioData.aap,
       tiltakspenger: scenarioData.tiltakspenger,
+      ...(scenarioData.redirectUrl && {
+        redirectUrl: scenarioData.redirectUrl,
+      }),
     });
   }
 
@@ -56,21 +68,21 @@ export const GET: APIRoute = async ({ request, url }) => {
   }
 
   // Hent data fra alle ytelser parallelt
-  const [aapResult, tpResult] = await Promise.all([
+  const [dpResult, aapResult, tpResult] = await Promise.all([
+    hentMeldekortDataFraDP(token),
     hentMeldekortDataFraAAP(token),
     hentMeldekortDataFraTP(token),
   ]);
 
-  const dpData = dagpengerMock; // TODO: Bytt ut med faktisk kall til DP API
-
   // Sjekk om noen API-kall feilet
-  const apiKallFeilet = !aapResult.success || !tpResult.success;
+  const apiKallFeilet = !dpResult.success || !aapResult.success || !tpResult.success;
 
   if (apiKallFeilet) {
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch data from one or more services',
         details: {
+          dagpenger: dpResult.success ? 'ok' : dpResult.error,
           aap: aapResult.success ? 'ok' : aapResult.error,
           tiltakspenger: tpResult.success ? 'ok' : tpResult.error,
         },
@@ -84,10 +96,53 @@ export const GET: APIRoute = async ({ request, url }) => {
     );
   }
 
+  // Sjekk om noen ytelser har aktive meldekort
+  const harAktiveYtelser =
+    harAktiveMeldekort(dpResult.data) ||
+    harAktiveMeldekort(aapResult.data) ||
+    harAktiveMeldekort(tpResult.data);
+
+  // Hvis ingen ytelser har aktive meldekort, sjekk arena for redirectUrl
+  let redirectUrl: string | undefined;
+  if (!harAktiveYtelser) {
+    const arenaResult = await hentMeldekortDataFraArena(token);
+
+    // Hvis arena-kallet feiler, logg men fortsett (vi viser tom landingsside)
+    if (!arenaResult.success) {
+      // Arena-feil er ikke kritisk, fortsett uten redirectUrl
+      logger.warn('Arena-kall for meldekort feilet, fortsetter uten redirectUrl', {
+        error: arenaResult.error,
+      });
+    } else if (arenaResult.data) {
+      // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
+      // Arena er ikke kritisk, så en ugyldig redirectUrl skal ikke føre til 500-feil
+      const arenaRedirectUrl = arenaResult.data.redirectUrl;
+
+      // Arena returnerer tom string når det ikke er noen redirect
+      if (arenaRedirectUrl === '') {
+        // Ingen redirect - fortsett uten (vis tom landingsside)
+        logger.info('Arena returnerte tom redirectUrl - ingen redirect tilgjengelig');
+      } else if (
+        arenaRedirectUrl.startsWith('/') &&
+        !arenaRedirectUrl.startsWith('//') &&
+        !arenaRedirectUrl.includes('\\') &&
+        !/\s/.test(arenaRedirectUrl)
+      ) {
+        redirectUrl = arenaRedirectUrl;
+      } else {
+        // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
+        logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path', {
+          redirectUrl: arenaRedirectUrl,
+        });
+      }
+    }
+  }
+
   // Hent data fra resultatene og returner response
   return handleMeldekortResponse({
-    dagpenger: dpData,
+    dagpenger: dpResult.data,
     aap: aapResult.data,
     tiltakspenger: tpResult.data,
+    ...(redirectUrl && { redirectUrl }),
   });
 };
