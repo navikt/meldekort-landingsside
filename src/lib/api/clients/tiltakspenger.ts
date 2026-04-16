@@ -41,6 +41,11 @@ export async function hentMeldekortDataFraTP(oboToken: string): Promise<ApiResul
     });
 
     if (!response.ok) {
+      // 404 betyr at bruker ikke finnes i TP - behandle som "ingen data"
+      if (response.status === 404) {
+        logger.info('TP API returned 404 - user not found, treating as no data');
+        return { success: true };
+      }
       const error = `TP API returned ${response.status}`;
       logger.error(error);
       return { success: false, error };

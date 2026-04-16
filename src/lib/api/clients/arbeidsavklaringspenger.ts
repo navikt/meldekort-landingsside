@@ -43,6 +43,11 @@ export async function hentMeldekortDataFraAAP(oboToken: string): Promise<ApiResu
     });
 
     if (!response.ok) {
+      // 404 betyr at bruker ikke finnes i AAP - behandle som "ingen data"
+      if (response.status === 404) {
+        logger.info('AAP API returned 404 - user not found, treating as no data');
+        return { success: true };
+      }
       const error = `AAP API returned ${response.status}`;
       logger.error(error);
       return { success: false, error };
