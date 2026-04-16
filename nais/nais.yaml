@@ -47,6 +47,8 @@ spec:
           namespace: tpts
         - application: meldekort-api
           namespace: meldekort
+        - application: meldekort-api-q2
+          namespace: meldekort
         - application: dp-rapportering
           namespace: teamdagpenger
       external:
