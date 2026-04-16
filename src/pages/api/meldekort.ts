@@ -125,8 +125,10 @@ export const GET: APIRoute = async ({ request, url }) => {
     // Hvis arena-kallet feiler, logg men fortsett (vi viser tom landingsside)
     if (!arenaResult.success) {
       // Arena-feil er ikke kritisk, fortsett uten redirectUrl
-      logger.warn('Arena-kall for meldekort feilet, fortsetter uten redirectUrl', {
+      logger.warn('Arena-kall (meldekort-api) feilet, fortsetter uten redirectUrl', {
+        service: 'arena/meldekort-api',
         error: arenaResult.error,
+        consequence: 'Viser tom landingsside i stedet for redirect til felles-meldekort',
       });
     } else if (arenaResult.data) {
       // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
