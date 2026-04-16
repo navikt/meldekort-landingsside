@@ -78,6 +78,21 @@ export const GET: APIRoute = async ({ request, url }) => {
   const apiKallFeilet = !dpResult.success || !aapResult.success || !tpResult.success;
 
   if (apiKallFeilet) {
+    // Logger detaljert informasjon om hvilke tjenester som feiler
+    const failedServices = [];
+    if (!dpResult.success) failedServices.push('dagpenger');
+    if (!aapResult.success) failedServices.push('aap');
+    if (!tpResult.success) failedServices.push('tiltakspenger');
+
+    logger.error('Ett eller flere API-kall til meldekort-tjenester feilet', {
+      failedServices,
+      errors: {
+        dagpenger: dpResult.success ? null : dpResult.error,
+        aap: aapResult.success ? null : aapResult.error,
+        tiltakspenger: tpResult.success ? null : tpResult.error,
+      },
+    });
+
     return new Response(
       JSON.stringify({
         error: 'Failed to fetch data from one or more services',
