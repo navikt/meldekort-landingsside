@@ -33,7 +33,7 @@ export function shouldUseMockData(): boolean {
  */
 export function harAktiveMeldekort(data: MeldekortData | undefined): boolean {
   if (!data) return false;
-  return data.innsendteMeldekort || data.meldekortTilUtfylling.length > 0;
+  return data.harInnsendteMeldekort || data.meldekortTilUtfylling.length > 0;
 }
 
 /**
@@ -47,9 +47,9 @@ export function validerMeldekortData(data: unknown): data is MeldekortData {
   const obj = data as Record<string, unknown>;
 
   return (
-    typeof obj.innsendteMeldekort === 'boolean' &&
+    typeof obj.harInnsendteMeldekort === 'boolean' &&
     Array.isArray(obj.meldekortTilUtfylling) &&
-    typeof obj.url === 'string'
+    typeof obj.redirectUrl === 'string'
   );
 }
 
@@ -134,7 +134,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
   if (ytelserMedAktiveMeldekort.length === 1) {
     const ytelse = ytelserMedAktiveMeldekort[0];
     if (ytelse?.data) {
-      const ytelseRedirectUrl = ytelse.data.url;
+      const ytelseRedirectUrl = ytelse.data.redirectUrl;
       // Response.redirect krever absolutt URL
       if (!ytelseRedirectUrl.startsWith('http://') && !ytelseRedirectUrl.startsWith('https://')) {
         logger.error('Invalid redirect URL in handleMeldekortResponse', {

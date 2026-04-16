@@ -156,18 +156,18 @@ function oppdaterVisning(
   sjekkFyllUt = false,
 ): void {
   const meldekortSomKanSendes = data.meldekortTilUtfylling.filter(kanSendes);
-  const harInnsendte = data.innsendteMeldekort;
+  const harInnsendte = data.harInnsendteMeldekort;
 
   if (meldekortSomKanSendes.length > 0) {
     visning.sende.push({
-      url: data.url,
+      url: data.redirectUrl,
       ytelse,
       dato: hentNærmesteDato(meldekortSomKanSendes, 'fristForInnsending'),
       harOgsaInnsendte: harInnsendte,
     });
   } else if (harInnsendte) {
     visning.se.push({
-      url: data.url,
+      url: data.redirectUrl,
       ytelse,
       dato: undefined,
     });
@@ -175,7 +175,7 @@ function oppdaterVisning(
     const meldekortSomKanFyllesUt = data.meldekortTilUtfylling.filter(kanFyllesUt);
     if (meldekortSomKanFyllesUt.length > 0) {
       visning.fyllUt.push({
-        url: data.url,
+        url: data.redirectUrl,
         ytelse,
         dato: hentNærmesteDato(meldekortSomKanFyllesUt, 'kanSendesFra'),
       });

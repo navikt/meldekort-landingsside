@@ -81,9 +81,9 @@ describe('scenarios', () => {
     it('skal returnere riktig scenario når name er "kun-innsendte"', () => {
       const result = getScenario('kun-innsendte');
       expect(result).toEqual(scenarios['kun-innsendte']);
-      expect(result.dagpenger?.innsendteMeldekort).toBe(true);
-      expect(result.aap?.innsendteMeldekort).toBe(true);
-      expect(result.tiltakspenger?.innsendteMeldekort).toBe(true);
+      expect(result.dagpenger?.harInnsendteMeldekort).toBe(true);
+      expect(result.aap?.harInnsendteMeldekort).toBe(true);
+      expect(result.tiltakspenger?.harInnsendteMeldekort).toBe(true);
       expect(result.dagpenger?.meldekortTilUtfylling).toEqual([]);
       expect(result.aap?.meldekortTilUtfylling).toEqual([]);
       expect(result.tiltakspenger?.meldekortTilUtfylling).toEqual([]);
@@ -92,9 +92,9 @@ describe('scenarios', () => {
     it('skal returnere riktig scenario når name er "kun-utfylling"', () => {
       const result = getScenario('kun-utfylling');
       expect(result).toEqual(scenarios['kun-utfylling']);
-      expect(result.dagpenger?.innsendteMeldekort).toBe(false);
-      expect(result.aap?.innsendteMeldekort).toBe(false);
-      expect(result.tiltakspenger?.innsendteMeldekort).toBe(false);
+      expect(result.dagpenger?.harInnsendteMeldekort).toBe(false);
+      expect(result.aap?.harInnsendteMeldekort).toBe(false);
+      expect(result.tiltakspenger?.harInnsendteMeldekort).toBe(false);
       expect(result.dagpenger?.meldekortTilUtfylling.length).toBeGreaterThan(0);
       expect(result.aap?.meldekortTilUtfylling.length).toBeGreaterThan(0);
       expect(result.tiltakspenger?.meldekortTilUtfylling.length).toBeGreaterThan(0);

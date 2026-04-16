@@ -51,7 +51,7 @@ if (!meldekortResult.success) {
 
   if (uniqueYtelser.length === 1) {
     const ytelse = uniqueYtelser[0];
-    const ytelseUrl = meldekortResult.data[ytelse as keyof AlleMeldekortData]?.url;
+    const ytelseUrl = meldekortResult.data[ytelse as keyof AlleMeldekortData]?.redirectUrl;
     if (ytelseUrl) {
       return Astro.redirect(ytelseUrl);
     }

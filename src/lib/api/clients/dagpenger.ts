@@ -53,9 +53,9 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
       logger.error(error, {
         receivedData: data,
         expectedFields: {
-          innsendteMeldekort: 'boolean',
+          harInnsendteMeldekort: 'boolean',
           meldekortTilUtfylling: 'array',
-          url: 'string',
+          redirectUrl: 'string',
         },
       });
       return { success: false, error };
@@ -63,7 +63,7 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
 
     // Success - returner data selv om ingen aktive meldekort
     // (tomt data er ikke en feil, bare at brukeren ikke har aktive meldekort)
-    if (!data.innsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
+    if (!data.harInnsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
       return { success: true };
     }
 

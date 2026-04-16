@@ -16,7 +16,7 @@ export const scenarios = {
   // Standard mock data (default)
   default: {
     dagpenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -24,10 +24,10 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-31',
@@ -35,10 +35,10 @@ export const scenarios = {
           fristForInnsending: '2026-04-07',
         },
       ],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -46,7 +46,7 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 
@@ -60,19 +60,19 @@ export const scenarios = {
   // Kun felles meldekort fra arena (redirect)
   'kun-felles-meldekort': {
     dagpenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
     redirectUrl: '/felles-meldekort',
   },
@@ -80,7 +80,7 @@ export const scenarios = {
   // Kun dagpenger har aktive meldekort (skal redirecte)
   'kun-dagpenger': {
     dagpenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -88,7 +88,7 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: undefined,
     tiltakspenger: undefined,
@@ -98,9 +98,9 @@ export const scenarios = {
   'kun-aap': {
     dagpenger: undefined,
     aap: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: undefined,
   },
@@ -110,7 +110,7 @@ export const scenarios = {
     dagpenger: undefined,
     aap: undefined,
     tiltakspenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -118,7 +118,7 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 
@@ -126,7 +126,7 @@ export const scenarios = {
   'aap-og-tp': {
     dagpenger: undefined,
     aap: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-31',
@@ -134,19 +134,19 @@ export const scenarios = {
           fristForInnsending: '2026-04-07',
         },
       ],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 
   // Tre ytelser har aktive meldekort (landingsside)
   'alle-ytelser': {
     dagpenger: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -154,10 +154,10 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-31',
@@ -165,10 +165,10 @@ export const scenarios = {
           fristForInnsending: '2026-04-07',
         },
       ],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -176,33 +176,33 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 
   // Kun innsendte meldekort (ingen til utfylling)
   'kun-innsendte': {
     dagpenger: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: true,
+      harInnsendteMeldekort: true,
       meldekortTilUtfylling: [],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 
   // Kun meldekort til utfylling (ingen innsendte)
   'kun-utfylling': {
     dagpenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -210,10 +210,10 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/dagpenger/meldekort',
+      redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
     } as MeldekortData,
     aap: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-31',
@@ -221,10 +221,10 @@ export const scenarios = {
           fristForInnsending: '2026-04-07',
         },
       ],
-      url: 'https://www.nav.no/aap/meldekort',
+      redirectUrl: 'https://www.nav.no/aap/meldekort',
     } as MeldekortData,
     tiltakspenger: {
-      innsendteMeldekort: false,
+      harInnsendteMeldekort: false,
       meldekortTilUtfylling: [
         {
           kanSendesFra: '2026-03-10',
@@ -232,7 +232,7 @@ export const scenarios = {
           fristForInnsending: '2026-03-24',
         },
       ],
-      url: 'https://www.nav.no/tiltakspenger/meldekort',
+      redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
     } as MeldekortData,
   },
 } as const;

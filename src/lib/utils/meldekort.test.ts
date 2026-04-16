@@ -202,7 +202,7 @@ describe('skalViseLenker', () => {
   it('viser "Send inn" kort når meldekort kan sendes', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -210,7 +210,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
     };
 
@@ -230,9 +230,9 @@ describe('skalViseLenker', () => {
   it('viser "Se innsendte" kort når kun innsendte meldekort finnes', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
     };
 
@@ -251,7 +251,7 @@ describe('skalViseLenker', () => {
   it('viser "Fyll ut" kort for AAP når meldekort kan fylles ut men ikke sendes', () => {
     const data: AlleMeldekortData = {
       aap: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-31', // I fremtiden
@@ -259,7 +259,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://aap.url',
+        redirectUrl: 'https://aap.url',
       },
     };
 
@@ -278,7 +278,7 @@ describe('skalViseLenker', () => {
   it('viser IKKE "Fyll ut" kort for dagpenger selv om det kan fylles ut', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-31',
@@ -286,7 +286,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
     };
 
@@ -300,7 +300,7 @@ describe('skalViseLenker', () => {
   it('viser "Send inn" med harOgsaInnsendte=true når både kan sendes og har innsendte', () => {
     const data: AlleMeldekortData = {
       tiltakspenger: {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -308,7 +308,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://tiltakspenger.url',
+        redirectUrl: 'https://tiltakspenger.url',
       },
     };
 
@@ -326,7 +326,7 @@ describe('skalViseLenker', () => {
   it('velger nærmeste frist når flere meldekort kan sendes', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -344,7 +344,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
     };
 
@@ -357,7 +357,7 @@ describe('skalViseLenker', () => {
   it('håndterer flere ytelser samtidig', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -365,10 +365,10 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
       aap: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-31',
@@ -376,12 +376,12 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://aap.url',
+        redirectUrl: 'https://aap.url',
       },
       tiltakspenger: {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 'https://tiltakspenger.url',
+        redirectUrl: 'https://tiltakspenger.url',
       },
     };
 
@@ -405,7 +405,7 @@ describe('skalViseLenker', () => {
   it('prioriterer "Send inn" over "Se innsendte"', () => {
     const data: AlleMeldekortData = {
       dagpenger: {
-        innsendteMeldekort: true, // Har innsendte
+        harInnsendteMeldekort: true, // Har innsendte
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10', // Men kan også sende nye
@@ -413,7 +413,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://dagpenger.url',
+        redirectUrl: 'https://dagpenger.url',
       },
     };
 
@@ -427,7 +427,7 @@ describe('skalViseLenker', () => {
   it('prioriterer "Send inn" over "Fyll ut" for AAP', () => {
     const data: AlleMeldekortData = {
       aap: {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10', // Kan sendes
@@ -435,7 +435,7 @@ describe('skalViseLenker', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://aap.url',
+        redirectUrl: 'https://aap.url',
       },
     };
 

@@ -31,7 +31,7 @@ describe('tiltakspenger', () => {
   describe('hentMeldekortDataFraTP', () => {
     it('returnerer meldekortdata når API-kallet lykkes', async () => {
       const mockData: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -39,7 +39,7 @@ describe('tiltakspenger', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://www.nav.no/tiltakspenger/meldekort',
+        redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -120,9 +120,9 @@ describe('tiltakspenger', () => {
 
     it('returnerer success uten data når bruker har ingen aktive meldekort', async () => {
       const mockEmptyData: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://www.nav.no/tiltakspenger/meldekort',
+        redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -158,7 +158,7 @@ describe('tiltakspenger', () => {
 
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      expect(result.data?.innsendteMeldekort).toBe(true);
+      expect(result.data?.harInnsendteMeldekort).toBe(true);
       expect(result.data?.meldekortTilUtfylling).toHaveLength(1);
     });
 

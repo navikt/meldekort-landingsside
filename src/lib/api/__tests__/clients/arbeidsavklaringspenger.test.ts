@@ -31,7 +31,7 @@ describe('arbeidsavklaringspenger', () => {
   describe('hentMeldekortDataFraAAP', () => {
     it('returnerer meldekortdata når API-kallet lykkes', async () => {
       const mockData: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-31',
@@ -39,7 +39,7 @@ describe('arbeidsavklaringspenger', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://aap.nav.no',
+        redirectUrl: 'https://aap.nav.no',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -120,9 +120,9 @@ describe('arbeidsavklaringspenger', () => {
 
     it('returnerer success uten data når bruker har ingen aktive meldekort', async () => {
       const mockEmptyData: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://aap.nav.no',
+        redirectUrl: 'https://aap.nav.no',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -158,7 +158,7 @@ describe('arbeidsavklaringspenger', () => {
 
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      expect(result.data?.innsendteMeldekort).toBe(false);
+      expect(result.data?.harInnsendteMeldekort).toBe(false);
       expect(result.data?.meldekortTilUtfylling).toHaveLength(1);
     });
 
