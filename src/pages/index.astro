@@ -95,7 +95,7 @@ const decorator = await getDecoratorHTML({
   context: 'privatperson',
   simple: false,
   language,
-  availableLanguages: SUPPORTED_LANGUAGES.map((locale: typeof SUPPORTED_LANGUAGES[number]) => ({
+  availableLanguages: SUPPORTED_LANGUAGES.map((locale: (typeof SUPPORTED_LANGUAGES)[number]) => ({
     locale,
     url: import.meta.env.BASE_URL,
     handleInApp: true,
