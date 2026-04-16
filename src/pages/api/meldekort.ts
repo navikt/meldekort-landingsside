@@ -17,8 +17,8 @@ import { logger } from '../../lib/utils/logger';
  *
  * Logikk:
  * 1. Hent data fra dagpenger, AAP og tiltakspenger
- * 2. Hvis ingen av disse har aktive meldekort → kall arena (meldekort-api) for redirectUrl
- * 3. Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
+ * 2. Hvis ett eller flere API-kall feiler → HTTP 503 med feildetaljer
+ * 3. Hvis ingen av disse har aktive meldekort → kall arena (meldekort-api) for redirectUrl
  * 4. Hvis 0 ytelser har aktive meldekort OG redirectUrl fra arena → HTTP 307 redirect til redirectUrl
  * 5. Hvis kun 1 ytelse har aktive meldekort → HTTP 307 redirect til den ytelsens URL
  * 6. Hvis 0 ytelser har aktive meldekort (uten redirectUrl) → returner data (tom landingsside vises)
