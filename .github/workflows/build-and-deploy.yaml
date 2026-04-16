@@ -105,21 +105,21 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
           TEAM: meldekort
 
-  deploy-prod:
-    name: Deploy to prod
-    runs-on: ubuntu-latest
-    needs: [build, deploy-dev]
-    if: github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v6
+  # deploy-prod:
+  #   name: Deploy to prod
+  #   runs-on: ubuntu-latest
+  #   needs: [build, deploy-dev]
+  #   if: github.ref == 'refs/heads/main'
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+  #   steps:
+  #     - uses: actions/checkout@v6
 
-      - uses: nais/deploy/actions/deploy@v2
-        env:
-          CLUSTER: prod-gcp
-          RESOURCE: nais/nais.yaml
-          VARS: nais/vars-prod.yaml
-          VAR: image=${{ needs.build.outputs.image }}
-          TEAM: meldekort
+  #     - uses: nais/deploy/actions/deploy@v2
+  #       env:
+  #         CLUSTER: prod-gcp
+  #         RESOURCE: nais/nais.yaml
+  #         VARS: nais/vars-prod.yaml
+  #         VAR: image=${{ needs.build.outputs.image }}
+  #         TEAM: meldekort
