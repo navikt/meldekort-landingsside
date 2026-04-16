@@ -41,10 +41,19 @@ if (apiResponse.status === 307 || apiResponse.status === 308) {
 let alleMeldekort: AlleMeldekortData | null = null;
 
 if (!apiResponse.ok) {
+  // Prøv å hente error details fra API response body for å se hvilke tjenester som feiler
+  let errorDetails = null;
+  try {
+    errorDetails = await apiResponse.json();
+  } catch {
+    // Kunne ikke parse error body
+  }
+
   logger.error('Failed to fetch meldekort data from API - showing error page to user', {
     status: apiResponse.status,
     statusText: apiResponse.statusText,
     url: apiUrl,
+    errorDetails, // Inneholder error og details fra API-en (hvilke tjenester som feiler)
   });
   Astro.response.status = apiResponse.status >= 500 ? apiResponse.status : 500;
 } else {
@@ -134,9 +143,11 @@ const decorator = await getDecoratorHTML({
                 <Heading size="xsmall" level="2" spacing>
                   Mock mode
                 </Heading>
-                Du kjører i mock mode. <Link href="/meldekort/dev/scenarios">
+                Du kjører i mock mode.{" "}
+                <Link href="/meldekort/dev/scenarios">
                   Se alle tilgjengelige scenarier
-                </Link> eller bruk <code>?scenario=&lt;navn&gt;</code> i URL.
+                </Link>{" "}
+                eller bruk <code>?scenario=&lt;navn&gt;</code> i URL.
               </Alert>
             )
           }
@@ -150,7 +161,8 @@ const decorator = await getDecoratorHTML({
                 <p>{t.feilmelding.beskrivelse}</p>
               </div>
             ) : harKort ? (
-              hasValidContent && content && (
+              hasValidContent &&
+              content && (
                 <VStack gap="space-24" maxWidth="525px">
                   <MeldekortLinkCards
                     client:load
@@ -166,10 +178,15 @@ const decorator = await getDecoratorHTML({
                 </VStack>
               )
             ) : (
-              hasEmptyState && content && <PortableText value={content.emptyStateTekst} />
+              hasEmptyState &&
+              content && <PortableText value={content.emptyStateTekst} />
             )
           }
-          {hasBunntekst && content && <PortableText value={content.bunntekst} />}
+          {
+            hasBunntekst && content && (
+              <PortableText value={content.bunntekst} />
+            )
+          }
         </VStack>
       </Page.Block>
     </Page>
