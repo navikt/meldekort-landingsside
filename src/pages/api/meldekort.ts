@@ -115,11 +115,12 @@ export const GET: APIRoute = async ({ request, url }) => {
       // Valider redirectUrl før vi bruker den for å unngå at handleMeldekortResponse kaster error
       // Arena er ikke kritisk, så en ugyldig redirectUrl skal ikke føre til 500-feil
       const url = arenaResult.data.redirectUrl;
-      if (url.startsWith('/')) {
+      // Må være sikker intern path: starter med / men ikke //, ingen backslash eller whitespace
+      if (url.startsWith('/') && !url.startsWith('//') && !url.includes('\\') && !/\s/.test(url)) {
         redirectUrl = url;
       } else {
         // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
-        logger.warn('Ugyldig redirectUrl fra arena - må starte med /', {
+        logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path', {
           redirectUrl: url,
         });
       }

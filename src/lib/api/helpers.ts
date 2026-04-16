@@ -106,12 +106,19 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
 
   // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
   if (ytelserMedAktiveMeldekort.length === 0 && redirectUrl) {
-    // Valider at redirectUrl er en relativ path (må starte med /)
-    if (!redirectUrl.startsWith('/')) {
-      logger.error('Invalid redirect URL from arena - must be relative path', {
+    // Valider at redirectUrl er en sikker intern path
+    // Må være relativ path som starter med / men ikke //
+    // Avviser også backslash og whitespace for å forhindre open redirect
+    if (
+      !redirectUrl.startsWith('/') ||
+      redirectUrl.startsWith('//') ||
+      redirectUrl.includes('\\') ||
+      /\s/.test(redirectUrl)
+    ) {
+      logger.error('Invalid redirect URL from arena - must be safe internal path', {
         redirectUrl,
       });
-      throw new Error(`Redirect URL must start with /, got: ${redirectUrl}`);
+      throw new Error(`Redirect URL must be safe internal path (e.g. /path), got: ${redirectUrl}`);
     }
 
     // Returner 307 redirect med Location header

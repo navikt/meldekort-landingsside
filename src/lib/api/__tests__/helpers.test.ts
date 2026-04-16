@@ -416,11 +416,50 @@ describe('helpers', () => {
         dagpenger: undefined,
         aap: undefined,
         tiltakspenger: undefined,
-        redirectUrl: 'https://example.com',
+        redirectUrl: 'https://evil.com/phishing',
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
-        'Redirect URL must start with /, got: https://example.com',
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for protokoll-relativ URL (open redirect)', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '//evil.com/phishing',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for backslash i path', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '/path\\with\\backslash',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
+      );
+    });
+
+    it('skal kaste error for path med whitespace', () => {
+      const ytelseData = {
+        dagpenger: undefined,
+        aap: undefined,
+        tiltakspenger: undefined,
+        redirectUrl: '/path with spaces',
+      };
+
+      expect(() => handleMeldekortResponse(ytelseData)).toThrow(
+        'Redirect URL must be safe internal path',
       );
     });
   });
