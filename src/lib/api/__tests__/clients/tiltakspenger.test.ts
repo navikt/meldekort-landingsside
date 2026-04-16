@@ -60,7 +60,7 @@ describe('tiltakspenger', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:tp:api');
       expect(fetch).toHaveBeenCalledWith(
-        'https://tp-test.nav.no/api/meldekort-status',
+        'https://tp-test.nav.no/landingsside/status',
         expect.objectContaining({
           headers: {
             Accept: 'application/json',
