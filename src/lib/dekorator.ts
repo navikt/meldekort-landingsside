@@ -8,7 +8,6 @@ import {
 import { logger } from './utils/logger';
 
 interface DecoratorParams {
-  env?: DecoratorEnvProps['env'];
   context?: 'privatperson' | 'arbeidsgiver';
   simple?: boolean;
   language?: DecoratorLocale;
@@ -24,29 +23,37 @@ interface DecoratorParams {
  * Følger samme pattern som meldekort-frontend.
  */
 export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<DecoratorElements> {
-  const {
-    env = 'dev',
-    context = 'privatperson',
-    simple = false,
-    language = 'nb',
-    availableLanguages,
-  } = params;
+  const { context = 'privatperson', simple = false, language = 'nb', availableLanguages } = params;
 
-  const config: DecoratorFetchProps = {
-    env: (process.env.DEKORATOR_MILJO ||
-      import.meta.env.DEKORATOR_MILJO ||
-      env) as DecoratorEnvProps['env'],
-    localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
-    // serviceDiscovery er kritisk for at dekoratøren skal kunne
-    // kommunisere med Wonderwall/IDporten for innloggingsstatus
-    serviceDiscovery: true,
-    params: {
-      context,
-      simple,
-      language,
-      ...(availableLanguages && { availableLanguages }),
-    },
-  };
+  // Hvis DEKORATOR_MILJO er satt (i NAIS), bruk den, ellers 'localhost' (lokal utvikling)
+  const decoratorEnv =
+    (process.env.DEKORATOR_MILJO || import.meta.env.DEKORATOR_MILJO || 'localhost') as DecoratorEnvProps['env'];
+
+  // Bygg config basert på miljø
+  const config: DecoratorFetchProps =
+    decoratorEnv === 'localhost'
+      ? {
+          env: 'localhost',
+          localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
+          params: {
+            context,
+            simple,
+            language,
+            ...(availableLanguages && { availableLanguages }),
+          },
+        }
+      : {
+          env: decoratorEnv,
+          // serviceDiscovery er kritisk for at dekoratøren skal kunne
+          // kommunisere med Wonderwall/IDporten for innloggingsstatus
+          serviceDiscovery: true,
+          params: {
+            context,
+            simple,
+            language,
+            ...(availableLanguages && { availableLanguages }),
+          },
+        };
 
   try {
     // fetchDecoratorHtml returnerer allerede DecoratorElements med riktige feltnavn
