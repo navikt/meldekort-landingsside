@@ -1,0 +1,98 @@
+name: Build and Deploy Branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        type: choice
+        default: dev
+        options:
+          - dev
+          - demo
+        required: true
+
+jobs:
+  test:
+    name: Test and Lint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+          registry-url: "https://npm.pkg.github.com"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Run Biome check
+        run: pnpm run lint
+
+      - name: Run TypeScript check
+        run: pnpm run check
+
+      - name: Run tests
+        run: pnpm run test
+
+      - name: Build
+        run: pnpm run build
+
+  build:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+    needs: test
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build and push image
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: meldekort
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          build_secrets: |
+            NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
+
+  deploy-branch:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    needs: [build]
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Utled GCP_ENV
+        run: |
+          if [[ "${{ inputs.environment }}" == "dev" ]]; then
+              echo "GCP_ENV=dev" >> $GITHUB_ENV
+          elif [[ "${{ inputs.environment }}" == "demo" ]]; then
+              echo "GCP_ENV=dev" >> $GITHUB_ENV
+          else
+              echo "Ukjent environment: ${{ inputs.environment }}" >&2
+              exit 1
+          fi
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: ${{ env.GCP_ENV}}-gcp
+          RESOURCE: nais/nais.yaml
+          VARS: nais/vars-${{ inputs.environment }}.yaml
+          VAR: image=${{ needs.build.outputs.image }}
+          TEAM: meldekort
