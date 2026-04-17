@@ -142,7 +142,7 @@ export async function getMeldekortData(
     }
   }
 
-  return {
+  const result: MeldekortDataResult = {
     success: true,
     data: {
       ...(dpResult.data && { dagpenger: dpResult.data }),
@@ -151,4 +151,13 @@ export async function getMeldekortData(
     },
     ...(redirectUrl && { redirectUrl }),
   };
+
+  logger.info('Successfully fetched meldekort data from all services', {
+    hasDP: !!dpResult.data,
+    hasAAP: !!aapResult.data,
+    hasTP: !!tpResult.data,
+    hasRedirectUrl: !!redirectUrl,
+  });
+
+  return result;
 }

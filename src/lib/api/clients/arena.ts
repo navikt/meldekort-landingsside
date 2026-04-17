@@ -82,6 +82,10 @@ export async function hentMeldekortDataFraArena(
       return { success: false, error };
     }
 
+    logger.info('Arena API returned successfully', {
+      hasRedirectUrl: !!data.redirectUrl && data.redirectUrl !== '',
+      redirectUrl: data.redirectUrl || 'empty',
+    });
     return { success: true, data };
   } catch (error) {
     const errorMsg = `Error fetching Arena data: ${error instanceof Error ? error.message : 'Unknown error'}`;

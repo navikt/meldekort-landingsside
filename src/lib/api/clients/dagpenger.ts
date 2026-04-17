@@ -69,9 +69,14 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
     // Success - returner data selv om ingen aktive meldekort
     // (tomt data er ikke en feil, bare at brukeren ikke har aktive meldekort)
     if (!data.harInnsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
+      logger.info('DP API returned successfully - no active meldekort');
       return { success: true };
     }
 
+    logger.info('DP API returned successfully with meldekort data', {
+      harInnsendteMeldekort: data.harInnsendteMeldekort,
+      antallTilUtfylling: data.meldekortTilUtfylling.length,
+    });
     return { success: true, data };
   } catch (error) {
     const errorMsg = `Error fetching DP data: ${error instanceof Error ? error.message : 'Unknown error'}`;
