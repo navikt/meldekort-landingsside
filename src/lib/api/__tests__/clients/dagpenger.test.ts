@@ -11,6 +11,7 @@ vi.mock('@navikt/oasis', () => ({
 vi.mock('../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
