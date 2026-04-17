@@ -133,18 +133,32 @@ export async function getMeldekortData(
       if (arenaRedirectUrl === '') {
         // Ingen redirect - fortsett uten (vis tom landingsside)
         logger.info('Arena returnerte tom redirectUrl - ingen redirect tilgjengelig');
-      } else if (
-        arenaRedirectUrl.startsWith('/') &&
-        !arenaRedirectUrl.startsWith('//') &&
-        !arenaRedirectUrl.includes('\\') &&
-        !/\s/.test(arenaRedirectUrl)
-      ) {
-        redirectUrl = arenaRedirectUrl;
       } else {
-        // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
-        logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path', {
-          redirectUrl: arenaRedirectUrl,
-        });
+        // Sjekk om URL er trygg (relativ path eller intern NAV-domene)
+        const isRelativePath =
+          arenaRedirectUrl.startsWith('/') &&
+          !arenaRedirectUrl.startsWith('//') &&
+          !arenaRedirectUrl.includes('\\') &&
+          !/\s/.test(arenaRedirectUrl);
+
+        const isInternalNavUrl =
+          (arenaRedirectUrl.startsWith('https://') &&
+            (arenaRedirectUrl.includes('.intern.dev.nav.no/') ||
+              arenaRedirectUrl.includes('.intern.nav.no/'))) ||
+          false;
+
+        if (isRelativePath || isInternalNavUrl) {
+          redirectUrl = arenaRedirectUrl;
+          logger.info('Arena returnerte gyldig redirectUrl', {
+            redirectUrl: arenaRedirectUrl,
+            type: isRelativePath ? 'relative' : 'absolute',
+          });
+        } else {
+          // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
+          logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path eller URL', {
+            redirectUrl: arenaRedirectUrl,
+          });
+        }
       }
     }
   }

@@ -296,11 +296,68 @@ describe('meldekort API endpoint', () => {
 
       expect(response.status).toBe(200);
       expect(logger.warn).toHaveBeenCalledWith(
-        'Ugyldig redirectUrl fra arena - må være sikker intern path',
+        'Ugyldig redirectUrl fra arena - må være sikker intern path eller URL',
         {
           redirectUrl: 'https://example.com/redirect',
         },
       );
+    });
+
+    it('skal akseptere intern NAV URL fra arena', async () => {
+      const { hentMeldekortDataFraDP } = await import('../../../lib/api/clients/dagpenger');
+      const { hentMeldekortDataFraAAP } = await import(
+        '../../../lib/api/clients/arbeidsavklaringspenger'
+      );
+      const { hentMeldekortDataFraTP } = await import('../../../lib/api/clients/tiltakspenger');
+      const { hentMeldekortDataFraArena } = await import('../../../lib/api/clients/arena');
+      const { getToken } = await import('@navikt/oasis');
+      const { logger } = await import('../../../lib/utils/logger');
+
+      vi.mocked(getToken).mockReturnValue('test-token');
+
+      // Alle ytelser OK, men ingen har aktive meldekort
+      vi.mocked(hentMeldekortDataFraDP).mockResolvedValue({
+        success: true,
+        data: undefined,
+      });
+
+      vi.mocked(hentMeldekortDataFraAAP).mockResolvedValue({
+        success: true,
+        data: undefined,
+      });
+
+      vi.mocked(hentMeldekortDataFraTP).mockResolvedValue({
+        success: true,
+        data: undefined,
+      });
+
+      // Arena returnerer intern NAV URL
+      vi.mocked(hentMeldekortDataFraArena).mockResolvedValue({
+        success: true,
+        data: {
+          harInnsendteMeldekort: false,
+          meldekortTilUtfylling: [],
+          redirectUrl: 'https://meldekort-frontend-q2.intern.dev.nav.no/felles-meldekort',
+        },
+      });
+
+      const mockContext = {
+        request: {
+          headers: new Headers(),
+        },
+        url: new URL('http://localhost:4321/api/meldekort'),
+      } as unknown as APIContext;
+
+      const response = await GET(mockContext);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('Location')).toBe(
+        'https://meldekort-frontend-q2.intern.dev.nav.no/felles-meldekort',
+      );
+      expect(logger.info).toHaveBeenCalledWith('Arena returnerte gyldig redirectUrl', {
+        redirectUrl: 'https://meldekort-frontend-q2.intern.dev.nav.no/felles-meldekort',
+        type: 'absolute',
+      });
     });
   });
 });
