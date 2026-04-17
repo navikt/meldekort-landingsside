@@ -107,6 +107,24 @@ describe('arena', () => {
       expect(result.error).toBe('Arena API returned 500');
     });
 
+    it('returnerer success uten data når API returnerer 404', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+      } as Response);
+
+      const result = await hentMeldekortDataFraArena('test-obo-token');
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeUndefined();
+    });
+
     it('returnerer feil når API returnerer ugyldig data', async () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({

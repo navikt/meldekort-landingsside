@@ -144,7 +144,7 @@ describe('meldekort API endpoint', () => {
       );
     });
 
-    it('skal logge warn når arena-kall feiler', async () => {
+    it('skal returnere 503 når arena-kall feiler', async () => {
       const { hentMeldekortDataFraDP } = await import('../../../lib/api/clients/dagpenger');
       const { hentMeldekortDataFraAAP } = await import(
         '../../../lib/api/clients/arbeidsavklaringspenger'
@@ -187,15 +187,11 @@ describe('meldekort API endpoint', () => {
 
       const response = await GET(mockContext);
 
-      expect(response.status).toBe(200);
-      expect(logger.warn).toHaveBeenCalledWith(
-        'Arena-kall (meldekort-api) feilet, fortsetter uten redirectUrl',
-        {
-          service: 'arena/meldekort-api',
-          error: 'Arena API returned 503',
-          consequence: 'Viser tom landingsside i stedet for redirect til felles-meldekort',
-        },
-      );
+      expect(response.status).toBe(503);
+      expect(logger.error).toHaveBeenCalledWith('Arena-kall (meldekort-api) feilet', {
+        service: 'arena/meldekort-api',
+        error: 'Arena API returned 503',
+      });
     });
 
     it('skal logge info når arena returnerer tom redirectUrl', async () => {

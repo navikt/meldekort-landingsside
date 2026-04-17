@@ -110,15 +110,22 @@ export async function getMeldekortData(
   if (!harAktiveYtelser) {
     const arenaResult = await hentMeldekortDataFraArena(actualToken);
 
-    // Hvis arena-kallet feiler, logg men fortsett (vi viser tom landingsside)
+    // Hvis arena-kallet feiler, returner teknisk feil
     if (!arenaResult.success) {
-      // Arena-feil er ikke kritisk, fortsett uten redirectUrl
-      logger.warn('Arena-kall (meldekort-api) feilet, fortsetter uten redirectUrl', {
+      logger.error('Arena-kall (meldekort-api) feilet', {
         service: 'arena/meldekort-api',
         error: arenaResult.error,
-        consequence: 'Viser tom landingsside i stedet for redirect til felles-meldekort',
       });
-    } else if (arenaResult.data) {
+      return {
+        success: false,
+        status: 503,
+        error: 'Failed to fetch data from Arena',
+        details: {
+          arena: arenaResult.error,
+        },
+      };
+    }
+    if (arenaResult.data) {
       // Valider redirectUrl før vi bruker den
       const arenaRedirectUrl = arenaResult.data.redirectUrl;
 
