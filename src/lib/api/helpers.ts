@@ -115,8 +115,7 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
 
     const isInternalNavUrl =
       (redirectUrl.startsWith('https://') &&
-        (redirectUrl.includes('.intern.dev.nav.no/') ||
-          redirectUrl.includes('.intern.nav.no/'))) ||
+        (redirectUrl.includes('.intern.dev.nav.no/') || redirectUrl.includes('.intern.nav.no/'))) ||
       false;
 
     if (!isRelativePath && !isInternalNavUrl) {
