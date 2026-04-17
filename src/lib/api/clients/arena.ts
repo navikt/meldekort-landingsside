@@ -61,7 +61,7 @@ export async function hentMeldekortDataFraArena(
       return { success: false, error };
     }
 
-    const response = await fetchWithTimeout(`${apiUrl}/person/meldekortstatus`, {
+    const response = await fetchWithTimeout(`${apiUrl}/api/person/meldekortstatus`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${tokenResult.token}`,

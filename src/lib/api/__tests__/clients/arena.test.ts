@@ -65,7 +65,7 @@ describe('arena', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:meldekort:api');
       expect(fetch).toHaveBeenCalledWith(
-        'https://arena-test.nav.no/person/meldekortstatus',
+        'https://arena-test.nav.no/api/person/meldekortstatus',
         expect.objectContaining({
           headers: {
             Accept: 'application/json',
