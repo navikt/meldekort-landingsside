@@ -2,7 +2,7 @@ import { hentMeldekortDataFraDP } from './clients/dagpenger';
 import { hentMeldekortDataFraAAP } from './clients/arbeidsavklaringspenger';
 import { hentMeldekortDataFraTP } from './clients/tiltakspenger';
 import { hentMeldekortDataFraArena } from './clients/arena';
-import { shouldUseMockData, harAktiveMeldekort } from './helpers';
+import { shouldUseMockData, harAktiveMeldekort, isValidRedirectUrl } from './helpers';
 import { getScenario } from './scenarios';
 import { logger } from '../utils/logger';
 import type { AlleMeldekortData } from '../types/meldekort';
@@ -133,32 +133,17 @@ export async function getMeldekortData(
       if (arenaRedirectUrl === '') {
         // Ingen redirect - fortsett uten (vis tom landingsside)
         logger.info('Arena returnerte tom redirectUrl - ingen redirect tilgjengelig');
+      } else if (isValidRedirectUrl(arenaRedirectUrl)) {
+        redirectUrl = arenaRedirectUrl;
+        logger.info('Arena returnerte gyldig redirectUrl', {
+          redirectUrl: arenaRedirectUrl,
+          type: arenaRedirectUrl.startsWith('/') ? 'relative' : 'absolute',
+        });
       } else {
-        // Sjekk om URL er trygg (relativ path eller intern NAV-domene)
-        const isRelativePath =
-          arenaRedirectUrl.startsWith('/') &&
-          !arenaRedirectUrl.startsWith('//') &&
-          !arenaRedirectUrl.includes('\\') &&
-          !/\s/.test(arenaRedirectUrl);
-
-        const isInternalNavUrl =
-          (arenaRedirectUrl.startsWith('https://') &&
-            (arenaRedirectUrl.includes('.intern.dev.nav.no/') ||
-              arenaRedirectUrl.includes('.intern.nav.no/'))) ||
-          false;
-
-        if (isRelativePath || isInternalNavUrl) {
-          redirectUrl = arenaRedirectUrl;
-          logger.info('Arena returnerte gyldig redirectUrl', {
-            redirectUrl: arenaRedirectUrl,
-            type: isRelativePath ? 'relative' : 'absolute',
-          });
-        } else {
-          // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
-          logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern path eller URL', {
-            redirectUrl: arenaRedirectUrl,
-          });
-        }
+        // Ugyldig redirectUrl fra arena - logg og fortsett uten (vis tom landingsside)
+        logger.warn('Ugyldig redirectUrl fra arena - må være sikker intern NAV URL', {
+          redirectUrl: arenaRedirectUrl,
+        });
       }
     }
   }

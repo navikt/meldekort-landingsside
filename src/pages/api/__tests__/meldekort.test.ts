@@ -296,7 +296,7 @@ describe('meldekort API endpoint', () => {
 
       expect(response.status).toBe(200);
       expect(logger.warn).toHaveBeenCalledWith(
-        'Ugyldig redirectUrl fra arena - må være sikker intern path eller URL',
+        'Ugyldig redirectUrl fra arena - må være sikker intern NAV URL',
         {
           redirectUrl: 'https://example.com/redirect',
         },

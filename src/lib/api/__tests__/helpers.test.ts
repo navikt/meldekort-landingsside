@@ -237,19 +237,36 @@ describe('helpers', () => {
       expect(response.headers.get('Location')).toBe('https://www.nav.no/dagpenger/meldekort');
     });
 
-    it('skal kaste error når redirect URL ikke er absolutt', () => {
+    it('skal akseptere relativ URL og konvertere til absolutt', () => {
       const ytelseData = {
         dagpenger: {
           harInnsendteMeldekort: true,
           meldekortTilUtfylling: [],
-          redirectUrl: '/relative/url',
+          redirectUrl: '/dagpenger/meldekort',
+        },
+        aap: undefined,
+        tiltakspenger: undefined,
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('Location')).toBe('https://www.nav.no/dagpenger/meldekort');
+    });
+
+    it('skal kaste error når redirect URL er ekstern', () => {
+      const ytelseData = {
+        dagpenger: {
+          harInnsendteMeldekort: true,
+          meldekortTilUtfylling: [],
+          redirectUrl: 'https://external.com/redirect',
         },
         aap: undefined,
         tiltakspenger: undefined,
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
-        'Redirect URL must be absolute, got: /relative/url',
+        'Redirect URL must be safe internal path or internal NAV URL',
       );
     });
 

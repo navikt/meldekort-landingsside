@@ -18,6 +18,53 @@ interface YtelseData {
 }
 
 /**
+ * Liste over tillatte NAV-domener for redirect URLs.
+ * Inkluderer både dev og prod-domener for ulike miljøer.
+ */
+const ALLOWED_NAV_DOMAINS = [
+  '.intern.dev.nav.no/',
+  '.intern.nav.no/',
+  '.ansatt.dev.nav.no/',
+  '.ansatt.nav.no/',
+  'www.dev.nav.no/',
+  'www.nav.no/',
+] as const;
+
+/**
+ * Validerer at en redirect URL er trygg.
+ * Aksepterer:
+ * - Relative paths som starter med / (men ikke //)
+ * - Absolutte HTTPS URLs til interne NAV-domener
+ *
+ * Avviser:
+ * - Eksterne domener
+ * - Protokoll-relative URLs (//)
+ * - URLs med backslash eller whitespace
+ */
+export function isValidRedirectUrl(url: string): boolean {
+  // Tom string er ikke gyldig
+  if (url === '') {
+    return false;
+  }
+
+  // Sjekk om det er en relativ path
+  const isRelativePath =
+    url.startsWith('/') && !url.startsWith('//') && !url.includes('\\') && !/\s/.test(url);
+
+  if (isRelativePath) {
+    return true;
+  }
+
+  // Sjekk om det er en intern NAV URL
+  if (url.startsWith('https://')) {
+    return ALLOWED_NAV_DOMAINS.some((domain) => url.includes(domain));
+  }
+
+  // Alt annet er ugyldig
+  return false;
+}
+
+/**
  * Sjekker om mock data skal brukes basert på ENFORCE_LOGIN env var.
  * Bruker import.meta.env i dev (Vite leser .env) og process.env i prod (NAIS).
  */
@@ -106,20 +153,8 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
 
   // Hvis 0 ytelser har aktive meldekort OG redirectUrl finnes, redirect til den (arena/felles-meldekort)
   if (ytelserMedAktiveMeldekort.length === 0 && redirectUrl) {
-    // Valider at redirectUrl er trygg (relativ path eller intern NAV URL)
-    const isRelativePath =
-      redirectUrl.startsWith('/') &&
-      !redirectUrl.startsWith('//') &&
-      !redirectUrl.includes('\\') &&
-      !/\s/.test(redirectUrl);
-
-    const isInternalNavUrl =
-      (redirectUrl.startsWith('https://') &&
-        (redirectUrl.includes('.intern.dev.nav.no/') || redirectUrl.includes('.intern.nav.no/'))) ||
-      false;
-
-    if (!isRelativePath && !isInternalNavUrl) {
-      logger.error('Invalid redirect URL from arena - must be safe internal path or URL', {
+    if (!isValidRedirectUrl(redirectUrl)) {
+      logger.error('Invalid redirect URL from arena - must be safe internal NAV URL', {
         redirectUrl,
       });
       throw new Error(
@@ -141,15 +176,22 @@ export function handleMeldekortResponse(ytelseData: YtelseData): Response {
     const ytelse = ytelserMedAktiveMeldekort[0];
     if (ytelse?.data) {
       const ytelseRedirectUrl = ytelse.data.redirectUrl;
-      // Response.redirect krever absolutt URL
-      if (!ytelseRedirectUrl.startsWith('http://') && !ytelseRedirectUrl.startsWith('https://')) {
-        logger.error('Invalid redirect URL in handleMeldekortResponse', {
+      if (!isValidRedirectUrl(ytelseRedirectUrl)) {
+        logger.error('Invalid redirect URL from ytelse - must be safe internal NAV URL', {
           redirectUrl: ytelseRedirectUrl,
           ytelse: ytelse.name,
         });
-        throw new Error(`Redirect URL must be absolute, got: ${ytelseRedirectUrl}`);
+        throw new Error(
+          `Redirect URL must be safe internal path or internal NAV URL, got: ${ytelseRedirectUrl}`,
+        );
       }
-      return Response.redirect(ytelseRedirectUrl, 307);
+
+      // Hvis relativ path, må vi konvertere til absolutt URL for Response.redirect
+      const absoluteUrl = ytelseRedirectUrl.startsWith('/')
+        ? `https://www.nav.no${ytelseRedirectUrl}`
+        : ytelseRedirectUrl;
+
+      return Response.redirect(absoluteUrl, 307);
     }
   }
 
