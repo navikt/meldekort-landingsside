@@ -20,7 +20,7 @@ aapApiUrl: http://meldekort-backend.aap
 aapApiAudience: dev-gcp:aap:meldekort-backend
 tpApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
 tpApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api
-arenaApiUrl: http://meldekort-api-q2.meldekort
+arenaApiUrl: http://meldekort-api-q2.meldekort/meldekort/meldekort-api
 arenaApiAudience: dev-gcp:meldekort:meldekort-api-q2
 dpApiUrl: http://dp-rapportering.teamdagpenger
 dpApiAudience: dev-gcp:teamdagpenger:dp-rapportering
