@@ -5,9 +5,9 @@ export interface MeldekortTilUtfylling {
 }
 
 export interface MeldekortData {
-  innsendteMeldekort: boolean;
+  harInnsendteMeldekort: boolean;
   meldekortTilUtfylling: MeldekortTilUtfylling[];
-  url: string;
+  redirectUrl: string;
 }
 
 /**

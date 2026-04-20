@@ -11,6 +11,7 @@ vi.mock('@navikt/oasis', () => ({
 vi.mock('../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -31,7 +32,7 @@ describe('dagpenger', () => {
   describe('hentMeldekortDataFraDP', () => {
     it('returnerer meldekortdata når API-kallet lykkes', async () => {
       const mockData: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-31',
@@ -39,7 +40,7 @@ describe('dagpenger', () => {
             fristForInnsending: '2026-04-07',
           },
         ],
-        url: 'https://dagpenger.nav.no',
+        redirectUrl: 'https://dagpenger.nav.no',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -126,9 +127,9 @@ describe('dagpenger', () => {
 
     it('returnerer success uten data når bruker har ingen aktive meldekort', async () => {
       const mockEmptyData: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://dagpenger.nav.no',
+        redirectUrl: 'https://dagpenger.nav.no',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -165,7 +166,7 @@ describe('dagpenger', () => {
 
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      expect(result.data?.innsendteMeldekort).toBe(true);
+      expect(result.data?.harInnsendteMeldekort).toBe(true);
       expect(result.data?.meldekortTilUtfylling).toHaveLength(0);
     });
 

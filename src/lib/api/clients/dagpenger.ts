@@ -41,6 +41,11 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
     });
 
     if (!response.ok) {
+      // 404 betyr at bruker ikke finnes i DP - behandle som "ingen data"
+      if (response.status === 404) {
+        logger.info('DP API returned 404 - user not found, treating as no data');
+        return { success: true };
+      }
       const error = `DP API returned ${response.status}`;
       logger.error(error);
       return { success: false, error };
@@ -50,16 +55,28 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
 
     if (!validerMeldekortData(data)) {
       const error = 'DP API returned invalid data structure';
-      logger.error(error);
+      logger.error(error, {
+        receivedData: data,
+        expectedFields: {
+          harInnsendteMeldekort: 'boolean',
+          meldekortTilUtfylling: 'array',
+          redirectUrl: 'string',
+        },
+      });
       return { success: false, error };
     }
 
     // Success - returner data selv om ingen aktive meldekort
     // (tomt data er ikke en feil, bare at brukeren ikke har aktive meldekort)
-    if (!data.innsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
+    if (!data.harInnsendteMeldekort && data.meldekortTilUtfylling.length === 0) {
+      logger.info('DP API returned successfully - no active meldekort');
       return { success: true };
     }
 
+    logger.info('DP API returned successfully with meldekort data', {
+      harInnsendteMeldekort: data.harInnsendteMeldekort,
+      antallTilUtfylling: data.meldekortTilUtfylling.length,
+    });
     return { success: true, data };
   } catch (error) {
     const errorMsg = `Error fetching DP data: ${error instanceof Error ? error.message : 'Unknown error'}`;

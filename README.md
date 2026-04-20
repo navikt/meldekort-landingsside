@@ -204,7 +204,7 @@ Applikasjonen bestemmer hva brukeren skal se basert på antall aktive ytelser:
 
 En ytelse regnes som aktiv hvis den har:
 
-- `innsendteMeldekort: true` ELLER
+- `harInnsendteMeldekort: true` ELLER
 - `meldekortTilUtfylling` med minst ett element
 
 **Steg 3: Bestem brukerflyt**
@@ -215,12 +215,26 @@ En ytelse regnes som aktiv hvis den har:
 - **1 ytelse har aktive meldekort**: Redirect direkte til den ytelsens meldekortside
 - **2+ ytelser har aktive meldekort**: Vis landingsside med kort for hver ytelse
 
+**Sikkerhet: URL-validering**
+
+Alle `redirectUrl` valideres før bruk for å forhindre open redirect-sårbarheter:
+- Relative paths: `/felles-meldekort`, `/dagpenger/meldekort`
+- Interne NAV-URLs: `https://*.intern.dev.nav.no/*`, `https://*.intern.nav.no/*`, `https://*.ansatt.dev.nav.no/*`, `https://*.ansatt.nav.no/*`, `https://www.nav.no/*`, `https://www.dev.nav.no/*`
+- Eksterne URLs avvises
+
 ### API-integrasjoner
 
-- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-rapportering`
-- **AAP**: `hentMeldekortDataFraAAP()` - Henter data fra `meldekort-backend` (AAP)
-- **Tiltakspenger**: `hentMeldekortDataFraTP()` - Henter data fra `tiltakspenger-meldekort-api`
-- **Arena**: `hentMeldekortDataFraArena()` - Henter redirectUrl fra `meldekort-api` (kalles kun når ingen ytelser har aktive meldekort)
+- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-rapportering` (`/meldekortstatus`)
+- **AAP**: `hentMeldekortDataFraAAP()` - Henter data fra `meldekort-backend` (`/api/meldekort-status`)
+- **Tiltakspenger**: `hentMeldekortDataFraTP()` - Henter data fra `tiltakspenger-meldekort-api` (`/landingsside/status`)
+- **Arena**: `hentMeldekortDataFraArena()` - Henter redirectUrl fra `meldekort-api` (`/api/person/meldekortstatus`) - kalles kun når ingen ytelser har aktive meldekort
+
+**Feilhåndtering**:
+- **404-responser**: Behandles som "bruker ikke funnet" og viser tom landingsside (ikke kritisk feil)
+- **Andre API-feil** (401, 500, etc.):
+  - DP/AAP/TP: Returnerer 503 Service Unavailable hvis noen feiler
+  - Arena: Returnerer 503 Service Unavailable (siden bruker ikke har andre aktive meldekort)
+- **Success-logging**: Alle vellykkede API-kall logges med INFO-level for monitoring
 
 ### Analytics
 
@@ -234,10 +248,11 @@ Applikasjonen bruker Umami via NAV Dekoratør for analytics. Se [ANALYTICS.md](.
 
 Prosjektet har omfattende test-dekning:
 
-- **Unit tests**: 128+ tester med Vitest
-- **API helpers**: Tester for redirect-logikk, validering, timeout-håndtering
+- **Unit tests**: 156 tester med Vitest
+- **API helpers**: Tester for redirect-logikk, URL-validering, timeout-håndtering, feilhåndtering
 - **Analytics**: Tester for consent, event tracking, page views
 - **Meldekort utils**: Tester for dato-logikk, kort-visning, timezone-håndtering
+- **API clients**: Tester for DP, AAP, TP, Arena med mock data og feilscenarier
 
 Kjør tester:
 

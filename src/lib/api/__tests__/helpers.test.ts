@@ -13,18 +13,18 @@ describe('helpers', () => {
       expect(harAktiveMeldekort(undefined)).toBe(false);
     });
 
-    it('skal returnere true når innsendteMeldekort er true', () => {
+    it('skal returnere true når harInnsendteMeldekort er true', () => {
       const data: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(harAktiveMeldekort(data)).toBe(true);
     });
 
     it('skal returnere true når meldekortTilUtfylling har elementer', () => {
       const data: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -32,23 +32,23 @@ describe('helpers', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(harAktiveMeldekort(data)).toBe(true);
     });
 
-    it('skal returnere false når både innsendteMeldekort er false og meldekortTilUtfylling er tom', () => {
+    it('skal returnere false når både harInnsendteMeldekort er false og meldekortTilUtfylling er tom', () => {
       const data: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(harAktiveMeldekort(data)).toBe(false);
     });
 
-    it('skal returnere true når både innsendteMeldekort er true og meldekortTilUtfylling har elementer', () => {
+    it('skal returnere true når både harInnsendteMeldekort er true og meldekortTilUtfylling har elementer', () => {
       const data: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -56,7 +56,7 @@ describe('helpers', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(harAktiveMeldekort(data)).toBe(true);
     });
@@ -77,43 +77,43 @@ describe('helpers', () => {
       expect(validerMeldekortData(true)).toBe(false);
     });
 
-    it('skal returnere false når innsendteMeldekort mangler', () => {
+    it('skal returnere false når harInnsendteMeldekort mangler', () => {
       const data = {
         meldekortTilUtfylling: [],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(validerMeldekortData(data)).toBe(false);
     });
 
-    it('skal returnere false når innsendteMeldekort ikke er boolean', () => {
+    it('skal returnere false når harInnsendteMeldekort ikke er boolean', () => {
       const data = {
-        innsendteMeldekort: 'true',
+        harInnsendteMeldekort: 'true',
         meldekortTilUtfylling: [],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(validerMeldekortData(data)).toBe(false);
     });
 
     it('skal returnere false når meldekortTilUtfylling mangler', () => {
       const data = {
-        innsendteMeldekort: true,
-        url: 'https://example.com',
+        harInnsendteMeldekort: true,
+        redirectUrl: 'https://example.com',
       };
       expect(validerMeldekortData(data)).toBe(false);
     });
 
     it('skal returnere false når meldekortTilUtfylling ikke er array', () => {
       const data = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: 'not-an-array',
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(validerMeldekortData(data)).toBe(false);
     });
 
     it('skal returnere false når url mangler', () => {
       const data = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
       };
       expect(validerMeldekortData(data)).toBe(false);
@@ -121,25 +121,25 @@ describe('helpers', () => {
 
     it('skal returnere false når url ikke er string', () => {
       const data = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 123,
+        redirectUrl: 123,
       };
       expect(validerMeldekortData(data)).toBe(false);
     });
 
     it('skal returnere true når data har alle required fields med riktige typer', () => {
       const data = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
       };
       expect(validerMeldekortData(data)).toBe(true);
     });
 
     it('skal returnere true når data har ekstra felter', () => {
       const data = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -147,7 +147,7 @@ describe('helpers', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://example.com',
+        redirectUrl: 'https://example.com',
         extraField: 'should-be-ignored',
       };
       expect(validerMeldekortData(data)).toBe(true);
@@ -223,9 +223,9 @@ describe('helpers', () => {
     it('skal redirecte når kun 1 ytelse har aktive meldekort', () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: true,
+          harInnsendteMeldekort: true,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/dagpenger/meldekort',
+          redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
         },
         aap: undefined,
         tiltakspenger: undefined,
@@ -237,19 +237,36 @@ describe('helpers', () => {
       expect(response.headers.get('Location')).toBe('https://www.nav.no/dagpenger/meldekort');
     });
 
-    it('skal kaste error når redirect URL ikke er absolutt', () => {
+    it('skal akseptere relativ URL og konvertere til absolutt', () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: true,
+          harInnsendteMeldekort: true,
           meldekortTilUtfylling: [],
-          url: '/relative/url',
+          redirectUrl: '/dagpenger/meldekort',
+        },
+        aap: undefined,
+        tiltakspenger: undefined,
+      };
+
+      const response = handleMeldekortResponse(ytelseData);
+
+      expect(response.status).toBe(307);
+      expect(response.headers.get('Location')).toBe('https://www.nav.no/dagpenger/meldekort');
+    });
+
+    it('skal kaste error når redirect URL er ekstern', () => {
+      const ytelseData = {
+        dagpenger: {
+          harInnsendteMeldekort: true,
+          meldekortTilUtfylling: [],
+          redirectUrl: 'https://external.com/redirect',
         },
         aap: undefined,
         tiltakspenger: undefined,
       };
 
       expect(() => handleMeldekortResponse(ytelseData)).toThrow(
-        'Redirect URL must be absolute, got: /relative/url',
+        'Redirect URL must be safe internal path or internal NAV URL',
       );
     });
 
@@ -272,12 +289,12 @@ describe('helpers', () => {
     it('skal returnere JSON når flere enn 1 ytelse har aktive meldekort', async () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: true,
+          harInnsendteMeldekort: true,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/dagpenger/meldekort',
+          redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
         },
         aap: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [
             {
               kanSendesFra: '2026-03-10',
@@ -285,7 +302,7 @@ describe('helpers', () => {
               fristForInnsending: '2026-03-24',
             },
           ],
-          url: 'https://www.nav.no/aap/meldekort',
+          redirectUrl: 'https://www.nav.no/aap/meldekort',
         },
         tiltakspenger: undefined,
       };
@@ -305,15 +322,15 @@ describe('helpers', () => {
     it('skal kun inkludere ytelser med data i JSON response', async () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/dagpenger/meldekort',
+          redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
         },
         aap: undefined,
         tiltakspenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/tiltakspenger/meldekort',
+          redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
         },
       };
 
@@ -331,9 +348,9 @@ describe('helpers', () => {
       const ytelseData = {
         dagpenger: undefined,
         aap: {
-          innsendteMeldekort: true,
+          harInnsendteMeldekort: true,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/aap/meldekort',
+          redirectUrl: 'https://www.nav.no/aap/meldekort',
         },
         tiltakspenger: undefined,
       };
@@ -349,7 +366,7 @@ describe('helpers', () => {
         dagpenger: undefined,
         aap: undefined,
         tiltakspenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [
             {
               kanSendesFra: '2026-03-10',
@@ -357,7 +374,7 @@ describe('helpers', () => {
               fristForInnsending: '2026-03-24',
             },
           ],
-          url: 'https://www.nav.no/tiltakspenger/meldekort',
+          redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
         },
       };
 
@@ -370,9 +387,9 @@ describe('helpers', () => {
     it('skal ikke redirecte når ytelse har data men ikke aktive meldekort', async () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/dagpenger/meldekort',
+          redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
         },
         aap: undefined,
         tiltakspenger: undefined,
@@ -388,19 +405,19 @@ describe('helpers', () => {
     it('skal redirecte til relativ redirectUrl når ingen ytelser har aktive meldekort', () => {
       const ytelseData = {
         dagpenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/dagpenger/meldekort',
+          redirectUrl: 'https://www.nav.no/dagpenger/meldekort',
         },
         aap: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/aap/meldekort',
+          redirectUrl: 'https://www.nav.no/aap/meldekort',
         },
         tiltakspenger: {
-          innsendteMeldekort: false,
+          harInnsendteMeldekort: false,
           meldekortTilUtfylling: [],
-          url: 'https://www.nav.no/tiltakspenger/meldekort',
+          redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
         },
         redirectUrl: '/felles-meldekort',
       };

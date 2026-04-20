@@ -11,6 +11,7 @@ vi.mock('@navikt/oasis', () => ({
 vi.mock('../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -64,7 +65,7 @@ describe('arena', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:meldekort:api');
       expect(fetch).toHaveBeenCalledWith(
-        'https://arena-test.nav.no/person/meldekortstatus',
+        'https://arena-test.nav.no/api/person/meldekortstatus',
         expect.objectContaining({
           headers: {
             Accept: 'application/json',
@@ -104,6 +105,24 @@ describe('arena', () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('Arena API returned 500');
+    });
+
+    it('returnerer success uten data når API returnerer 404', async () => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      vi.mocked(fetch).mockResolvedValue({
+        ok: false,
+        status: 404,
+      } as Response);
+
+      const result = await hentMeldekortDataFraArena('test-obo-token');
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeUndefined();
     });
 
     it('returnerer feil når API returnerer ugyldig data', async () => {

@@ -4,16 +4,16 @@ import type { MeldekortData } from '../types/meldekort';
  * Mock data for dagpenger - viser "Se innsendte meldekort"
  */
 export const dagpengerMock: MeldekortData = {
-  innsendteMeldekort: true,
+  harInnsendteMeldekort: true,
   meldekortTilUtfylling: [], // Ingen meldekort å fylle ut/sende
-  url: 'https://arbeid.intern.dev.nav.no/arbeid/dagpenger/meldekort',
+  redirectUrl: 'https://arbeid.intern.dev.nav.no/arbeid/dagpenger/meldekort',
 };
 
 /**
  * Mock data for AAP - viser "Fyll ut meldekort"
  */
 export const aapMock: MeldekortData = {
-  innsendteMeldekort: false,
+  harInnsendteMeldekort: false,
   meldekortTilUtfylling: [
     {
       kanSendesFra: '2026-03-31', // Kan sendes i fremtiden
@@ -21,14 +21,14 @@ export const aapMock: MeldekortData = {
       fristForInnsending: '2026-04-07',
     },
   ],
-  url: 'https://aap-meldekort.ansatt.dev.nav.no/aap/meldekort',
+  redirectUrl: 'https://aap-meldekort.ansatt.dev.nav.no/aap/meldekort',
 };
 
 /**
  * Mock data for tiltakspenger - viser "Send inn meldekort" + tilleggstekst
  */
 export const tiltakspengerMock: MeldekortData = {
-  innsendteMeldekort: true, // Har også innsendte meldekort
+  harInnsendteMeldekort: true, // Har også innsendte meldekort
   meldekortTilUtfylling: [
     {
       kanSendesFra: '2026-03-10', // Kan sendes nå
@@ -36,5 +36,5 @@ export const tiltakspengerMock: MeldekortData = {
       fristForInnsending: '2026-03-24',
     },
   ],
-  url: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',
+  redirectUrl: 'https://www.ansatt.dev.nav.no/tiltakspenger/meldekort',
 };

@@ -11,6 +11,7 @@ vi.mock('@navikt/oasis', () => ({
 vi.mock('../../../utils/logger', () => ({
   logger: {
     error: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -31,7 +32,7 @@ describe('tiltakspenger', () => {
   describe('hentMeldekortDataFraTP', () => {
     it('returnerer meldekortdata når API-kallet lykkes', async () => {
       const mockData: MeldekortData = {
-        innsendteMeldekort: true,
+        harInnsendteMeldekort: true,
         meldekortTilUtfylling: [
           {
             kanSendesFra: '2026-03-10',
@@ -39,7 +40,7 @@ describe('tiltakspenger', () => {
             fristForInnsending: '2026-03-24',
           },
         ],
-        url: 'https://www.nav.no/tiltakspenger/meldekort',
+        redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -60,7 +61,7 @@ describe('tiltakspenger', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith('test-obo-token', 'test:tp:api');
       expect(fetch).toHaveBeenCalledWith(
-        'https://tp-test.nav.no/api/meldekort-status',
+        'https://tp-test.nav.no/landingsside/status',
         expect.objectContaining({
           headers: {
             Accept: 'application/json',
@@ -120,9 +121,9 @@ describe('tiltakspenger', () => {
 
     it('returnerer success uten data når bruker har ingen aktive meldekort', async () => {
       const mockEmptyData: MeldekortData = {
-        innsendteMeldekort: false,
+        harInnsendteMeldekort: false,
         meldekortTilUtfylling: [],
-        url: 'https://www.nav.no/tiltakspenger/meldekort',
+        redirectUrl: 'https://www.nav.no/tiltakspenger/meldekort',
       };
 
       const { requestTokenxOboToken } = await import('@navikt/oasis');
@@ -158,7 +159,7 @@ describe('tiltakspenger', () => {
 
       expect(result.success).toBe(true);
       expect(result.data).toBeDefined();
-      expect(result.data?.innsendteMeldekort).toBe(true);
+      expect(result.data?.harInnsendteMeldekort).toBe(true);
       expect(result.data?.meldekortTilUtfylling).toHaveLength(1);
     });
 

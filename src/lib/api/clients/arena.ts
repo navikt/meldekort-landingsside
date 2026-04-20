@@ -61,7 +61,7 @@ export async function hentMeldekortDataFraArena(
       return { success: false, error };
     }
 
-    const response = await fetchWithTimeout(`${apiUrl}/person/meldekortstatus`, {
+    const response = await fetchWithTimeout(`${apiUrl}/api/person/meldekortstatus`, {
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${tokenResult.token}`,
@@ -69,6 +69,11 @@ export async function hentMeldekortDataFraArena(
     });
 
     if (!response.ok) {
+      // 404 betyr at bruker ikke finnes i Arena - behandle som "ingen data"
+      if (response.status === 404) {
+        logger.info('Arena API returned 404 - user not found, treating as no data');
+        return { success: true };
+      }
       const error = `Arena API returned ${response.status}`;
       logger.error(error);
       return { success: false, error };
@@ -82,6 +87,10 @@ export async function hentMeldekortDataFraArena(
       return { success: false, error };
     }
 
+    logger.info('Arena API returned successfully', {
+      hasRedirectUrl: !!data.redirectUrl && data.redirectUrl !== '',
+      redirectUrl: data.redirectUrl || 'empty',
+    });
     return { success: true, data };
   } catch (error) {
     const errorMsg = `Error fetching Arena data: ${error instanceof Error ? error.message : 'Unknown error'}`;
