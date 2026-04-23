@@ -10,8 +10,8 @@ type Language = (typeof SUPPORTED_LANGUAGES)[number];
 interface LinkData {
   tittel: string;
   beskrivelse: string;
-  fristTag?: string;
-  kanSendesFraTag?: string;
+  fristTag?: string | null;
+  kanSendesFraTag?: string | null;
   tilleggstekstVedInnsendteMeldekort?: string;
 }
 
@@ -52,7 +52,7 @@ function MeldekortLinkCard({
   onNavigate,
 }: MeldekortLinkCardProps) {
   const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
-  const tagTekst = data.fristTag || data.kanSendesFraTag;
+  const tagTekst = data.fristTag?.trim() || data.kanSendesFraTag?.trim() || undefined;
 
   const handleClick = () => {
     onNavigate(info.ytelse, kortType, info.url);

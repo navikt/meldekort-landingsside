@@ -19,10 +19,10 @@ export interface MeldekortLandingsside {
   ytelser: Ytelser;
   linkForASe: MeldekortLink;
   linkForASende: MeldekortLink & {
-    fristTag: string;
+    fristTag: string | null;
     tilleggstekstVedInnsendteMeldekort: string;
   };
   linkForAFylleUt: MeldekortLink & {
-    kanSendesFraTag: string;
+    kanSendesFraTag: string | null;
   };
 }
