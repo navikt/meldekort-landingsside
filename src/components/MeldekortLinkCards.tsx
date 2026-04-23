@@ -1,17 +1,17 @@
-import { LinkCard, Tag } from '@navikt/ds-react';
-import type { LenkeInfo, LenkeVisning } from '../lib/types/meldekort';
-import { erstattPlassholdere } from '../lib/utils/meldekort';
-import type { SUPPORTED_LANGUAGES } from '../lib/language';
-import type { Ytelser } from '../lib/sanity';
-import { useAnalytics } from '../hooks/useAnalytics';
+import { LinkCard, Tag } from "@navikt/ds-react";
+import type { LenkeInfo, LenkeVisning } from "../lib/types/meldekort";
+import { erstattPlassholdere } from "../lib/utils/meldekort";
+import type { SUPPORTED_LANGUAGES } from "../lib/language";
+import type { Ytelser } from "../lib/sanity";
+import { useAnalytics } from "../hooks/useAnalytics";
 
 type Language = (typeof SUPPORTED_LANGUAGES)[number];
 
 interface LinkData {
   tittel: string;
   beskrivelse: string;
-  fristTag?: string;
-  kanSendesFraTag?: string;
+  fristTag?: string | null;
+  kanSendesFraTag?: string | null;
   tilleggstekstVedInnsendteMeldekort?: string;
 }
 
@@ -32,12 +32,12 @@ interface MeldekortLinkCardProps {
   info: LenkeInfo;
   data: LinkData;
   ytelseNavn: string;
-  kortType: 'se' | 'sende' | 'fyllUt';
+  kortType: "se" | "sende" | "fyllUt";
   tilleggstekst?: string;
   language: Language;
   onNavigate: (
-    ytelse: 'dagpenger' | 'aap' | 'tiltakspenger',
-    kortType: 'se' | 'sende' | 'fyllUt',
+    ytelse: "dagpenger" | "aap" | "tiltakspenger",
+    kortType: "se" | "sende" | "fyllUt",
     url: string,
   ) => void;
 }
@@ -51,8 +51,10 @@ function MeldekortLinkCard({
   language,
   onNavigate,
 }: MeldekortLinkCardProps) {
-  const erstatt = (tekst: string) => erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
-  const tagTekst = data.fristTag || data.kanSendesFraTag;
+  const erstatt = (tekst: string) =>
+    erstattPlassholdere(tekst, ytelseNavn, info.dato, language);
+  const tagTekst =
+    data.fristTag?.trim() || data.kanSendesFraTag?.trim() || undefined;
 
   const handleClick = () => {
     onNavigate(info.ytelse, kortType, info.url);
@@ -91,7 +93,7 @@ export function MeldekortLinkCards({
   const renderLinkCards = <T extends LenkeInfo>(
     lenker: T[],
     data: LinkData | undefined,
-    kortType: 'se' | 'sende' | 'fyllUt',
+    kortType: "se" | "sende" | "fyllUt",
     getTilleggstekst?: (info: T) => string | undefined,
   ) => {
     if (!data) return null;
@@ -115,13 +117,13 @@ export function MeldekortLinkCards({
 
   return (
     <>
-      {renderLinkCards(visning.se, content.linkForASe, 'se')}
-      {renderLinkCards(visning.sende, content.linkForASende, 'sende', (info) =>
+      {renderLinkCards(visning.se, content.linkForASe, "se")}
+      {renderLinkCards(visning.sende, content.linkForASende, "sende", (info) =>
         info.harOgsaInnsendte
           ? content.linkForASende?.tilleggstekstVedInnsendteMeldekort
           : undefined,
       )}
-      {renderLinkCards(visning.fyllUt, content.linkForAFylleUt, 'fyllUt')}
+      {renderLinkCards(visning.fyllUt, content.linkForAFylleUt, "fyllUt")}
     </>
   );
 }
