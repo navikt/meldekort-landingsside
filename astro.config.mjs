@@ -5,6 +5,9 @@ import node from '@astrojs/node';
 // https://astro.build/config
 export default defineConfig({
   base: '/meldekort',
+  redirects: {
+    '/send-meldekort': '/meldekort?cache-buster',
+  },
   integrations: [react()],
   output: 'server',
   adapter: node({
