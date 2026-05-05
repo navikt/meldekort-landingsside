@@ -4,11 +4,11 @@ import {
   type DecoratorFetchProps,
   type DecoratorLocale,
   fetchDecoratorHtml,
-} from "@navikt/nav-dekoratoren-moduler/ssr";
-import { logger } from "./utils/logger";
+} from '@navikt/nav-dekoratoren-moduler/ssr';
+import { logger } from './utils/logger';
 
 interface DecoratorParams {
-  context?: "privatperson" | "arbeidsgiver";
+  context?: 'privatperson' | 'arbeidsgiver';
   simple?: boolean;
   language?: DecoratorLocale;
   availableLanguages?: Array<{
@@ -22,27 +22,20 @@ interface DecoratorParams {
  * Henter dekoratør HTML fra NAV dekoratøren.
  * Følger samme pattern som meldekort-frontend.
  */
-export async function getDecoratorHTML(
-  params: DecoratorParams = {},
-): Promise<DecoratorElements> {
-  const {
-    context = "privatperson",
-    simple = false,
-    language = "nb",
-    availableLanguages,
-  } = params;
+export async function getDecoratorHTML(params: DecoratorParams = {}): Promise<DecoratorElements> {
+  const { context = 'privatperson', simple = false, language = 'nb', availableLanguages } = params;
 
   // Hvis DEKORATOR_MILJO er satt (i NAIS), bruk den, ellers 'localhost' (lokal utvikling)
   const decoratorEnv = (process.env.DEKORATOR_MILJO ||
     import.meta.env.DEKORATOR_MILJO ||
-    "localhost") as DecoratorEnvProps["env"];
+    'localhost') as DecoratorEnvProps['env'];
 
   // Bygg config basert på miljø
   const config: DecoratorFetchProps =
-    decoratorEnv === "localhost"
+    decoratorEnv === 'localhost'
       ? {
-          env: "localhost",
-          localUrl: "https://dekoratoren.ekstern.dev.nav.no",
+          env: 'localhost',
+          localUrl: 'https://dekoratoren.ekstern.dev.nav.no',
           params: {
             context,
             simple,
@@ -67,12 +60,12 @@ export async function getDecoratorHTML(
     // fetchDecoratorHtml returnerer allerede DecoratorElements med riktige feltnavn
     return await fetchDecoratorHtml(config);
   } catch (error) {
-    logger.error("Error fetching decorator", { error, config });
+    logger.error('Error fetching decorator', { error, config });
     return {
-      DECORATOR_HEAD_ASSETS: "",
-      DECORATOR_HEADER: "",
-      DECORATOR_FOOTER: "",
-      DECORATOR_SCRIPTS: "",
+      DECORATOR_HEAD_ASSETS: '',
+      DECORATOR_HEADER: '',
+      DECORATOR_FOOTER: '',
+      DECORATOR_SCRIPTS: '',
     };
   }
 }
