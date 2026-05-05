@@ -1,0 +1,76 @@
+---
+import '@navikt/ds-css';
+import { Page, Heading, VStack, Link, Box, BodyShort, List } from '@navikt/ds-react';
+import { getDecoratorHTML } from '../lib/dekorator';
+import { getLanguageFromCookie, SUPPORTED_LANGUAGES } from '../lib/language';
+
+const cookieHeader = Astro.request.headers.get('cookie');
+const language = getLanguageFromCookie(cookieHeader);
+
+const decorator = await getDecoratorHTML({
+  context: 'privatperson',
+  simple: false,
+  language,
+  availableLanguages: SUPPORTED_LANGUAGES.map((locale: (typeof SUPPORTED_LANGUAGES)[number]) => ({
+    locale,
+    url: import.meta.env.BASE_URL,
+    handleInApp: true,
+  })),
+});
+---
+
+<!doctype html>
+<html lang={language}>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Siden finnes ikke</title>
+    <Fragment set:html={decorator.DECORATOR_HEAD_ASSETS} />
+    <script>
+        import "../scripts/languageHandler";
+    </script>
+    <script>
+        import "../scripts/analytics";
+    </script>
+</head>
+<body>
+<Page>
+    <Fragment set:html={decorator.DECORATOR_HEADER}/>
+    <Page.Block as="main" width="xl" gutters>
+        <Box paddingBlock="space-80 space-64" data-aksel-template="404-v3">
+            <VStack gap="space-64">
+                <VStack gap="space-16">
+                    <Heading level="1" size="large">
+                        Beklager, vi fant ikke siden
+                    </Heading>
+                    <BodyShort>
+                        Denne siden kan være slettet eller flyttet, eller det er en feil i
+                        lenken.
+                    </BodyShort>
+                    <List>
+                        <List.Item>Bruk gjerne søket eller menyen</List.Item>
+                        <List.Item>
+                            <Link href="#">Gå til forsiden</Link>
+                        </List.Item>
+                    </List>
+                </VStack>
+
+                <div>
+                    <Heading level="2" size="large" spacing>
+                        Page not found
+                    </Heading>
+                    <BodyShort spacing>The page you requested cannot be found.</BodyShort>
+                    <BodyShort>
+                        Go to the
+                        <Link href="#">front page</Link>
+                        , or use one of the links in the menu.
+                    </BodyShort>
+                </div>
+            </VStack>
+        </Box>
+    </Page.Block>
+</Page>
+<Fragment set:html={decorator.DECORATOR_FOOTER}/>
+<Fragment set:html={decorator.DECORATOR_SCRIPTS}/>
+</body>
+</html>
