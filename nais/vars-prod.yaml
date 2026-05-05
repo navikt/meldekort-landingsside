@@ -24,3 +24,4 @@ arenaApiUrl: http://meldekort-api.meldekort/meldekort/meldekort-api
 arenaApiAudience: prod-gcp:meldekort:meldekort-api
 dpApiUrl: http://dp-rapportering.teamdagpenger
 dpApiAudience: prod-gcp:teamdagpenger:dp-rapportering
+dekoratorMiljo: prod
