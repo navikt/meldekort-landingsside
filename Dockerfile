@@ -30,7 +30,7 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm install --prod --frozen-lockfile --ignore-scripts
 
 # Runtime stage
-FROM gcr.io/distroless/nodejs24-debian12:nonroot AS runtime
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24@sha256:7b42c6e22093d516a7ffa683d7ac373a1c16521034ce334321dac47ebceac300 AS runtime
 
 WORKDIR /app
 
