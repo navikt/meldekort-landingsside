@@ -19,9 +19,9 @@ if (enforceLogin) {
   </head>
   <body>
     <Page contentBlockPadding="end">
-      <Page.Block as="main" width="xl" gutters>
-        <VStack gap="8">
-          <VStack gap="4">
+      <Page.Block as="main" width="xl" gutters={true}>
+        <VStack gap="space-16">
+          <VStack gap="space-8">
             <Heading size="xlarge" level="1">Mock Scenarier</Heading>
             <BodyLong>
               Klikk på et scenario nedenfor for å teste forskjellige tilstander av meldekort
@@ -34,15 +34,15 @@ if (enforceLogin) {
 
           {
             scenarioMetadata.map((category) => (
-              <VStack gap="4" key={category.category}>
-                <Heading size="medium" level="2" spacing>
+              <VStack gap="space-8" key={category.category}>
+                <Heading size="medium" level="2" spacing={true}>
                   {category.category}
                 </Heading>
-                <VStack gap="2">
+                <VStack gap="space-4">
                   {category.items.map((scenario) => (
-                    <Box padding="4" borderWidth="1" borderRadius="medium" asChild key={scenario.name}>
-                      <Link href={getScenarioUrl(scenario.name)} variant="neutral">
-                        <VStack gap="1">
+                    <Box padding="space-8" borderWidth="1" borderRadius="full" asChild={true} key={scenario.name}>
+                      <Link href={getScenarioUrl(scenario.name)} data-color="neutral">
+                        <VStack gap="space-2">
                           <BodyShort weight="semibold">
                             {getScenarioDisplayName(scenario.name)}
                           </BodyShort>
@@ -56,9 +56,9 @@ if (enforceLogin) {
             ))
           }
 
-          <Box paddingBlock="8 0" borderWidth="1 0 0 0">
-            <VStack gap="4">
-              <Heading size="small" level="3" spacing>Utviklerinfo</Heading>
+          <Box paddingBlock="space-16 space-0" borderWidth="1 0 0 0">
+            <VStack gap="space-8">
+              <Heading size="small" level="3" spacing={true}>Utviklerinfo</Heading>
               <Detail>
                 Du kan også bruke query parametere direkte i URL:
                 <br />
