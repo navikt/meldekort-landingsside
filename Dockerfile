@@ -10,7 +10,8 @@ COPY package.json pnpm-lock.yaml* .npmrc ./
 # Install dependencies with GitHub Packages authentication
 RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
-    pnpm install --frozen-lockfile
+    pnpm install --ignore-scripts --frozen-lockfile && \
+    pnpm config delete //npm.pkg.github.com/:_authToken
 
 COPY . .
 
@@ -27,7 +28,8 @@ COPY package.json pnpm-lock.yaml* .npmrc ./
 
 RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config set //npm.pkg.github.com/:_authToken=$(cat /run/secrets/NODE_AUTH_TOKEN) && \
-    pnpm install --prod --frozen-lockfile --ignore-scripts
+    pnpm install --ignore-scripts --frozen-lockfile --prod && \
+    pnpm config delete //npm.pkg.github.com/:_authToken
 
 # Runtime stage
 FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:24@sha256:7b42c6e22093d516a7ffa683d7ac373a1c16521034ce334321dac47ebceac300 AS runtime
