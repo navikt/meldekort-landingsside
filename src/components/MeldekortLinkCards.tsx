@@ -71,7 +71,7 @@ function MeldekortLinkCard({
       </LinkCard.Description>
       <LinkCard.Footer>
         {tagTekst && (
-          <Tag variant="info" size="small">
+          <Tag data-color="info" variant="outline" size="small">
             {erstatt(tagTekst)}
           </Tag>
         )}
