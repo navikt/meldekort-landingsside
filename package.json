@@ -53,5 +53,10 @@
     "msw": "^2.14.6",
     "typescript": "^6.0.3",
     "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "rollup": "^4.59.0",
+    "svgo": "^4.0.1",
+    "devalue": "^5.6.4"
   }
 }
