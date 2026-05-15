@@ -96,11 +96,11 @@ export function MeldekortLinkCards({
   ) => {
     if (!data) return null;
 
-    return lenker.map((info, index) => {
+    return lenker.map((info) => {
       const tilleggstekst = getTilleggstekst?.(info);
       return (
         <MeldekortLinkCard
-          key={`${kortType}-${info.ytelse}-${index}`}
+          key={`${kortType}-${info.ytelse}`}
           info={info}
           data={data}
           ytelseNavn={ytelser[info.ytelse]}
