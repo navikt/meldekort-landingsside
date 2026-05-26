@@ -20,7 +20,6 @@
     "format": "biome format --write .",
     "lint": "biome lint .",
     "lint:fix": "biome lint --write .",
-    "pre-commit": "lint-staged && pnpm run typecheck",
     "prepare": "husky"
   },
   "dependencies": {
@@ -62,13 +61,5 @@
     "rollup": "^4.59.0",
     "svgo": "^4.0.1",
     "devalue": "^5.6.4"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --max-warnings 0",
-      "bash -c tsc",
-      "bash -c 'pnpm run lint'"
-    ]
   }
 }
