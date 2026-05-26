@@ -83,7 +83,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: nais/nais.yaml
           VARS: nais/vars-demo.yaml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }},githubSha=${{ github.sha }}
           TEAM: meldekort
 
   deploy-dev:
@@ -102,7 +102,7 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: nais/nais.yaml
           VARS: nais/vars-dev.yaml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }},githubSha=${{ github.sha }}
           TEAM: meldekort
 
   deploy-prod:
@@ -121,5 +121,5 @@ jobs:
           CLUSTER: prod-gcp
           RESOURCE: nais/nais.yaml
           VARS: nais/vars-prod.yaml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }},githubSha=${{ github.sha }}
           TEAM: meldekort

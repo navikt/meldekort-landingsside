@@ -25,3 +25,4 @@ arenaApiAudience: dev-gcp:meldekort:meldekort-api-q2
 dpApiUrl: http://dp-rapportering.teamdagpenger
 dpApiAudience: dev-gcp:teamdagpenger:dp-rapportering
 dekoratorMiljo: dev
+faro_url: "https://telemetry.ekstern.dev.nav.no/collect"

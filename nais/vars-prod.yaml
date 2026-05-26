@@ -25,3 +25,4 @@ arenaApiAudience: prod-gcp:meldekort:meldekort-api
 dpApiUrl: http://dp-rapportering.teamdagpenger
 dpApiAudience: prod-gcp:teamdagpenger:dp-rapportering
 dekoratorMiljo: prod
+faro_url: "https://telemetry.nav.no/collect"

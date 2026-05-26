@@ -94,5 +94,5 @@ jobs:
           CLUSTER: ${{ env.GCP_ENV}}-gcp
           RESOURCE: nais/nais.yaml
           VARS: nais/vars-${{ inputs.environment }}.yaml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }},githubSha=${{ github.sha }}
           TEAM: meldekort
