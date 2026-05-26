@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine AS builder
+FROM node:26-alpine AS builder
 
 RUN corepack enable
 
@@ -18,7 +18,7 @@ COPY . .
 RUN pnpm run build
 
 # Production dependencies stage
-FROM node:24-alpine AS prod-deps
+FROM node:26-alpine AS prod-deps
 
 RUN corepack enable
 
