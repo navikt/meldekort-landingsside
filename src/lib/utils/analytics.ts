@@ -1,5 +1,5 @@
-import { getAnalyticsInstance, getCurrentConsent } from '@navikt/nav-dekoratoren-moduler';
-import type { DecoratorLocale } from '@navikt/nav-dekoratoren-moduler';
+import { getAnalyticsInstance, getCurrentConsent, isValidEventName } from '@navikt/nav-dekoratoren-moduler';
+import type { DecoratorLocale, EventName } from '@navikt/nav-dekoratoren-moduler';
 
 const SKJEMANAVN = 'meldekort-landingsside';
 
@@ -32,7 +32,7 @@ export function hasAnalyticsConsent(): boolean {
 /**
  * Tracker et event til Umami via dekoratøren.
  */
-export function trackEvent(event: string, props: TrackEventProps = {}) {
+export function trackEvent(event: EventName | string, props: TrackEventProps = {}) {
   if (!hasAnalyticsConsent()) return;
 
   const logger = getAnalytics();
@@ -43,16 +43,11 @@ export function trackEvent(event: string, props: TrackEventProps = {}) {
     ...props,
   };
 
-  logger(event, data);
-}
-
-/**
- * Tracker sidevisning.
- */
-export function trackPageView(url?: string) {
-  trackEvent('sidevisning', {
-    url: url ?? window.location.pathname + window.location.search,
-  });
+  if (isValidEventName(event)) {
+    logger(event as EventName, data);
+  } else {
+    logger.custom(event, data);
+  }
 }
 
 /**

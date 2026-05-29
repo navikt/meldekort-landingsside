@@ -3,7 +3,6 @@ import {
   getAnalytics,
   hasAnalyticsConsent,
   trackEvent,
-  trackPageView,
   trackYtelseNavigasjon,
   trackKortVisning,
   trackSprakEndret,
@@ -16,7 +15,9 @@ vi.mock('@navikt/nav-dekoratoren-moduler', () => ({
 }));
 
 describe('analytics', () => {
-  const mockLogger = vi.fn();
+  const mockLogger = Object.assign(vi.fn(), {
+    custom: vi.fn(),
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -164,56 +165,6 @@ describe('analytics', () => {
 
       expect(mockLogger).toHaveBeenCalledWith('test event', {
         skjemanavn: 'meldekort-landingsside',
-      });
-    });
-  });
-
-  describe('trackPageView', () => {
-    beforeEach(() => {
-      Object.defineProperty(global.window, 'location', {
-        value: {
-          pathname: '/test/path',
-          search: '?foo=bar',
-        },
-        writable: true,
-      });
-    });
-
-    it('skal tracke sidevisning med default URL', async () => {
-      const { getCurrentConsent, getAnalyticsInstance } = await import(
-        '@navikt/nav-dekoratoren-moduler'
-      );
-      vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false },
-        userActionTaken: true,
-        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
-      });
-      vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
-
-      trackPageView();
-
-      expect(mockLogger).toHaveBeenCalledWith('sidevisning', {
-        skjemanavn: 'meldekort-landingsside',
-        url: '/test/path?foo=bar',
-      });
-    });
-
-    it('skal tracke sidevisning med custom URL', async () => {
-      const { getCurrentConsent, getAnalyticsInstance } = await import(
-        '@navikt/nav-dekoratoren-moduler'
-      );
-      vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false },
-        userActionTaken: true,
-        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
-      });
-      vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
-
-      trackPageView('/custom/url');
-
-      expect(mockLogger).toHaveBeenCalledWith('sidevisning', {
-        skjemanavn: 'meldekort-landingsside',
-        url: '/custom/url',
       });
     });
   });

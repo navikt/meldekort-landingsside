@@ -29,6 +29,7 @@ Sidevisninger trackes automatisk når siden lastes via `src/scripts/analytics.ts
 ```
 
 Dette scriptet:
+
 - Venter på at dekoratøren er ferdig lastet (`awaitDecoratorData()`)
 - Sjekker at bruker har samtykket til analytics
 - Tracker initial sidevisning
@@ -36,6 +37,7 @@ Dette scriptet:
 ### Kort-visning
 
 Når meldekort-kort vises på landingssiden, trackes automatisk:
+
 - Hvilke kort-typer som vises (se, sende, fyll ut)
 - Hvilke ytelser som vises (dagpenger, aap, tiltakspenger)
 - Antall kort av hver type
@@ -67,37 +69,40 @@ function MyComponent() {
 Importer direkte fra analytics utilities:
 
 ```typescript
-import { trackEvent } from '../lib/utils/analytics';
+import { trackEvent } from "../lib/utils/analytics";
 
 // Track custom event
-trackEvent('button klikket', {
-  buttonId: 'submit-button',
-  page: 'homepage',
+trackEvent("button klikket", {
+  buttonId: "submit-button",
+  page: "homepage",
 });
 ```
 
 ## Tilgjengelige tracking-funksjoner
 
-### `trackPageView(url?: string)`
-Tracker sidevisning. URL er valgfri, bruker `window.location` som default.
-
 ### `trackYtelseNavigasjon(ytelse, kortType, url)`
+
 Tracker når bruker navigerer til en ytelse.
+
 - `ytelse`: 'dagpenger' | 'aap' | 'tiltakspenger'
 - `kortType`: 'se' | 'sende' | 'fyllUt'
 - `url`: URL til ytelsen
 
 ### `trackKortVisning(visning)`
+
 Tracker hvilke kort som vises på landingssiden.
+
 - `visning`: Object med arrays av ytelser per kortType
   - `se`: string[] - ytelser med "Se innsendte" kort
   - `sende`: string[] - ytelser med "Send inn" kort
   - `fyllUt`: string[] - ytelser med "Fyll ut" kort
 
 ### `trackSprakEndret(gammeltSprak, nyttSprak)`
+
 Tracker språkendring.
 
 ### `trackEvent(event, props)`
+
 Generisk event tracking.
 
 ## Samtykke (Consent)
@@ -113,12 +118,14 @@ if (!consent.analytics) return; // Tracker ikke hvis bruker ikke har samtykket
 ## Data som sendes
 
 Alle events inkluderer automatisk:
+
 - `skjemanavn: 'meldekort-landingsside'`
 - Custom props spesifisert i hver tracking-funksjon
 
 ### Eksempel event-data
 
 **Sidevisning:**
+
 ```json
 {
   "skjemanavn": "meldekort-landingsside",
@@ -127,6 +134,7 @@ Alle events inkluderer automatisk:
 ```
 
 **Navigasjon til ytelse:**
+
 ```json
 {
   "skjemanavn": "meldekort-landingsside",
@@ -137,6 +145,7 @@ Alle events inkluderer automatisk:
 ```
 
 **Kort-visning:**
+
 ```json
 {
   "skjemanavn": "meldekort-landingsside",
@@ -150,6 +159,7 @@ Alle events inkluderer automatisk:
 ## Debugging
 
 For å debugge analytics i development:
+
 1. Åpne browser console
 2. Analytics events logges via dekoratørens logger
 3. Sjekk at `getCurrentConsent().consent.analytics === true`
@@ -157,7 +167,9 @@ For å debugge analytics i development:
 ## Eksempler fra kodebasen
 
 ### MeldekortLinkCards.tsx
+
 Tracker når bruker klikker på en ytelse-lenke:
+
 ```typescript
 const handleClick = () => {
   trackYtelseNavigasjon(info.ytelse, kortType, info.url);
@@ -165,7 +177,9 @@ const handleClick = () => {
 ```
 
 ### scripts/analytics.ts
+
 Tracker automatisk kort-visning ved sideopplastning:
+
 ```typescript
 const meldekortVisning = window.__MELDEKORT_VISNING__;
 if (meldekortVisning && !meldekortVisning.apiFeil && meldekortVisning.harKort) {

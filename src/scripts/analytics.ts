@@ -1,5 +1,5 @@
 import { awaitDecoratorData } from '@navikt/nav-dekoratoren-moduler';
-import { trackPageView, trackKortVisning } from '../lib/utils/analytics';
+import {  trackKortVisning } from '../lib/utils/analytics';
 
 declare global {
   interface Window {
@@ -23,9 +23,6 @@ async function initializeAnalytics() {
   try {
     // Vent på at dekoratøren er ferdig lastet
     await awaitDecoratorData();
-
-    // Track initial page view
-    trackPageView();
 
     // Track kort-visning hvis kort vises (ikke API-feil)
     const meldekortVisning = window.__MELDEKORT_VISNING__;
