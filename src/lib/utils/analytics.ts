@@ -1,4 +1,8 @@
-import { getAnalyticsInstance, getCurrentConsent, isValidEventName } from '@navikt/nav-dekoratoren-moduler';
+import {
+  getAnalyticsInstance,
+  getCurrentConsent,
+  isValidEventName,
+} from '@navikt/nav-dekoratoren-moduler';
 import type { DecoratorLocale, EventName } from '@navikt/nav-dekoratoren-moduler';
 
 const SKJEMANAVN = 'meldekort-landingsside';
@@ -68,11 +72,7 @@ export function trackYtelseNavigasjon(
 /**
  * Tracker hvilke kort som vises på landingssiden.
  */
-export function trackKortVisning(visning: {
-  se: string[];
-  sende: string[];
-  fyllUt: string[];
-}) {
+export function trackKortVisning(visning: { se: string[]; sende: string[]; fyllUt: string[] }) {
   // Bruk Set for å unngå duplikater hvis samme ytelse har flere korttyper
   const unikeYtelser = [...new Set([...visning.se, ...visning.sende, ...visning.fyllUt])];
 

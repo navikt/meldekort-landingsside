@@ -1,5 +1,5 @@
 import { awaitDecoratorData } from '@navikt/nav-dekoratoren-moduler';
-import {  trackKortVisning } from '../lib/utils/analytics';
+import { trackKortVisning } from '../lib/utils/analytics';
 
 declare global {
   interface Window {
