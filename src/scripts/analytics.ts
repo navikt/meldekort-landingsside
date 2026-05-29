@@ -16,7 +16,7 @@ declare global {
 }
 
 /**
- * Tracker sidevisning og kort-visning når siden lastes.
+ * Tracker kort-visning når siden lastes.
  * Venter på at dekoratøren er klar før tracking.
  */
 async function initializeAnalytics() {

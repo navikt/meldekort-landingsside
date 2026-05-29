@@ -31,8 +31,7 @@ Sidevisninger trackes automatisk når siden lastes via `src/scripts/analytics.ts
 Dette scriptet:
 
 - Venter på at dekoratøren er ferdig lastet (`awaitDecoratorData()`)
-- Sjekker at bruker har samtykket til analytics
-- Tracker initial sidevisning
+- Tracker kort-visning (respekterer analytics-samtykke via `trackEvent`)
 
 ### Kort-visning
 
