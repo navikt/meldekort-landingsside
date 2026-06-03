@@ -1,9 +1,15 @@
-import { initInstrumentation } from "../lib/utils/faro";
+import { initInstrumentation } from '../lib/utils/faro';
 
-// Start analytics når DOM er klar
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initInstrumentation);
-} else {
-
+function initializeFaro() {
+  try {
     initInstrumentation();
+  } catch(error) {
+    console.error('Feil ved initialisering av Faro:', error);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeFaro);
+} else {
+  initializeFaro();
 }

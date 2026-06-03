@@ -12,8 +12,8 @@ export function getEnv(key: string): string {
     const value = variables[key] || variables[`PUBLIC_${key}`];
 
     if (value === undefined) {
-        throw new Error(`Miljøvariabelen ${key} er ikke definert`);
+        console.warn(`Miljøvariabelen ${key} er ikke definert`);
     }
 
-    return value;
+    return value || "";
 }
