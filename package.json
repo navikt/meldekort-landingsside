@@ -46,7 +46,7 @@
     "@portabletext/types": "^4.0.2",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-v8": "^4.1.7",
+    "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.1.8",
     "happy-dom": "^20.9.0",
     "husky": "^9.1.7",
