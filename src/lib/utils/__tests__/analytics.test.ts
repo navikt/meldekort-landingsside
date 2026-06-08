@@ -3,20 +3,27 @@ import {
   getAnalytics,
   hasAnalyticsConsent,
   trackEvent,
-  trackPageView,
   trackYtelseNavigasjon,
   trackKortVisning,
   trackSprakEndret,
 } from '../analytics';
 
 // Mock nav-dekoratoren-moduler
-vi.mock('@navikt/nav-dekoratoren-moduler', () => ({
-  getAnalyticsInstance: vi.fn(),
-  getCurrentConsent: vi.fn(),
-}));
+vi.mock('@navikt/nav-dekoratoren-moduler', async () => {
+  const actual = await vi.importActual<typeof import('@navikt/nav-dekoratoren-moduler')>(
+    '@navikt/nav-dekoratoren-moduler',
+  );
+  return {
+    ...actual,
+    getAnalyticsInstance: vi.fn(),
+    getCurrentConsent: vi.fn(),
+  };
+});
 
 describe('analytics', () => {
-  const mockLogger = vi.fn();
+  const mockLogger = Object.assign(vi.fn(), {
+    custom: vi.fn(),
+  });
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -97,6 +104,14 @@ describe('analytics', () => {
   });
 
   describe('trackEvent', () => {
+    it('skal validere eventnavn som forventet', async () => {
+      const { isValidEventName } = await import('@navikt/nav-dekoratoren-moduler');
+
+      expect(isValidEventName('navigere')).toBe(true);
+      expect(isValidEventName('kort vist')).toBe(false);
+      expect(isValidEventName('språk endret')).toBe(false);
+    });
+
     it('skal ikke tracke når bruker ikke har samtykket', async () => {
       const { getCurrentConsent, getAnalyticsInstance } = await import(
         '@navikt/nav-dekoratoren-moduler'
@@ -141,15 +156,16 @@ describe('analytics', () => {
       });
       vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
 
-      trackEvent('test event', { foo: 'bar' });
+      trackEvent('navigere', { foo: 'bar' });
 
-      expect(mockLogger).toHaveBeenCalledWith('test event', {
+      expect(mockLogger).toHaveBeenCalledWith('navigere', {
         skjemanavn: 'meldekort-landingsside',
         foo: 'bar',
       });
+      expect(mockLogger.custom).not.toHaveBeenCalled();
     });
 
-    it('skal tracke event uten props', async () => {
+    it('skal bruke custom logger for ugyldig eventnavn', async () => {
       const { getCurrentConsent, getAnalyticsInstance } = await import(
         '@navikt/nav-dekoratoren-moduler'
       );
@@ -162,58 +178,9 @@ describe('analytics', () => {
 
       trackEvent('test event');
 
-      expect(mockLogger).toHaveBeenCalledWith('test event', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('test event', {
         skjemanavn: 'meldekort-landingsside',
-      });
-    });
-  });
-
-  describe('trackPageView', () => {
-    beforeEach(() => {
-      Object.defineProperty(global.window, 'location', {
-        value: {
-          pathname: '/test/path',
-          search: '?foo=bar',
-        },
-        writable: true,
-      });
-    });
-
-    it('skal tracke sidevisning med default URL', async () => {
-      const { getCurrentConsent, getAnalyticsInstance } = await import(
-        '@navikt/nav-dekoratoren-moduler'
-      );
-      vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false },
-        userActionTaken: true,
-        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
-      });
-      vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
-
-      trackPageView();
-
-      expect(mockLogger).toHaveBeenCalledWith('sidevisning', {
-        skjemanavn: 'meldekort-landingsside',
-        url: '/test/path?foo=bar',
-      });
-    });
-
-    it('skal tracke sidevisning med custom URL', async () => {
-      const { getCurrentConsent, getAnalyticsInstance } = await import(
-        '@navikt/nav-dekoratoren-moduler'
-      );
-      vi.mocked(getCurrentConsent).mockReturnValue({
-        consent: { analytics: true, surveys: false },
-        userActionTaken: true,
-        meta: { createdAt: '2026-01-01', updatedAt: '2026-01-01', version: 1 },
-      });
-      vi.mocked(getAnalyticsInstance).mockReturnValue(mockLogger);
-
-      trackPageView('/custom/url');
-
-      expect(mockLogger).toHaveBeenCalledWith('sidevisning', {
-        skjemanavn: 'meldekort-landingsside',
-        url: '/custom/url',
       });
     });
   });
@@ -238,6 +205,7 @@ describe('analytics', () => {
         kortType: 'sende',
         url: 'https://www.nav.no/dagpenger/meldekort',
       });
+      expect(mockLogger.custom).not.toHaveBeenCalled();
     });
 
     it('skal tracke navigasjon til AAP', async () => {
@@ -259,6 +227,7 @@ describe('analytics', () => {
         kortType: 'se',
         url: 'https://www.nav.no/aap/meldekort',
       });
+      expect(mockLogger.custom).not.toHaveBeenCalled();
     });
 
     it('skal tracke navigasjon til tiltakspenger', async () => {
@@ -284,6 +253,7 @@ describe('analytics', () => {
         kortType: 'fyllUt',
         url: 'https://www.nav.no/tiltakspenger/meldekort',
       });
+      expect(mockLogger.custom).not.toHaveBeenCalled();
     });
   });
 
@@ -305,7 +275,8 @@ describe('analytics', () => {
         fyllUt: [],
       });
 
-      expect(mockLogger).toHaveBeenCalledWith('kort vist', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('kort vist', {
         skjemanavn: 'meldekort-landingsside',
         antallSe: 1,
         antallSende: 2,
@@ -331,7 +302,8 @@ describe('analytics', () => {
         fyllUt: ['aap'],
       });
 
-      expect(mockLogger).toHaveBeenCalledWith('kort vist', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('kort vist', {
         skjemanavn: 'meldekort-landingsside',
         antallSe: 1,
         antallSende: 2,
@@ -357,7 +329,8 @@ describe('analytics', () => {
         fyllUt: [],
       });
 
-      expect(mockLogger).toHaveBeenCalledWith('kort vist', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('kort vist', {
         skjemanavn: 'meldekort-landingsside',
         antallSe: 0,
         antallSende: 0,
@@ -381,7 +354,8 @@ describe('analytics', () => {
 
       trackSprakEndret('nb', 'en');
 
-      expect(mockLogger).toHaveBeenCalledWith('språk endret', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('språk endret', {
         skjemanavn: 'meldekort-landingsside',
         gammeltSprak: 'nb',
         nyttSprak: 'en',
@@ -401,7 +375,8 @@ describe('analytics', () => {
 
       trackSprakEndret('en', 'nb');
 
-      expect(mockLogger).toHaveBeenCalledWith('språk endret', {
+      expect(mockLogger).not.toHaveBeenCalled();
+      expect(mockLogger.custom).toHaveBeenCalledWith('språk endret', {
         skjemanavn: 'meldekort-landingsside',
         gammeltSprak: 'en',
         nyttSprak: 'nb',
