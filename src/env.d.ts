@@ -5,6 +5,8 @@
 // I prod (NAIS) brukes process.env direkte
 interface ImportMetaEnv {
   readonly ENFORCE_LOGIN?: string;
+  readonly PUBLIC_FARO_URL?: string;
+  readonly PUBLIC_GITHUB_SHA?: string;
   readonly AAP_API_URL?: string;
   readonly AAP_API_AUDIENCE?: string;
   readonly TP_API_URL?: string;

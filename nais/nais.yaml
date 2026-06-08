@@ -83,3 +83,7 @@ spec:
       value: "{{dpApiUrl}}"
     - name: DP_API_AUDIENCE
       value: "{{dpApiAudience}}"
+    - name: PUBLIC_FARO_URL
+      value: "{{faro_url}}"
+    - name: PUBLIC_GITHUB_SHA
+      value: "{{githubSha}}"

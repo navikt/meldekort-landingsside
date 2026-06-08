@@ -89,6 +89,8 @@ const hasValidContent = !contentMissing && !!content;
 const tittel = hasValidContent && content ? content.tittel : t.tittel;
 const hasEmptyState = hasValidContent && (content?.emptyStateTekst?.length ?? 0) > 0;
 const hasBunntekst = hasValidContent && (content?.bunntekst?.length ?? 0) > 0;
+const faroUrl = import.meta.env.PUBLIC_FARO_URL ?? process.env.PUBLIC_FARO_URL ?? '';
+const githubSha = import.meta.env.PUBLIC_GITHUB_SHA ?? process.env.PUBLIC_GITHUB_SHA ?? '';
 
 const decorator = await getDecoratorHTML({
   context: 'privatperson',
@@ -112,13 +114,17 @@ const decorator = await getDecoratorHTML({
     <script>
       import "../scripts/languageHandler";
     </script>
-    <script is:inline define:vars={{ visning, harKort, apiFeil }}>
+    <script
+      is:inline
+      define:vars={{ visning, harKort, apiFeil, faroUrl, githubSha }}
+    >
       // Gjør visning tilgjengelig for kort-tracking
       // VIKTIG: Dette må kjøre FØR analytics script for å unngå race condition
       window.__MELDEKORT_VISNING__ = { visning, harKort, apiFeil };
     </script>
     <script>
       import "../scripts/analytics";
+      import "../scripts/faro";
     </script>
   </head>
   <body>
