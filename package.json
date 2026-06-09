@@ -35,8 +35,8 @@
     "astro": "^6.4.2",
     "date-fns": "^4.4.0",
     "groq": "^5.28.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "@astrojs/react": "^5.0.6",
     "@biomejs/biome": "^2.4.16",
     "@portabletext/types": "^4.0.2",
-    "@types/react": "^19.2.15",
+    "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "^4.1.8",
     "@vitest/ui": "^4.1.8",
