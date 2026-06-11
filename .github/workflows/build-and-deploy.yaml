@@ -16,7 +16,7 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       - name: Enable Corepack
         run: corepack enable
@@ -55,7 +55,7 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       - name: Build and push image
         uses: nais/docker-build-push@v0
@@ -76,7 +76,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       - uses: nais/deploy/actions/deploy@v2
         env:
@@ -95,7 +95,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       - uses: nais/deploy/actions/deploy@v2
         env:
@@ -114,7 +114,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
 
       - uses: nais/deploy/actions/deploy@v2
         env:
