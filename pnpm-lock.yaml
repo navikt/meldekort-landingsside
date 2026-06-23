@@ -33,8 +33,8 @@ importers:
         specifier: ^7.22.1
         version: 7.22.1
       '@sanity/types':
-        specifier: ^5.31.1
-        version: 5.31.1(@types/react@19.2.17)
+        specifier: ^6.0.0
+        version: 6.0.0(@types/react@19.2.17)
       astro:
         specifier: ^6.4.7
         version: 6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0)
@@ -957,8 +957,8 @@ packages:
   '@sanity/media-library-types@1.4.0':
     resolution: {integrity: sha512-DZwNT+dDSc1JPW4e7U5C+IJELq5IAeU2A1UcY1079gl+Hakx2USvu5LyY1hrjb1eifRPAhL8uwOVcMNBUmSmzg==}
 
-  '@sanity/types@5.31.1':
-    resolution: {integrity: sha512-Tl5+C6KTfGO1+QdbHFFaJd9Wyncbz2yznGg1P06JvBfzpexSdBVz476QyDtWBQaCtSkTk8eXzrwPVvW5emA8/g==}
+  '@sanity/types@6.0.0':
+    resolution: {integrity: sha512-VnNk5Hyeytr71pei4Do4xapIObDP0ZC32ce1kLKdJRGzz93tkJZNzrAYXZld/r8j4d6TYfJlxDP+VxacTtIKKQ==}
     peerDependencies:
       '@types/react': ^19.2
 
@@ -3554,7 +3554,7 @@ snapshots:
 
   '@sanity/media-library-types@1.4.0': {}
 
-  '@sanity/types@5.31.1(@types/react@19.2.17)':
+  '@sanity/types@6.0.0(@types/react@19.2.17)':
     dependencies:
       '@sanity/client': 7.22.1
       '@sanity/media-library-types': 1.4.0
