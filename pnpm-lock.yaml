@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@astrojs/node':
         specifier: ^10.1.4
-        version: 10.1.4(astro@6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0))
+        version: 10.1.4(astro@6.4.8(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0))
       '@date-fns/tz':
         specifier: ^1.5.0
         version: 1.5.0
@@ -30,14 +30,14 @@ importers:
         specifier: ^6.2.0
         version: 6.2.0(react@19.2.7)
       '@sanity/client':
-        specifier: ^7.22.1
-        version: 7.22.1
+        specifier: ^7.23.0
+        version: 7.23.0
       '@sanity/types':
         specifier: ^6.1.0
         version: 6.1.0(@types/react@19.2.17)
       astro:
-        specifier: ^6.4.7
-        version: 6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0)
+        specifier: ^6.4.8
+        version: 6.4.8(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
@@ -79,8 +79,8 @@ importers:
         specifier: ^4.1.9
         version: 4.1.9(vitest@4.1.9)
       happy-dom:
-        specifier: ^20.10.5
-        version: 20.10.5
+        specifier: ^20.10.6
+        version: 20.10.6
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -92,7 +92,7 @@ importers:
         version: 6.0.3
       vitest:
         specifier: ^4.1.9
-        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.5)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
+        version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.6)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
 
 packages:
 
@@ -947,8 +947,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@sanity/client@7.22.1':
-    resolution: {integrity: sha512-DrQqLAes7W9Ek2iKgTZ+ffY1v3DURJ6//iXJZMEQSUeRbxls2ifRTdV1gRS26v8nMkL0OCH+WCoUUseD4vhuQQ==}
+  '@sanity/client@7.23.0':
+    resolution: {integrity: sha512-4VFcLeP/lD0lhe5TD102tSnoW72ERT6xD/ZLb9pdLNMbZgbOciAy3m0hAYvs1vjA6663ZjNM6SLwl1Utq97DHA==}
     engines: {node: '>=20'}
 
   '@sanity/eventsource@5.0.2':
@@ -1074,8 +1074,8 @@ packages:
   '@types/ws@8.18.1':
     resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
-  '@ungap/structured-clone@1.3.1':
-    resolution: {integrity: sha512-mUFwbeTqrVgDQxFveS+df2yfap6iuP20NAKAsBt5jDEoOTDew+zwLAOilHCeQJOVSvmgCX4ogqIrA0mnyr08yQ==}
+  '@ungap/structured-clone@1.3.2':
+    resolution: {integrity: sha512-5jsZFwgR5rTdKwidH9Qmat75RKwqfpKlWWB1frDkljN127mwqBu8K0PYo7/hFpF03IEJpfVPpCQDY/eDx3iHvA==}
 
   '@vitejs/plugin-react@5.2.0':
     resolution: {integrity: sha512-YmKkfhOAi3wsB1PhJq5Scj3GXMn3WvtQ/JC0xoopuHoXSdmtdStOpFrYaT1kie2YgFBcIe64ROzMYRjCrYOdYw==}
@@ -1192,8 +1192,8 @@ packages:
   ast-v8-to-istanbul@1.0.4:
     resolution: {integrity: sha512-0bC0/4bTSrnwdhU3IsZDwEdojvuPrSg59OYZfKsLRtJZ0u8VBx9DebfqqG8bRdCC0I7vjgxmPi41P0lpkhJHtA==}
 
-  astro@6.4.7:
-    resolution: {integrity: sha512-5vsXx0H52u23Jpshs9tM81D03Tb3Oh2Vt2Zo0bpqjXN+njkAWjFyGjTfmWJLAcrCQd9Q+iWB1eqfhR1sZJEaUA==}
+  astro@6.4.8:
+    resolution: {integrity: sha512-KK5lX90uU9EeVaTjINyj3sy9/NFXVa59aowaqbWBDDKLXZh4rr7GwIaCFYVetE22MJtsCNFerQXn0vlCLmpP/Q==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1571,8 +1571,8 @@ packages:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
     engines: {node: 6.* || 8.* || >= 10.*}
 
-  get-it@8.7.3:
-    resolution: {integrity: sha512-Fcv6n05iKMY/obxWb7wL0T8xOiUN/5ptBlg/Vf2WAvfs175wAV7Qf+UtWKp7Jdneu+KbUe6MIL0js2WBzoAoyg==}
+  get-it@8.8.0:
+    resolution: {integrity: sha512-vRyooMBzoIdEbARGT3JcvWqMD67YzC5SKlMqofyfck1ebLh2zzlpD4hVQ3xiuuiADk4jNs0rTezVlxCMqOlZfA==}
     engines: {node: '>=14.0.0'}
 
   get-tsconfig@5.0.0-beta.4:
@@ -1593,8 +1593,8 @@ packages:
   h3@1.15.11:
     resolution: {integrity: sha512-L3THSe2MPeBwgIZVSH5zLdBBU90TOxarvhK9d04IDY2AmVS8j2Jz2LIWtwsGOU3lu2I5jCN7FNvVfY2+XyF+mg==}
 
-  happy-dom@20.10.5:
-    resolution: {integrity: sha512-0aA6BQoMnpcRE/c1E8ZyF2jXnET7MJskereWOXher4CJuYjrI5esN0Az/1NPMD4KeWUbampBGw2MGqabMPFIbg==}
+  happy-dom@20.10.6:
+    resolution: {integrity: sha512-6QD0ilzDDt93tX44y8tbmZdAcdTRYDhUP+Asgi6pC8Pp5IA3cvaZGyoVN/EGtlq9ziT65iPuBBn3ASLr6hCgVw==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -1964,11 +1964,6 @@ packages:
   mute-stream@3.0.0:
     resolution: {integrity: sha512-dkEJPVvun4FryqBmZ5KhDo0K9iDXAwn08tMLDinNdRBNPcYEDiWYysLcc6k3mjTMlbP9KyylvRpd4wFtwrT9rw==}
     engines: {node: ^20.17.0 || >=22.9.0}
-
-  nanoid@3.3.12:
-    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
-    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
-    hasBin: true
 
   nanoid@3.3.15:
     resolution: {integrity: sha512-y7Wygv/7mEOvxTuEQDB8StXdMRBWf1kR/tlhAzBRUFkB2jfcLOAxO/SHmOO2zgz1pVgK29/kyupn059/bCHdjA==}
@@ -2343,8 +2338,8 @@ packages:
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
 
-  tinyclip@0.1.14:
-    resolution: {integrity: sha512-F1oWdz8tjT17qe1d5JgDK6z03WGOhYYAN0lK3/D/fzNiy93xswLLEw7pk+3g05onhAy6Bsc6PLNUGhdgVjemMQ==}
+  tinyclip@0.1.15:
+    resolution: {integrity: sha512-uo33abH+Ays0xYaDysoBt494Hb3hsEczMpcC0MwFl773pazORx4fmvKhclhR1wonUbB6vvpRsvVMwnhfqeMc+A==}
     engines: {node: ^16.14.0 || >= 17.3.0}
 
   tinyexec@1.2.4:
@@ -2879,10 +2874,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/node@10.1.4(astro@6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0))':
+  '@astrojs/node@10.1.4(astro@6.4.8(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0))':
     dependencies:
       '@astrojs/internal-helpers': 0.10.0
-      astro: 6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0)
+      astro: 6.4.8(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0)
       send: 1.2.1
       server-destroy: 1.0.1
     transitivePeerDependencies:
@@ -3538,11 +3533,11 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.62.2':
     optional: true
 
-  '@sanity/client@7.22.1':
+  '@sanity/client@7.23.0':
     dependencies:
       '@sanity/eventsource': 5.0.2
-      get-it: 8.7.3
-      nanoid: 3.3.12
+      get-it: 8.8.0
+      nanoid: 3.3.15
       rxjs: 7.8.2
 
   '@sanity/eventsource@5.0.2':
@@ -3556,7 +3551,7 @@ snapshots:
 
   '@sanity/types@6.1.0(@types/react@19.2.17)':
     dependencies:
-      '@sanity/client': 7.22.1
+      '@sanity/client': 7.23.0
       '@sanity/media-library-types': 1.4.0
       '@types/react': 19.2.17
 
@@ -3689,7 +3684,7 @@ snapshots:
     dependencies:
       '@types/node': 26.0.0
 
-  '@ungap/structured-clone@1.3.1': {}
+  '@ungap/structured-clone@1.3.2': {}
 
   '@vitejs/plugin-react@5.2.0(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))':
     dependencies:
@@ -3715,7 +3710,7 @@ snapshots:
       obug: 2.1.3
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.5)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
+      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.6)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
 
   '@vitest/expect@4.1.9':
     dependencies:
@@ -3762,7 +3757,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.17
       tinyrainbow: 3.1.0
-      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.5)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
+      vitest: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.6)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
 
   '@vitest/utils@4.1.9':
     dependencies:
@@ -3856,7 +3851,7 @@ snapshots:
       estree-walker: 3.0.3
       js-tokens: 10.0.0
 
-  astro@6.4.7(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0):
+  astro@6.4.8(@types/node@26.0.0)(rollup@4.62.2)(yaml@2.9.0):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.10.0
@@ -3900,7 +3895,7 @@ snapshots:
       shiki: 4.2.0
       smol-toml: 1.7.0
       svgo: 4.0.1
-      tinyclip: 0.1.14
+      tinyclip: 0.1.15
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       ultrahtml: 1.6.0
@@ -4266,7 +4261,7 @@ snapshots:
 
   get-caller-file@2.0.5: {}
 
-  get-it@8.7.3:
+  get-it@8.8.0:
     dependencies:
       decompress-response: 7.0.0
       is-retry-allowed: 2.2.0
@@ -4295,7 +4290,7 @@ snapshots:
       ufo: 1.6.4
       uncrypto: 0.1.3
 
-  happy-dom@20.10.5:
+  happy-dom@20.10.6:
     dependencies:
       '@types/node': 26.0.0
       '@types/whatwg-mimetype': 3.0.2
@@ -4342,7 +4337,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       '@types/unist': 3.0.3
-      '@ungap/structured-clone': 1.3.1
+      '@ungap/structured-clone': 1.3.2
       hast-util-from-parse5: 8.0.3
       hast-util-to-parse5: 8.0.1
       html-void-elements: 3.0.0
@@ -4638,7 +4633,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      '@ungap/structured-clone': 1.3.1
+      '@ungap/structured-clone': 1.3.2
       devlop: 1.1.0
       micromark-util-sanitize-uri: 2.0.1
       trim-lines: 3.0.1
@@ -4897,8 +4892,6 @@ snapshots:
   muggle-string@0.4.1: {}
 
   mute-stream@3.0.0: {}
-
-  nanoid@3.3.12: {}
 
   nanoid@3.3.15: {}
 
@@ -5350,7 +5343,7 @@ snapshots:
 
   tinybench@2.9.0: {}
 
-  tinyclip@0.1.14: {}
+  tinyclip@0.1.15: {}
 
   tinyexec@1.2.4: {}
 
@@ -5518,7 +5511,7 @@ snapshots:
     optionalDependencies:
       vite: 7.3.5(@types/node@26.0.0)(yaml@2.9.0)
 
-  vitest@4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.5)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0)):
+  vitest@4.1.9(@opentelemetry/api@1.9.1)(@types/node@26.0.0)(@vitest/coverage-v8@4.1.9)(@vitest/ui@4.1.9)(happy-dom@20.10.6)(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0)):
     dependencies:
       '@vitest/expect': 4.1.9
       '@vitest/mocker': 4.1.9(msw@2.14.6(@types/node@26.0.0)(typescript@6.0.3))(vite@7.3.5(@types/node@26.0.0)(yaml@2.9.0))
@@ -5545,7 +5538,7 @@ snapshots:
       '@types/node': 26.0.0
       '@vitest/coverage-v8': 4.1.9(vitest@4.1.9)
       '@vitest/ui': 4.1.9(vitest@4.1.9)
-      happy-dom: 20.10.5
+      happy-dom: 20.10.6
     transitivePeerDependencies:
       - msw
 
