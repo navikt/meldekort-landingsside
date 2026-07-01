@@ -32,7 +32,7 @@
     "@portabletext/react": "^6.2.0",
     "@sanity/client": "^7.23.0",
     "@sanity/types": "^6.1.0",
-    "astro": "^6.4.8",
+    "astro": "^7.0.2",
     "date-fns": "^4.4.0",
     "groq": "^6.1.0",
     "react": "^19.2.7",
