@@ -1,9 +1,7 @@
 # Build stage
-FROM node:25-alpine AS builder
+FROM node:24-alpine AS builder
 
-RUN npm install -g corepack@latest --force && \
-    corepack enable && \
-    corepack prepare pnpm@latest --activate
+RUN corepack enable
 
 WORKDIR /app
 
@@ -20,11 +18,9 @@ COPY . .
 RUN pnpm run build
 
 # Production dependencies stage
-FROM node:25-alpine AS prod-deps
+FROM node:24-alpine AS prod-deps
 
-RUN npm install -g corepack@latest --force && \
-    corepack enable && \
-    corepack prepare pnpm@latest --activate
+RUN corepack enable
 
 WORKDIR /app
 
