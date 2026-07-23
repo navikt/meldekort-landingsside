@@ -30,8 +30,8 @@ importers:
         specifier: ^6.2.0
         version: 6.2.0(react@19.2.7)
       '@sanity/client':
-        specifier: ^7.23.1
-        version: 7.23.1
+        specifier: ^7.23.2
+        version: 7.23.2
       '@sanity/types':
         specifier: ^6.5.0
         version: 6.5.0(@types/react@19.2.17)
@@ -1045,8 +1045,8 @@ packages:
       rollup:
         optional: true
 
-  '@sanity/client@7.23.1':
-    resolution: {integrity: sha512-zCKrdmsfFRYKXndkw5rVi3tyvr54QIdE+ISuAxFeHfJFiwWHFNu6pL4G8JmRyfxsD7Q9zyrD4C5hczVVmwGbgg==}
+  '@sanity/client@7.23.2':
+    resolution: {integrity: sha512-WC0vsGGpe4IGVFBvYMFFPa3KLH0vzgZwzvHIN20IDmPjuifDHSCbpq299Yj7jJQb2xBMJ7zQj45RyOzOIC7PUA==}
     engines: {node: '>=20'}
 
   '@sanity/eventsource@5.0.4':
@@ -3743,7 +3743,7 @@ snapshots:
       estree-walker: 2.0.2
       picomatch: 4.0.5
 
-  '@sanity/client@7.23.1':
+  '@sanity/client@7.23.2':
     dependencies:
       '@sanity/eventsource': 5.0.4
       get-it: 8.8.0
@@ -3761,7 +3761,7 @@ snapshots:
 
   '@sanity/types@6.5.0(@types/react@19.2.17)':
     dependencies:
-      '@sanity/client': 7.23.1
+      '@sanity/client': 7.23.2
       '@sanity/media-library-types': 1.6.0
       '@types/react': 19.2.17
 
