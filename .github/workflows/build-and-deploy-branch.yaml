@@ -20,7 +20,7 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Enable Corepack
         run: corepack enable
@@ -58,7 +58,7 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
 
       - name: Build and push image
         uses: nais/docker-build-push@v0
@@ -78,7 +78,7 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v7.0.0
+      - uses: actions/checkout@v7.0.1
       - name: Utled GCP_ENV
         run: |
           if [[ "${{ inputs.environment }}" == "dev" ]]; then
