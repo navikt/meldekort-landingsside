@@ -30,8 +30,8 @@ importers:
         specifier: ^7.0.1
         version: 7.0.1(react@19.2.8)
       '@sanity/client':
-        specifier: ^7.26.2
-        version: 7.26.2
+        specifier: ^8.0.0
+        version: 8.0.0(vitest@4.1.10)
       '@sanity/types':
         specifier: ^6.9.2
         version: 6.9.2(@types/react@19.2.18)
@@ -1147,6 +1147,10 @@ packages:
     resolution: {integrity: sha512-iEkGiHbrxCnT/A30A6pH+vX4otP3lLp935Vwuv0/YrnETxrKCn6PnsZU+TfTm6ZEZ9kZGs8wKP5yBLmZw5S6OQ==}
     engines: {node: '>=20'}
 
+  '@sanity/client@8.0.0':
+    resolution: {integrity: sha512-PL2zaAkTz8fL93cEFNsmLFmaFl0/xyslnA3pdYXegdP9v1A+GRwXV3delEPaNmRn520CCDAnCrB7Bz3D//uyQQ==}
+    engines: {node: '>=22.12.0'}
+
   '@sanity/eventsource@5.0.4':
     resolution: {integrity: sha512-NT6XrTJePJd7q1ZdTqB3NsTyNNOe9R2zMkg4Hlkqwb0LL6UmekVamAD46yjSJ+HbRyXAKLl1Rb65xZBdzC1f8Q==}
 
@@ -1705,9 +1709,17 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
+  eventsource-parser@4.0.0:
+    resolution: {integrity: sha512-aIpvYxbqTx4KYWw73KpCt1Rh22tEAJ144F1qR76CT3Ex+LNMEPKf5HFrK5Yz9fMP1EVT0GrfA35VZvWQhMPuSQ==}
+    engines: {node: '>=22.12'}
+
   eventsource@2.0.2:
     resolution: {integrity: sha512-IzUmBGPR3+oUG9dUeXynyNmf91/3zUSJg1lCktzKw47OXuhco54U3r9B7O4XX+Rb1Itm9OZ2b0RkTs10bICOxA==}
     engines: {node: '>=12.0.0'}
+
+  eventsource@5.1.0:
+    resolution: {integrity: sha512-+errgX9LYbcpibagHh7CEjEZJvQbIDZB2yY7SbUAhHGv4Ircri3T9LH33TUtcXHDy/pFYel1xCi4VOcBnr3wmw==}
+    engines: {node: '>=22.12.0'}
 
   expect-type@1.4.0:
     resolution: {integrity: sha512-KfYbmpRm0VbLjEvVa9yGwCi9GI34xvi7A/HXYWQO65CSD2u3MczUJSuwXKFIxlGsgBQizV9q5J9NHj4VG0n+pA==}
@@ -1787,6 +1799,15 @@ packages:
   get-it@8.8.3:
     resolution: {integrity: sha512-IfkbWqOGO2kd2Ccgiz/NIzk3bcwjtVqBm3RNa3j/veHg2q7c1DgS3EXrCrvIWH0jbNTbhkdblnxBP7Dm8CiH+A==}
     engines: {node: '>=14.0.0'}
+
+  get-it@9.4.1:
+    resolution: {integrity: sha512-WEYs8b65nMYdYvbi0AwlyfRWrnkto1xLG1YqxFGKrU4yb7Vd06ryIS5XAFrBgRnYwsoszsZEsUGimQMQE7ztVA==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      vitest: '>=2.0.0'
+    peerDependenciesMeta:
+      vitest:
+        optional: true
 
   get-tsconfig@5.0.0-beta.4:
     resolution: {integrity: sha512-7nF7C9fIPFEMHgEMEfgIlO9wDdZ8CyHw27rWciFZfHvHDReIiPhsYuzPRXsfvBCqFy1l8RRyyWV7QLM+ZhUJsQ==}
@@ -2123,6 +2144,11 @@ packages:
   nanoid@3.3.18:
     resolution: {integrity: sha512-DTg4MJbGMWkfi6VZFdNt2/caMbQy4Ou+Op/hJQvGEWcnVfoA1QA+xzRKAzw9jD6+GVOOeYr/mIcuDSdug6F6+w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@6.0.1:
+    resolution: {integrity: sha512-3wVS3i51pE2pi1k5FFL/95BGfVS0kSsvDVuGXHOtxox/TywUmtgq+3qiTOTbs9J7KfHaXPiN171k/A6dBnaXFw==}
+    engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
   neotraverse@1.0.1:
@@ -2575,6 +2601,10 @@ packages:
 
   undici-types@8.3.0:
     resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+
+  undici@7.29.0:
+    resolution: {integrity: sha512-IDxfleLmmbSskfWSUATiN1nfn2rDuvnMOqb5CWR92iIfojA0Ud+ulOAAEQ57LPr9rWmsreUyf5lwyao+7GNNVw==}
+    engines: {node: '>=20.18.1'}
 
   undici@8.10.0:
     resolution: {integrity: sha512-HvltHd7avK13QIw/oLe4qoOLyoVSoafqJ2jYOrtMRBkbYT31eiBQ8O0ehRKZiEZCMEyLFQNIADpgCWC5fALvYQ==}
@@ -3893,6 +3923,16 @@ snapshots:
       nanoid: 3.3.18
       rxjs: 7.8.2
 
+  '@sanity/client@8.0.0(vitest@4.1.10)':
+    dependencies:
+      eventsource: 5.1.0
+      get-it: 9.4.1(vitest@4.1.10)
+      nanoid: 6.0.1
+      obug: 2.1.4
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - vitest
+
   '@sanity/eventsource@5.0.4':
     dependencies:
       '@types/event-source-polyfill': 1.0.5
@@ -4570,7 +4610,13 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
+  eventsource-parser@4.0.0: {}
+
   eventsource@2.0.2: {}
+
+  eventsource@5.1.0:
+    dependencies:
+      eventsource-parser: 4.0.0
 
   expect-type@1.4.0: {}
 
@@ -4629,6 +4675,12 @@ snapshots:
       is-retry-allowed: 2.2.0
       through2: 4.0.2
       tunnel-agent: 0.6.0
+
+  get-it@9.4.1(vitest@4.1.10):
+    dependencies:
+      undici: 7.29.0
+    optionalDependencies:
+      vitest: 4.1.10(@opentelemetry/api@1.9.1)(@types/node@26.2.0)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(happy-dom@20.11.2)(msw@2.15.0(@types/node@26.2.0)(typescript@6.0.3))(vite@8.2.1(@types/node@26.2.0)(esbuild@0.28.2)(yaml@2.9.0))
 
   get-tsconfig@5.0.0-beta.4:
     dependencies:
@@ -4982,6 +5034,8 @@ snapshots:
   mute-stream@3.0.0: {}
 
   nanoid@3.3.18: {}
+
+  nanoid@6.0.1: {}
 
   neotraverse@1.0.1: {}
 
@@ -5448,6 +5502,8 @@ snapshots:
   uncrypto@0.1.3: {}
 
   undici-types@8.3.0: {}
+
+  undici@7.29.0: {}
 
   undici@8.10.0: {}
 
