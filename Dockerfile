@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine AS builder
+FROM node:24-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS builder
 
 RUN corepack enable
 
@@ -18,7 +18,7 @@ COPY . .
 RUN pnpm run build
 
 # Production dependencies stage
-FROM node:24-alpine AS prod-deps
+FROM node:24-alpine@sha256:d32cdf619f63fe0471182d08996dd516c6275bb5fd31ae06e55a570bd9e1ad43 AS prod-deps
 
 RUN corepack enable
 
