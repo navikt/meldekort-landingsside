@@ -157,7 +157,6 @@ pnpm run preview
 .
 ├── .github/              # GitHub Actions workflows og konfigurasjon
 │   ├── workflows/        # CI/CD pipelines
-│   └── dependabot.yml    # Automatiske avhengighetsoppdateringer
 ├── .husky/               # Git hooks
 ├── nais/                 # NAIS deployment konfigurasjon
 │   ├── nais.yaml         # NAIS manifest template
