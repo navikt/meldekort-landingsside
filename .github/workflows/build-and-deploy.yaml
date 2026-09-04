@@ -56,16 +56,28 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
     steps:
       - uses: actions/checkout@v7.0.1
-
-      - name: Build and push image
+      - name: "Build and push image"
         uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
           team: meldekort
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          build_secrets: |
-            NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
+          build_secrets: NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
+      - name: "Build static files"
+        uses: docker/build-push-action@v7.3.0
+        with:
+          target: export
+          outputs: type=local,dest=build
+          secrets: NODE_AUTH_TOKEN=${{ secrets.READER_TOKEN }}
+      - name: "Upload to cdn"
+        uses: nais/deploy/actions/cdn-upload/v2@master
+        with:
+          team: meldekort
+          source: ./build/dist/client/_astro
+          destination: "meldekort-landingsside"
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
   deploy-demo:
     name: Deploy to demo
