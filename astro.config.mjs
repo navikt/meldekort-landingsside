@@ -14,7 +14,7 @@ export default defineConfig({
     mode: 'standalone',
   }),
   build: {
-    assetsPrefix: "https://cdn.nav.no/meldekort/meldekort-landingsside",
+    assetsPrefix: 'https://cdn.nav.no/meldekort/meldekort-landingsside',
     inlineStylesheets: 'auto',
   },
   vite: {
