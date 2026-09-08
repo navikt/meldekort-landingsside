@@ -87,6 +87,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    environment: demo-gcp
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -106,6 +107,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    environment: dev-gcp
     steps:
       - uses: actions/checkout@v7.0.1
 
@@ -125,6 +127,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+    environment: prod-gcp
     steps:
       - uses: actions/checkout@v7.0.1
 
