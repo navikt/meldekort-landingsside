@@ -135,7 +135,7 @@ importers:
         version: 8.5.0(vitest@5.0.0)
       '@sanity/types':
         specifier: ^6.11.0
-        version: 6.12.0(@types/react@19.2.18)(vitest@5.0.0)
+        version: 6.13.0(@types/react@19.2.18)(vitest@5.0.0)
       astro:
         specifier: ^7.2.10
         version: 7.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.4.1)(yaml@2.9.0)
@@ -1147,11 +1147,15 @@ packages:
     resolution: {integrity: sha512-GpTdkeyMOqsuXCB74iCiGqOs7lHBELD7pgWCm+hJ0FrqXL+CIgR6ZvehPSn+O9/8964X9Nb7iFtjZpOYOydtMA==}
     engines: {node: '>=22.12.0'}
 
+  '@sanity/client@8.6.1':
+    resolution: {integrity: sha512-sYASM1fuPeCx2dZzlq3edtv1UmvizUmMLkN0x3Rkxs/NrTAikxGyOAtEuAZt25mwliqBiHsYbB0L4G6MWVgHLw==}
+    engines: {node: '>=22.12.0'}
+
   '@sanity/media-library-types@1.6.0':
     resolution: {integrity: sha512-1Nqw8GSUr7E8AFue9luyTOM4Ev0ZlJ35SHcQrHZ6T68G5llfXw99e3GkLXzk6qYFk9r9fJaBTSpW5IyO2mObZQ==}
 
-  '@sanity/types@6.12.0':
-    resolution: {integrity: sha512-0YU7ats291VBfCa3g+COzxxzw/EUm6AED+lj5CEs5Kh8tZkmXksIdgJp8sonLdu9ZQLydiXg08jvEP8LHtfKjw==}
+  '@sanity/types@6.13.0':
+    resolution: {integrity: sha512-Y/3SXBBLi7mqPq/ypIgXJ75jEt3qm+W8NS0S+hsIuLDCi5vr8NrmkqdxipXYqBX1ynA2Cy7KNiLW9nqPiBCffw==}
     engines: {node: '>=22.12'}
     peerDependencies:
       '@types/react': '*'
@@ -1783,6 +1787,15 @@ packages:
 
   get-it@9.5.2:
     resolution: {integrity: sha512-n4iCIF3/STaCsEIgestecjGJ3Oa+GEIwMT91HU+5TBHQ8DIpBCS1/BXjaxS5HuYHtVMRVTFDRX2bf3+gP/MOPg==}
+    engines: {node: '>=22.12.0'}
+    peerDependencies:
+      vitest: '>=2.0.0'
+    peerDependenciesMeta:
+      vitest:
+        optional: true
+
+  get-it@9.5.4:
+    resolution: {integrity: sha512-LXbU86HfKWzssHTTsQtUphDh5RB9ilOvncCPPDjaJTbli8zPIJBv4KA9EMB/Wv8GfPXy0dpulfRJzd76n7c3bg==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       vitest: '>=2.0.0'
@@ -3722,11 +3735,20 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
+  '@sanity/client@8.6.1(vitest@5.0.0)':
+    dependencies:
+      eventsource: 5.1.1
+      get-it: 9.5.4(vitest@5.0.0)
+      obug: 2.1.4
+      rxjs: 7.8.2
+    transitivePeerDependencies:
+      - vitest
+
   '@sanity/media-library-types@1.6.0': {}
 
-  '@sanity/types@6.12.0(@types/react@19.2.18)(vitest@5.0.0)':
+  '@sanity/types@6.13.0(@types/react@19.2.18)(vitest@5.0.0)':
     dependencies:
-      '@sanity/client': 8.5.0(vitest@5.0.0)
+      '@sanity/client': 8.6.1(vitest@5.0.0)
       '@sanity/media-library-types': 1.6.0
       '@types/react': 19.2.18
     transitivePeerDependencies:
@@ -4430,6 +4452,12 @@ snapshots:
   get-east-asian-width@1.6.0: {}
 
   get-it@9.5.2(vitest@5.0.0):
+    dependencies:
+      undici: 7.29.0
+    optionalDependencies:
+      vitest: 5.0.0(@opentelemetry/api@1.9.1)(@types/node@26.4.1)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(happy-dom@20.14.0)(msw@2.15.0(@types/node@26.4.1)(typescript@6.0.3))(vite@8.2.2(@types/node@26.4.1)(esbuild@0.28.2)(yaml@2.9.0))
+
+  get-it@9.5.4(vitest@5.0.0):
     dependencies:
       undici: 7.29.0
     optionalDependencies:
