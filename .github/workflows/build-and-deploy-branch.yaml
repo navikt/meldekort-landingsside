@@ -102,7 +102,7 @@ jobs:
               echo "Ukjent environment: ${{ inputs.environment }}" >&2
               exit 1
           fi
-      - uses: nais/deploy/actions/deploy@v2
+      - uses: nais/deploy/actions/deploy@v3
         env:
           CLUSTER: ${{ env.GCP_ENV}}-gcp
           RESOURCE: nais/nais.yaml
