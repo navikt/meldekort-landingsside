@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24-alpine@sha256:50c8e8ca1d27439048670df5883f32d57cf81cff6233222c893fd0d9884cbd81 AS builder
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS builder
 
 RUN corepack enable
 
@@ -22,7 +22,7 @@ FROM scratch AS export
 COPY --from=builder /app/dist ./dist
 
 # Production dependencies stage
-FROM node:24-alpine@sha256:50c8e8ca1d27439048670df5883f32d57cf81cff6233222c893fd0d9884cbd81 AS prod-deps
+FROM node:24-alpine@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS prod-deps
 
 RUN corepack enable
 
@@ -36,7 +36,7 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config delete //npm.pkg.github.com/:_authToken
 
 # Runtime stage
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26@sha256:63b909b9c485aba5b612c0612dd940514c2cec2611566178c4d1b6da3f555b3e AS runtime
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26@sha256:5da9526f5a7f2111b89fb8842ab57976366cb160243fb04c76001df92faf2eb8 AS runtime
 
 WORKDIR /app
 
