@@ -192,7 +192,7 @@ importers:
         version: 8.6.1(vitest@5.0.0)
       '@sanity/types':
         specifier: ^6.11.0
-        version: 6.13.2(@types/react@19.3.0)(vitest@5.0.0)
+        version: 6.14.0(@types/react@19.3.0)(vitest@5.0.0)
       astro:
         specifier: ^7.2.10
         version: 7.3.2(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.5.1)(yaml@2.9.1)
@@ -1213,8 +1213,8 @@ packages:
     peerDependencies:
       '@sanity/types': ^4.0.0 || ^5.0.0 || ^6.0.0
 
-  '@sanity/types@6.13.2':
-    resolution: {integrity: sha512-7Oq0vyw6zkfHKG8EXdXYloiGd4mhDahvLes2HhpZWVcyswRnla35JO1BngEXqxit9EheI9UxCnvQ9Xb0zceCZA==}
+  '@sanity/types@6.14.0':
+    resolution: {integrity: sha512-g4oPc8ysX5ZWWowXN2PaagZ3eewxogCQ13K5jJWnQvfJKbyRL+xEgIEFXU9DNjqOOzG5a093x0iE/n1PHzj1oQ==}
     engines: {node: '>=22.12'}
     peerDependencies:
       '@types/react': '*'
@@ -3783,14 +3783,14 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
-  '@sanity/media-library-types@1.7.0(@sanity/types@6.13.2(@types/react@19.3.0)(vitest@5.0.0))':
+  '@sanity/media-library-types@1.7.0(@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.0))':
     dependencies:
-      '@sanity/types': 6.13.2(@types/react@19.3.0)(vitest@5.0.0)
+      '@sanity/types': 6.14.0(@types/react@19.3.0)(vitest@5.0.0)
 
-  '@sanity/types@6.13.2(@types/react@19.3.0)(vitest@5.0.0)':
+  '@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.0)':
     dependencies:
       '@sanity/client': 8.6.1(vitest@5.0.0)
-      '@sanity/media-library-types': 1.7.0(@sanity/types@6.13.2(@types/react@19.3.0)(vitest@5.0.0))
+      '@sanity/media-library-types': 1.7.0(@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.0))
       '@types/react': 19.3.0
     transitivePeerDependencies:
       - vitest
