@@ -189,7 +189,7 @@ importers:
         version: 8.0.1(react@19.3.0)
       '@sanity/client':
         specifier: ^8.4.0
-        version: 8.6.1(vitest@5.0.0)
+        version: 8.6.2(vitest@5.0.0)
       '@sanity/types':
         specifier: ^6.11.0
         version: 6.13.2(@types/react@19.3.0)(vitest@5.0.0)
@@ -1204,8 +1204,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@sanity/client@8.6.1':
-    resolution: {integrity: sha512-sYASM1fuPeCx2dZzlq3edtv1UmvizUmMLkN0x3Rkxs/NrTAikxGyOAtEuAZt25mwliqBiHsYbB0L4G6MWVgHLw==}
+  '@sanity/client@8.6.2':
+    resolution: {integrity: sha512-e/rKvOxMy3hP+4p1fdVfONKrdmlNQQyjzHai/cQYPTe/CLLsxVQZWcPsXOq+rgZ3gitxXHtqx1H4nrYmBG97Qg==}
     engines: {node: '>=22.12.0'}
 
   '@sanity/media-library-types@1.7.0':
@@ -2167,6 +2167,10 @@ packages:
 
   obug@2.2.1:
     resolution: {integrity: sha512-XrsrhT5sybtKI6wakr2SPOlGZWWYbUXZ7a0jT8/QOeAPau+1X/bSegNe5YR75oJmEZQbKningirmGOEJCIk61Q==}
+    engines: {node: '>=12.20.0'}
+
+  obug@3.0.0:
+    resolution: {integrity: sha512-5vvB5+W7ePv+p3uqxi+RcW1XAzLW0/hxt3/4X4Lc4qHudzOhmBiBwOY6DRob4WnanAEGvNcLjF+KNOufrUoEQw==}
     engines: {node: '>=12.20.0'}
 
   ofetch@1.5.1:
@@ -3774,11 +3778,11 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@sanity/client@8.6.1(vitest@5.0.0)':
+  '@sanity/client@8.6.2(vitest@5.0.0)':
     dependencies:
       eventsource: 5.1.1
       get-it: 9.5.4(vitest@5.0.0)
-      obug: 2.2.1
+      obug: 3.0.0
       rxjs: 7.8.2
     transitivePeerDependencies:
       - vitest
@@ -3789,7 +3793,7 @@ snapshots:
 
   '@sanity/types@6.13.2(@types/react@19.3.0)(vitest@5.0.0)':
     dependencies:
-      '@sanity/client': 8.6.1(vitest@5.0.0)
+      '@sanity/client': 8.6.2(vitest@5.0.0)
       '@sanity/media-library-types': 1.7.0(@sanity/types@6.13.2(@types/react@19.3.0)(vitest@5.0.0))
       '@types/react': 19.3.0
     transitivePeerDependencies:
@@ -4801,6 +4805,8 @@ snapshots:
       boolbase: 1.0.0
 
   obug@2.2.1: {}
+
+  obug@3.0.0: {}
 
   ofetch@1.5.1:
     dependencies:
