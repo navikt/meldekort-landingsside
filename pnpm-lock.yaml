@@ -192,7 +192,7 @@ importers:
         version: 8.6.2(vitest@5.0.1)
       '@sanity/types':
         specifier: ^6.11.0
-        version: 6.14.0(@types/react@19.3.0)(vitest@5.0.1)
+        version: 6.14.1(@types/react@19.3.0)(vitest@5.0.1)
       astro:
         specifier: ^7.2.10
         version: 7.3.3(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@types/node@26.5.1)(yaml@2.9.1)
@@ -201,7 +201,7 @@ importers:
         version: 4.4.0
       groq:
         specifier: ^6.11.0
-        version: 6.14.0
+        version: 6.14.1
       react:
         specifier: ^19.2.8
         version: 19.3.0
@@ -1213,8 +1213,8 @@ packages:
     peerDependencies:
       '@sanity/types': ^4.0.0 || ^5.0.0 || ^6.0.0
 
-  '@sanity/types@6.14.0':
-    resolution: {integrity: sha512-g4oPc8ysX5ZWWowXN2PaagZ3eewxogCQ13K5jJWnQvfJKbyRL+xEgIEFXU9DNjqOOzG5a093x0iE/n1PHzj1oQ==}
+  '@sanity/types@6.14.1':
+    resolution: {integrity: sha512-f7PJRca4W/1CDPMZg1hMHnDKXUIMdUDlAzKm7HInayytjt+9WUyRRYwDZVvB5SmyGyY5GjmP/UI2ov9cqckImw==}
     engines: {node: '>=22.12'}
     peerDependencies:
       '@types/react': '*'
@@ -1864,8 +1864,8 @@ packages:
     resolution: {integrity: sha512-Chq1s4CY7jmh8gO2qvLIJyfCDIN+EHLFW/9iShnp1z8FjBQMoodWP1kDC36VAMXXIvAjj4ARa7ntfAV2BrjsbA==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
 
-  groq@6.14.0:
-    resolution: {integrity: sha512-Z4a/umlSgYkbwInKhBwzry2M9H8aGeo5LXDkiHwBPwdQyzICrK+ILbz+8vaaPxJnKEi8dpJY6ZMbkWljBZmrZw==}
+  groq@6.14.1:
+    resolution: {integrity: sha512-zRNkHCoJrKQZySFUwJvugbPFEunMQAVlPniorSNDhuEIm/ih1Qg78uCaWoloN/1Duo9FqJQ55duVEZDQwbOp8A==}
     engines: {node: '>=22.12'}
 
   h3@1.15.11:
@@ -3791,14 +3791,14 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
-  '@sanity/media-library-types@1.7.0(@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.1))':
+  '@sanity/media-library-types@1.7.0(@sanity/types@6.14.1(@types/react@19.3.0)(vitest@5.0.1))':
     dependencies:
-      '@sanity/types': 6.14.0(@types/react@19.3.0)(vitest@5.0.1)
+      '@sanity/types': 6.14.1(@types/react@19.3.0)(vitest@5.0.1)
 
-  '@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.1)':
+  '@sanity/types@6.14.1(@types/react@19.3.0)(vitest@5.0.1)':
     dependencies:
       '@sanity/client': 8.6.2(vitest@5.0.1)
-      '@sanity/media-library-types': 1.7.0(@sanity/types@6.14.0(@types/react@19.3.0)(vitest@5.0.1))
+      '@sanity/media-library-types': 1.7.0(@sanity/types@6.14.1(@types/react@19.3.0)(vitest@5.0.1))
       '@types/react': 19.3.0
     transitivePeerDependencies:
       - vitest
@@ -4512,7 +4512,7 @@ snapshots:
 
   graphql@16.14.2: {}
 
-  groq@6.14.0: {}
+  groq@6.14.1: {}
 
   h3@1.15.11:
     dependencies:
