@@ -189,7 +189,7 @@ importers:
         version: 8.0.1(react@19.3.0)
       '@sanity/client':
         specifier: ^8.4.0
-        version: 8.6.2(vitest@5.0.1)
+        version: 8.7.0(vitest@5.0.1)
       '@sanity/types':
         specifier: ^6.11.0
         version: 6.16.0(@types/react@19.3.0)(vitest@5.0.1)
@@ -1133,8 +1133,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@sanity/client@8.6.2':
-    resolution: {integrity: sha512-e/rKvOxMy3hP+4p1fdVfONKrdmlNQQyjzHai/cQYPTe/CLLsxVQZWcPsXOq+rgZ3gitxXHtqx1H4nrYmBG97Qg==}
+  '@sanity/client@8.7.0':
+    resolution: {integrity: sha512-bzec0hVvvr+K6o9+0qc32eXGeV26wAx2QeB0M4lwTUwXQYIWWkuxEP+HABoi2nj11fG2SJskvbgaiV/XBBUNNg==}
     engines: {node: '>=22.12.0'}
 
   '@sanity/media-library-types@1.7.0':
@@ -1671,12 +1671,12 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
-  eventsource-parser@4.1.0:
-    resolution: {integrity: sha512-+DHvQ1wLO//MK+1OZgcuXCbZFKgu3YjKPJt7n98rxX8vezL0ni+7s3ZQiM8bJkUEOk7MsuCycrPLj0FzUNf7Og==}
+  eventsource-parser@4.1.1:
+    resolution: {integrity: sha512-zaWNqeSLeyzEAAt2Q6aDBRDRk/VnPmsKqvToyGvv6aahvLv71A4Jw7jG93Hckf11zXurbqgsffvpSgKPoeU1Qw==}
     engines: {node: '>=22.12'}
 
-  eventsource@5.1.1:
-    resolution: {integrity: sha512-onrlI7l612Ee3xnBqZNTq4djf6Fho/0yIpO/rYjRG/FzjMyPJquNx9SS3QyjglnVFxwxrube1XmX41zB+0Rdgw==}
+  eventsource@5.1.2:
+    resolution: {integrity: sha512-VJnwqqp+fOT3WDkjnUy49Zuyh48+kH0JdJApZkslrRQyx35zIZJeJYJl0+a+LrTzh5TFv6MdmXnBDv71UXFyWQ==}
     engines: {node: '>=22.12.0'}
 
   expect-type@1.4.0:
@@ -1754,8 +1754,8 @@ packages:
     resolution: {integrity: sha512-QRbvDIbx6YklUe6RxeTeleMR0yv3cYH6PsPZHcnVn7xv7zO1BHN8r0XETu8n6Ye3Q+ahtSarc3WgtNWmehIBfA==}
     engines: {node: '>=18'}
 
-  get-it@9.5.4:
-    resolution: {integrity: sha512-LXbU86HfKWzssHTTsQtUphDh5RB9ilOvncCPPDjaJTbli8zPIJBv4KA9EMB/Wv8GfPXy0dpulfRJzd76n7c3bg==}
+  get-it@9.6.1:
+    resolution: {integrity: sha512-uxMgcolbhJTz8f/cOHLcgde3A0gwqv5p6m8OJ2WJqn7NBi79krofZdp95FD0+7N9UUpmAe76vIEX3kDFijRahg==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       vitest: '>=2.0.0'
@@ -2449,8 +2449,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@7.29.1:
-    resolution: {integrity: sha512-RYONW2MeafgYlkVOKYKkA/Ag7BmXqgIWCa8t1m0JcxrQg9pI9lEqRhAOruOBCbAohOa/gkCF+iPi9hrgvTzu6Q==}
+  undici@7.30.0:
+    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
     engines: {node: '>=20.18.1'}
 
   undici@8.10.2:
@@ -3545,10 +3545,10 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@sanity/client@8.6.2(vitest@5.0.1)':
+  '@sanity/client@8.7.0(vitest@5.0.1)':
     dependencies:
-      eventsource: 5.1.1
-      get-it: 9.5.4(vitest@5.0.1)
+      eventsource: 5.1.2
+      get-it: 9.6.1(vitest@5.0.1)
       obug: 3.0.0
       rxjs: 7.8.2
     transitivePeerDependencies:
@@ -3560,7 +3560,7 @@ snapshots:
 
   '@sanity/types@6.16.0(@types/react@19.3.0)(vitest@5.0.1)':
     dependencies:
-      '@sanity/client': 8.6.2(vitest@5.0.1)
+      '@sanity/client': 8.7.0(vitest@5.0.1)
       '@sanity/media-library-types': 1.7.0(@sanity/types@6.16.0(@types/react@19.3.0)(vitest@5.0.1))
       '@types/react': 19.3.0
     transitivePeerDependencies:
@@ -4162,11 +4162,11 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
-  eventsource-parser@4.1.0: {}
+  eventsource-parser@4.1.1: {}
 
-  eventsource@5.1.1:
+  eventsource@5.1.2:
     dependencies:
-      eventsource-parser: 4.1.0
+      eventsource-parser: 4.1.1
 
   expect-type@1.4.0: {}
 
@@ -4219,9 +4219,9 @@ snapshots:
 
   get-east-asian-width@1.6.0: {}
 
-  get-it@9.5.4(vitest@5.0.1):
+  get-it@9.6.1(vitest@5.0.1):
     dependencies:
-      undici: 7.29.1
+      undici: 7.30.0
     optionalDependencies:
       vitest: 5.0.1(@opentelemetry/api@1.9.1)(@types/node@26.5.1)(@vitest/coverage-v8@5.0.1)(@vitest/ui@5.0.1)(happy-dom@20.14.5)(msw@2.15.0(@types/node@26.5.1)(typescript@6.0.3))(vite@8.3.0(@types/node@26.5.1)(esbuild@0.28.2)(yaml@2.9.1))
 
@@ -4915,7 +4915,7 @@ snapshots:
 
   undici-types@8.9.0: {}
 
-  undici@7.29.1: {}
+  undici@7.30.0: {}
 
   undici@8.10.2: {}
 
