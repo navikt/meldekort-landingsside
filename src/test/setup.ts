@@ -9,7 +9,7 @@ import { server } from '../mocks/server';
 
 // Start MSW server før alle tester
 beforeAll(() => {
-  server.listen({ onUnhandledRequest: 'warn' });
+  server.listen({ onUnhandledFrame: 'warn' });
 });
 
 // Reset handlers etter hver test
