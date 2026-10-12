@@ -36,7 +36,7 @@ RUN --mount=type=secret,id=NODE_AUTH_TOKEN \
     pnpm config delete //npm.pkg.github.com/:_authToken
 
 # Runtime stage
-FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26@sha256:b0ab29291105484e15c9425825a9a55baf23ff2c170fd9531c26ecf160b1e32d AS runtime
+FROM europe-north1-docker.pkg.dev/cgr-nav/pull-through/nav.no/node:26@sha256:9b83e201bed76a48235243398daf6c2cecf58719587ff9f0d51231294a106eda AS runtime
 
 WORKDIR /app
 
