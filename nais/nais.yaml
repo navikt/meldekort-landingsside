@@ -4,7 +4,10 @@ metadata:
   name: {{app}}
   namespace: meldekort
   labels:
-    team: meldekort
+    team: "meldekort"
+    fagsystem: "DAGPENGER"
+    domene: "meldekort"
+    okonomisystem: "false"
 spec:
   image: {{image}}
   port: 3000
