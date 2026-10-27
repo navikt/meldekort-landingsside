@@ -189,7 +189,7 @@ importers:
         version: 8.0.1(react@19.3.1)
       '@sanity/client':
         specifier: ^8.4.0
-        version: 8.9.0(vitest@5.0.5)
+        version: 8.10.0(vitest@5.0.5)
       '@sanity/types':
         specifier: ^6.11.0
         version: 6.20.0(@types/react@19.3.0)(vitest@5.0.5)
@@ -1140,8 +1140,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@sanity/client@8.9.0':
-    resolution: {integrity: sha512-V6kFNH6xvz29ot66zTVVyzZ34dIGzVJHzQJXEV2ljGVZEelHRoMayhErsTDac/ZR7ej8Spz39qEMYCaJWg176g==}
+  '@sanity/client@8.10.0':
+    resolution: {integrity: sha512-GIhfkSa4n1p1pmjfSIej7WyeEMYK26YaGbFnr7ORjHaWJ0L/KPHv+dEHTMxkE+BY4XlvILuKMLm1wPbny0yYKA==}
     engines: {node: '>=22.12.0'}
 
   '@sanity/media-library-types@1.7.1':
@@ -3477,7 +3477,7 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@sanity/client@8.9.0(vitest@5.0.5)':
+  '@sanity/client@8.10.0(vitest@5.0.5)':
     dependencies:
       eventsource: 5.1.2
       get-it: 9.6.1(vitest@5.0.5)
@@ -3492,7 +3492,7 @@ snapshots:
 
   '@sanity/types@6.20.0(@types/react@19.3.0)(vitest@5.0.5)':
     dependencies:
-      '@sanity/client': 8.9.0(vitest@5.0.5)
+      '@sanity/client': 8.10.0(vitest@5.0.5)
       '@sanity/media-library-types': 1.7.1(@sanity/types@6.20.0(@types/react@19.3.0)(vitest@5.0.5))
       '@types/react': 19.3.0
     transitivePeerDependencies:
