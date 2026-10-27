@@ -40,7 +40,7 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "@astrojs/check": "0.9.10",
+    "@astrojs/check": "0.9.11",
     "@astrojs/react": "^7.0.0",
     "@biomejs/biome": "2.5.15",
     "@portabletext/types": "^4.0.2",
