@@ -42,7 +42,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.11",
     "@astrojs/react": "^7.0.0",
-    "@biomejs/biome": "2.5.15",
+    "@biomejs/biome": "2.6.1",
     "@portabletext/types": "^4.0.2",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.5",
