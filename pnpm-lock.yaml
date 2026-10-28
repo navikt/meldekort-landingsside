@@ -189,7 +189,7 @@ importers:
         version: 8.0.1(react@19.3.1)
       '@sanity/client':
         specifier: ^8.4.0
-        version: 8.10.0(vitest@5.0.5)
+        version: 8.10.1(vitest@5.0.5)
       '@sanity/types':
         specifier: ^6.11.0
         version: 6.20.0(@types/react@19.3.0)(vitest@5.0.5)
@@ -1140,8 +1140,8 @@ packages:
   '@rolldown/pluginutils@1.0.1':
     resolution: {integrity: sha512-2j9bGt5Jh8hj+vPtgzPtl72j0yRxHAyumoo6TNfAjsLB04UtpSvPbPcDcBMxz7n+9CYB0c1GxQFxYRg2jimqGw==}
 
-  '@sanity/client@8.10.0':
-    resolution: {integrity: sha512-GIhfkSa4n1p1pmjfSIej7WyeEMYK26YaGbFnr7ORjHaWJ0L/KPHv+dEHTMxkE+BY4XlvILuKMLm1wPbny0yYKA==}
+  '@sanity/client@8.10.1':
+    resolution: {integrity: sha512-6LvBQymm2ErkqD9VY+VQt3IJKFm9vr3drWIEu2WmVzjoyh15zSJWxpLOGRELoEopETQsua9GQedHt5w3OOg1Xg==}
     engines: {node: '>=22.12.0'}
 
   '@sanity/media-library-types@1.7.1':
@@ -1649,12 +1649,12 @@ packages:
   eventemitter3@5.0.4:
     resolution: {integrity: sha512-mlsTRyGaPBjPedk6Bvw+aqbsXDtoAyAzm5MO7JgU+yVRyMQ5O8bD4Kcci7BS85f93veegeCPkL8R4GLClnjLFw==}
 
-  eventsource-parser@4.1.1:
-    resolution: {integrity: sha512-zaWNqeSLeyzEAAt2Q6aDBRDRk/VnPmsKqvToyGvv6aahvLv71A4Jw7jG93Hckf11zXurbqgsffvpSgKPoeU1Qw==}
+  eventsource-parser@4.1.3:
+    resolution: {integrity: sha512-jZVIVilXZfAx6H20ZKKEj5dabbpD9ETmMj3uHsjMmgBzBHB6tsHrmdWB4mAiy3amtN6MOoVkfXRQu4wf1n88Rw==}
     engines: {node: '>=22.12'}
 
-  eventsource@5.1.2:
-    resolution: {integrity: sha512-VJnwqqp+fOT3WDkjnUy49Zuyh48+kH0JdJApZkslrRQyx35zIZJeJYJl0+a+LrTzh5TFv6MdmXnBDv71UXFyWQ==}
+  eventsource@5.1.3:
+    resolution: {integrity: sha512-rkZZeKloVPdaZ9tj/AoUPxp7Oz4iGC+8ZIxnauSTZZm6vAMSKX0YjrueNBDHVq5oTsUf/Q9Q/PEzGokVxRBkJg==}
     engines: {node: '>=22.12.0'}
 
   expect-type@1.4.0:
@@ -1731,8 +1731,8 @@ packages:
     resolution: {integrity: sha512-QRbvDIbx6YklUe6RxeTeleMR0yv3cYH6PsPZHcnVn7xv7zO1BHN8r0XETu8n6Ye3Q+ahtSarc3WgtNWmehIBfA==}
     engines: {node: '>=18'}
 
-  get-it@9.6.1:
-    resolution: {integrity: sha512-uxMgcolbhJTz8f/cOHLcgde3A0gwqv5p6m8OJ2WJqn7NBi79krofZdp95FD0+7N9UUpmAe76vIEX3kDFijRahg==}
+  get-it@9.6.2:
+    resolution: {integrity: sha512-eAg+xPVjPXbmFL/ahF08LKmuVVC+ixXCSrb0gtaWOZ9aIsMoa0QATttbtoSoqnVSBV6nh9jCdsOk5pLhN2qUOA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       vitest: '>=2.0.0'
@@ -2388,8 +2388,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@7.30.0:
-    resolution: {integrity: sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==}
+  undici@7.30.1:
+    resolution: {integrity: sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==}
     engines: {node: '>=20.18.1'}
 
   undici@8.10.2:
@@ -3477,10 +3477,10 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.1': {}
 
-  '@sanity/client@8.10.0(vitest@5.0.5)':
+  '@sanity/client@8.10.1(vitest@5.0.5)':
     dependencies:
-      eventsource: 5.1.2
-      get-it: 9.6.1(vitest@5.0.5)
+      eventsource: 5.1.3
+      get-it: 9.6.2(vitest@5.0.5)
       obug: 3.0.0
       rxjs: 7.8.2
     transitivePeerDependencies:
@@ -3492,7 +3492,7 @@ snapshots:
 
   '@sanity/types@6.20.0(@types/react@19.3.0)(vitest@5.0.5)':
     dependencies:
-      '@sanity/client': 8.10.0(vitest@5.0.5)
+      '@sanity/client': 8.10.1(vitest@5.0.5)
       '@sanity/media-library-types': 1.7.1(@sanity/types@6.20.0(@types/react@19.3.0)(vitest@5.0.5))
       '@types/react': 19.3.0
     transitivePeerDependencies:
@@ -4068,11 +4068,11 @@ snapshots:
 
   eventemitter3@5.0.4: {}
 
-  eventsource-parser@4.1.1: {}
+  eventsource-parser@4.1.3: {}
 
-  eventsource@5.1.2:
+  eventsource@5.1.3:
     dependencies:
-      eventsource-parser: 4.1.1
+      eventsource-parser: 4.1.3
 
   expect-type@1.4.0: {}
 
@@ -4125,9 +4125,9 @@ snapshots:
 
   get-east-asian-width@1.6.0: {}
 
-  get-it@9.6.1(vitest@5.0.5):
+  get-it@9.6.2(vitest@5.0.5):
     dependencies:
-      undici: 7.30.0
+      undici: 7.30.1
     optionalDependencies:
       vitest: 5.0.5(@opentelemetry/api@1.9.1)(@types/node@26.5.1)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@21.0.4)(msw@3.0.3(@types/node@26.5.1)(graphql@16.14.2)(typescript@6.0.3)(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(yaml@2.9.1)))(vite@8.3.4(@types/node@26.5.1)(esbuild@0.28.2)(yaml@2.9.1))
 
@@ -4787,7 +4787,7 @@ snapshots:
 
   undici-types@8.9.0: {}
 
-  undici@7.30.0: {}
+  undici@7.30.1: {}
 
   undici@8.10.2: {}
 
