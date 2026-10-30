@@ -106,6 +106,23 @@ describe('dagpenger', () => {
       expect(result.error).toBe('DP API returned 500');
     });
 
+    it.each([204, 404])('returnerer success uten data når API returnerer %s', async (status) => {
+      const { requestTokenxOboToken } = await import('@navikt/oasis');
+      vi.mocked(requestTokenxOboToken).mockResolvedValue({
+        ok: true,
+        token: 'test-token',
+      });
+
+      const response = new Response(null, { status });
+      const jsonSpy = vi.spyOn(response, 'json');
+      vi.mocked(fetch).mockResolvedValue(response);
+
+      const result = await hentMeldekortDataFraDP('test-obo-token');
+
+      expect(result).toEqual({ success: true });
+      expect(jsonSpy).not.toHaveBeenCalled();
+    });
+
     it('returnerer feil når API returnerer ugyldig data', async () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
