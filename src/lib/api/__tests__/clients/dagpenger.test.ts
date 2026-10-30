@@ -88,7 +88,7 @@ describe('dagpenger', () => {
       expect(fetch).not.toHaveBeenCalled();
     });
 
-    it('returnerer feil når API returnerer feilstatus', async () => {
+    it.each([404, 500])('returnerer feil når API returnerer %s', async (status) => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
@@ -97,23 +97,23 @@ describe('dagpenger', () => {
 
       vi.mocked(fetch).mockResolvedValue({
         ok: false,
-        status: 500,
+        status,
       } as Response);
 
       const result = await hentMeldekortDataFraDP('test-obo-token');
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe('DP API returned 500');
+      expect(result.error).toBe(`DP API returned ${status}`);
     });
 
-    it.each([204, 404])('returnerer success uten data når API returnerer %s', async (status) => {
+    it('returnerer success uten data når API returnerer 204', async () => {
       const { requestTokenxOboToken } = await import('@navikt/oasis');
       vi.mocked(requestTokenxOboToken).mockResolvedValue({
         ok: true,
         token: 'test-token',
       });
 
-      const response = new Response(null, { status });
+      const response = new Response(null, { status: 204 });
       const jsonSpy = vi.spyOn(response, 'json');
       vi.mocked(fetch).mockResolvedValue(response);
 
