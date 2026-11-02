@@ -5,7 +5,7 @@ metadata:
   namespace: meldekort
   labels:
     team: "meldekort"
-    fagsystem: "DAGPENGER"
+    fagsystem: "dagpenger"
     domene: "meldekort"
     okonomisystem: "false"
 spec:

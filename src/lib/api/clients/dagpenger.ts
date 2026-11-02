@@ -40,12 +40,12 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
       },
     });
 
+    if (response.status === 204) {
+      logger.info('DP API returned 204 - no data');
+      return { success: true };
+    }
+
     if (!response.ok) {
-      // 404 betyr at bruker ikke finnes i DP - behandle som "ingen data"
-      if (response.status === 404) {
-        logger.info('DP API returned 404 - user not found, treating as no data');
-        return { success: true };
-      }
       const error = `DP API returned ${response.status}`;
       logger.error(error);
       return { success: false, error };
