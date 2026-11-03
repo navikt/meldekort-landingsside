@@ -17,7 +17,7 @@ Dette repoet erstatter felles-meldekort som inngangsport til meldekort i Nav. De
 ### Backend / API
 
 - **Meldekort-API integrasjoner**:
-  - **Dagpenger** - `dp-rapportering` (teamdagpenger namespace)
+  - **Dagpenger** - `dp-meldekortregister` (teamdagpenger namespace)
   - **Arbeidsavklaringspenger** - `meldekort-backend` (AAP namespace)
   - **Tiltakspenger** - `tiltakspenger-meldekort-api` (tpts namespace)
   - **Arena** - `meldekort-api` (meldekort namespace) - Returnerer redirectUrl til felles-meldekort
@@ -223,7 +223,7 @@ Alle `redirectUrl` valideres før bruk for å forhindre open redirect-sårbarhet
 
 ### API-integrasjoner
 
-- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-rapportering` (`/meldekortstatus`)
+- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-meldekortregister` (`/meldekortstatus`)
 - **AAP**: `hentMeldekortDataFraAAP()` - Henter data fra `meldekort-backend` (`/api/meldekort-status`)
 - **Tiltakspenger**: `hentMeldekortDataFraTP()` - Henter data fra `tiltakspenger-meldekort-api` (`/landingsside/status`)
 - **Arena**: `hentMeldekortDataFraArena()` - Henter redirectUrl fra `meldekort-api` (`/api/person/meldekortstatus`) - kalles kun når ingen ytelser har aktive meldekort

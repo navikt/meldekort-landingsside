@@ -52,7 +52,7 @@ spec:
           namespace: meldekort
         - application: meldekort-api-q2
           namespace: meldekort
-        - application: dp-rapportering
+        - application: dp-meldekortregister
           namespace: teamdagpenger
       external:
         - host: dekoratoren.ekstern.dev.nav.no
