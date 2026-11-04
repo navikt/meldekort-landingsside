@@ -20,7 +20,7 @@ describe('dagpenger', () => {
     vi.clearAllMocks();
     vi.stubGlobal('fetch', vi.fn());
     vi.stubEnv('DP_API_URL', 'https://dp-test.nav.no');
-    vi.stubEnv('DP_API_AUDIENCE', 'test:teamdagpenger:dp-rapportering');
+    vi.stubEnv('DP_API_AUDIENCE', 'test:teamdagpenger:dp-meldekortregister');
     vi.stubEnv('ENFORCE_LOGIN', 'true');
   });
 
@@ -61,7 +61,7 @@ describe('dagpenger', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith(
         'test-obo-token',
-        'test:teamdagpenger:dp-rapportering',
+        'test:teamdagpenger:dp-meldekortregister',
       );
       expect(fetch).toHaveBeenCalledWith(
         'https://dp-test.nav.no/meldekortstatus',
