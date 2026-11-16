@@ -27,9 +27,6 @@ COPY --from=builder /app/dist ./dist
 
 # Production dependencies stage
 FROM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS prod-deps
-
-RUN corepack enable
-
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc ./
