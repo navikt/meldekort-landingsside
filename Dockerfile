@@ -1,5 +1,9 @@
 # Build stage
-FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS builder
+FROM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS builder
+RUN npm install -g corepack@latest --force && \
+    corepack enable && \
+    corepack prepare pnpm@12.18.0 --activate
+RUN pnpm config set @navikt:registry=https://npm.pkg.github.com
 
 RUN corepack enable
 
@@ -22,10 +26,7 @@ FROM scratch AS export
 COPY --from=builder /app/dist ./dist
 
 # Production dependencies stage
-FROM node:24-alpine@sha256:116b800c3754b440ee0aa3ed2f20f5bf3d99a554bfd9adeea09ea8017f6e85f5 AS prod-deps
-
-RUN corepack enable
-
+FROM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS prod-deps
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* .npmrc ./
