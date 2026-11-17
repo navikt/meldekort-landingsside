@@ -2,7 +2,7 @@
 FROM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS builder
 RUN npm install -g corepack@latest --force && \
     corepack enable && \
-    corepack prepare pnpm@12.18.0 --activate
+    corepack prepare pnpm@12.19.0 --activate
 RUN pnpm config set @navikt:registry=https://npm.pkg.github.com
 
 WORKDIR /app
@@ -27,7 +27,7 @@ COPY --from=builder /app/dist ./dist
 FROM node:26-alpine@sha256:6bd9ab43c0ec0190ca7b2d193906cb8b7edf6e7f4afa43ddeccd6452710bffb5 AS prod-deps
 RUN npm install -g corepack@latest --force && \
     corepack enable && \
-    corepack prepare pnpm@12.18.0 --activate
+    corepack prepare pnpm@12.19.0 --activate
 RUN pnpm config set @navikt:registry=https://npm.pkg.github.com
 
 WORKDIR /app
