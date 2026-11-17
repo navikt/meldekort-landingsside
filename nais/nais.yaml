@@ -54,6 +54,8 @@ spec:
           namespace: meldekort
         - application: dp-meldekortregister
           namespace: teamdagpenger
+        - application: dp-meldekort
+          namespace: teamdagpenger
       external:
         - host: dekoratoren.ekstern.dev.nav.no
         - host: www.nav.no
