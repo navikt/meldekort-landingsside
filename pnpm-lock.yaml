@@ -201,7 +201,7 @@ importers:
         version: 8.16.0(vitest@5.1.0)
       '@sanity/types':
         specifier: ^6.11.0
-        version: 6.23.0(@types/react@19.3.0)(vitest@5.1.0)
+        version: 6.24.0(@types/react@19.3.0)(vitest@5.1.0)
       astro:
         specifier: ^7.2.10
         version: 7.4.12(@types/node@26.6.6)(yaml@2.9.1)
@@ -210,7 +210,7 @@ importers:
         version: 4.4.0
       groq:
         specifier: ^6.11.0
-        version: 6.23.0
+        version: 6.24.0
       react:
         specifier: ^19.2.8
         version: 19.3.1
@@ -1068,8 +1068,8 @@ packages:
     peerDependencies:
       '@sanity/types': ^4.0.0 || ^5.0.0 || ^6.0.0
 
-  '@sanity/types@6.23.0':
-    resolution: {integrity: sha512-DAadIB4nlQ6zCnuuEpVi3mwKi49NhqlUgAInraYahKUE6evLnH7zlqIMNQJTvosL82cllsxlxokG1KwgylLP1Q==}
+  '@sanity/types@6.24.0':
+    resolution: {integrity: sha512-NUupLHhhcBGYxP2HXmEkYl4ZqjUmyOoOSVzofDF93GAedYt6lNhdgq8WFKufo3PKo2WGgxkJKfb3u9wDsdmgfA==}
     engines: {node: '>=22.12'}
     peerDependencies:
       '@types/react': '*'
@@ -1658,8 +1658,8 @@ packages:
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
 
-  groq@6.23.0:
-    resolution: {integrity: sha512-+c6jmcfauaBagcSjqSq0Gx5ohyJNfrD9YJJTFH7jrwKsr2ZC2AhvrUfI/u8gmUVi6q6mANb41DgC8Q4ySYbnSw==}
+  groq@6.24.0:
+    resolution: {integrity: sha512-HzSEcR/exLPAyvOdpzkn+UXYIrp5aYNFzVnAv2IB+XTRXQlkbczhmItJ5xXewbpxqDxJkjowaYT7ovbV0Z+sTg==}
     engines: {node: '>=22.12'}
 
   h3@1.15.11:
@@ -3386,14 +3386,14 @@ snapshots:
     transitivePeerDependencies:
       - vitest
 
-  '@sanity/media-library-types@1.8.0(@sanity/types@6.23.0(@types/react@19.3.0)(vitest@5.1.0))':
+  '@sanity/media-library-types@1.8.0(@sanity/types@6.24.0(@types/react@19.3.0)(vitest@5.1.0))':
     dependencies:
-      '@sanity/types': 6.23.0(@types/react@19.3.0)(vitest@5.1.0)
+      '@sanity/types': 6.24.0(@types/react@19.3.0)(vitest@5.1.0)
 
-  '@sanity/types@6.23.0(@types/react@19.3.0)(vitest@5.1.0)':
+  '@sanity/types@6.24.0(@types/react@19.3.0)(vitest@5.1.0)':
     dependencies:
       '@sanity/client': 8.16.0(vitest@5.1.0)
-      '@sanity/media-library-types': 1.8.0(@sanity/types@6.23.0(@types/react@19.3.0)(vitest@5.1.0))
+      '@sanity/media-library-types': 1.8.0(@sanity/types@6.24.0(@types/react@19.3.0)(vitest@5.1.0))
       '@types/react': 19.3.0
     transitivePeerDependencies:
       - vitest
@@ -4006,7 +4006,7 @@ snapshots:
 
   github-slugger@2.0.0: {}
 
-  groq@6.23.0: {}
+  groq@6.24.0: {}
 
   h3@1.15.11:
     dependencies:
