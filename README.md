@@ -17,7 +17,7 @@ Dette repoet erstatter felles-meldekort som inngangsport til meldekort i Nav. De
 ### Backend / API
 
 - **Meldekort-API integrasjoner**:
-  - **Dagpenger** - `dp-meldekortregister` (teamdagpenger namespace)
+  - **Dagpenger** - `dp-meldekort` (teamdagpenger namespace)
   - **Arbeidsavklaringspenger** - `meldekort-backend` (AAP namespace)
   - **Tiltakspenger** - `tiltakspenger-meldekort-api` (tpts namespace)
   - **Arena** - `meldekort-api` (meldekort namespace) - Returnerer redirectUrl til felles-meldekort
@@ -223,7 +223,7 @@ Alle `redirectUrl` valideres før bruk for å forhindre open redirect-sårbarhet
 
 ### API-integrasjoner
 
-- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-meldekortregister` (`/meldekortstatus`)
+- **Dagpenger**: `hentMeldekortDataFraDP()` - Henter data fra `dp-meldekort` (`/meldekortstatus`)
 - **AAP**: `hentMeldekortDataFraAAP()` - Henter data fra `meldekort-backend` (`/api/meldekort-status`)
 - **Tiltakspenger**: `hentMeldekortDataFraTP()` - Henter data fra `tiltakspenger-meldekort-api` (`/landingsside/status`)
 - **Arena**: `hentMeldekortDataFraArena()` - Henter redirectUrl fra `meldekort-api` (`/api/person/meldekortstatus`) - kalles kun når ingen ytelser har aktive meldekort
@@ -296,8 +296,8 @@ Konfigureres i `.env` lokalt og via NAIS i prod/dev/demo:
 - `SANITY_PROJECT_ID` - Sanity prosjekt-ID
 - `SANITY_DATASET` - Sanity dataset (production/development)
 - `SANITY_API_VERSION` - Sanity API versjon
-- `DP_API_URL` - URL til Dagpenger meldekort-api
-- `DP_API_AUDIENCE` - TokenX audience for Dagpenger
+- `DP_MELDEKORT_API_URL` - URL til Dagpenger meldekort-api
+- `DP_MELDEKORT_API_AUDIENCE` - TokenX audience for Dagpenger
 - `AAP_API_URL` - URL til AAP meldekort-api
 - `AAP_API_AUDIENCE` - TokenX audience for AAP
 - `TP_API_URL` - URL til Tiltakspenger meldekort-api

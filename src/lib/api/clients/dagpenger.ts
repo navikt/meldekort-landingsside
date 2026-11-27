@@ -15,12 +15,12 @@ export async function hentMeldekortDataFraDP(oboToken: string): Promise<ApiResul
     return { success: true, data: dagpengerMock };
   }
 
-  const apiUrl = import.meta.env.DP_API_URL ?? process.env.DP_API_URL;
-  const audience = import.meta.env.DP_API_AUDIENCE ?? process.env.DP_API_AUDIENCE;
+  const apiUrl = import.meta.env.DP_MELDEKORT_API_URL ?? process.env.DP_MELDEKORT_API_URL;
+  const audience = import.meta.env.DP_MELDEKORT_API_AUDIENCE ?? process.env.DP_MELDEKORT_API_AUDIENCE;
 
   if (!apiUrl || !audience) {
     const error = 'Missing DP API configuration';
-    logger.error(`${error}: hasDpApiUrl=${Boolean(apiUrl)}, hasDpApiAudience=${Boolean(audience)}`);
+    logger.error(`${error}: hasdpMeldekortApiUrl=${Boolean(apiUrl)}, hasdpMeldekortApiAudience=${Boolean(audience)}`);
     return { success: false, error };
   }
 

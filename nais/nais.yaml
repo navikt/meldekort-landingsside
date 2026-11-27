@@ -52,8 +52,6 @@ spec:
           namespace: meldekort
         - application: meldekort-api-q2
           namespace: meldekort
-        - application: dp-meldekortregister
-          namespace: teamdagpenger
         - application: dp-meldekort
           namespace: teamdagpenger
       external:
@@ -84,7 +82,7 @@ spec:
       value: "{{arenaApiUrl}}"
     - name: ARENA_API_AUDIENCE
       value: "{{arenaApiAudience}}"
-    - name: DP_API_URL
-      value: "{{dpApiUrl}}"
-    - name: DP_API_AUDIENCE
-      value: "{{dpApiAudience}}"
+    - name: DP_MELDEKORT_API_URL
+      value: "{{dpMeldekortApiUrl}}"
+    - name: DP_MELDEKORT_API_AUDIENCE
+      value: "{{dpMeldekortApiAudience}}"
