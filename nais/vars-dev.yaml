@@ -22,6 +22,6 @@ tpApiUrl: https://tiltakspenger-meldekort-api.intern.dev.nav.no
 tpApiAudience: dev-gcp:tpts:tiltakspenger-meldekort-api
 arenaApiUrl: http://meldekort-api-q2.meldekort/meldekort/meldekort-api
 arenaApiAudience: dev-gcp:meldekort:meldekort-api-q2
-dpApiUrl: http://dp-meldekort.teamdagpenger
-dpApiAudience: dev-gcp:teamdagpenger:dp-meldekort
+dpMeldekortApiUrl: http://dp-meldekort.teamdagpenger
+dpMeldekortApiAudience: dev-gcp:teamdagpenger:dp-meldekort
 dekoratorMiljo: dev

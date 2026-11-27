@@ -19,8 +19,8 @@ describe('dagpenger', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubGlobal('fetch', vi.fn());
-    vi.stubEnv('DP_API_URL', 'https://dp-test.nav.no');
-    vi.stubEnv('DP_API_AUDIENCE', 'test:teamdagpenger:dp-meldekortregister');
+    vi.stubEnv('DP_MELDEKORT_API_URL', 'https://dp-test.nav.no');
+    vi.stubEnv('DP_MELDEKORT_API_AUDIENCE', 'test:teamdagpenger:dp-meldekort');
     vi.stubEnv('ENFORCE_LOGIN', 'true');
   });
 
@@ -61,7 +61,7 @@ describe('dagpenger', () => {
       expect(result.data).toEqual(mockData);
       expect(requestTokenxOboToken).toHaveBeenCalledWith(
         'test-obo-token',
-        'test:teamdagpenger:dp-meldekortregister',
+        'test:teamdagpenger:dp-meldekort',
       );
       expect(fetch).toHaveBeenCalledWith(
         'https://dp-test.nav.no/meldekortstatus',
@@ -168,7 +168,7 @@ describe('dagpenger', () => {
     });
 
     it('returnerer feil når API config mangler', async () => {
-      vi.stubEnv('DP_API_URL', '');
+      vi.stubEnv('DP_MELDEKORT_API_URL', '');
 
       const result = await hentMeldekortDataFraDP('test-obo-token');
 
